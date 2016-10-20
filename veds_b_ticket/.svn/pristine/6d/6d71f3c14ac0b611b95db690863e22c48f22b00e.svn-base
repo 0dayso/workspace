@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpzdcp.JpGjdocaSzDao">
+	<!--根据条件获得总条数 -->
+	<select id="getCountByShbhAndCsszm" resultType="integer" parameterType="cn.vetech.vedsb.jp.entity.jpzdcp.JpGjdocaSz">
+		SELECT COUNT(1) FROM JP_GJDOCA_SZ 
+		WHERE shbh=#{shbh} 
+		<if test="csszms != null and csszms != ''">
+			AND 
+	       	<foreach item="item" index="index" collection="csszms" open="(" separator="or" close=")">
+	               csszm LIKE '%'||#{item}||'%'
+	        </foreach>
+		</if>
+	</select>
+</mapper>

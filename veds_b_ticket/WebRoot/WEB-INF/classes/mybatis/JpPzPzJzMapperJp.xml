@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.pzzx.JpPzPzJzDao" >
+  <insert id="batchInsert" parameterType="java.util.List">
+	INSERT INTO JP_PZ_PZJZ
+	(ID,PZTYPE,PZBH,CZLX,CZ_DATETIME,CZ_YHBH,CZ_BMBH,CZ_SHBH,CZ_SM,BY2)
+	<foreach collection="list" item="item" index="index"  separator="union all" > 
+		SELECT #{item.id},#{item.pztype},#{item.pzbh},#{item.czlx},#{item.czDatetime},
+		#{item.czYhbh},#{item.czBmbh},#{item.czShbh},#{item.czSm},#{item.by2} FROM DUAL
+	</foreach>
+</insert>
+  <select id="getListByPzBh" parameterType="Map" resultType="cn.vetech.vedsb.jp.entity.pzzx.JpPzPzJz">
+  	select * from JP_PZ_PZJZ 
+  	<where>
+  		<if test="pzbh !=null and pzbh !=''">
+  			PZBH &lt;=#{pzbh,jdbcType=VARCHAR}
+  			and BY2  &gt;= #{pzbh,jdbcType=VARCHAR}
+  		</if>
+  		<if test="shbh !=null and shbh !=''">
+  			and CZ_SHBH=#{shbh,jdbcType=VARCHAR}
+  		</if>
+  		<if test="pztype !=null and pztype !=''">
+    		and PZTYPE=#{pztype,jdbcType=VARCHAR}
+    	</if>
+  	</where>
+  </select>
+</mapper>

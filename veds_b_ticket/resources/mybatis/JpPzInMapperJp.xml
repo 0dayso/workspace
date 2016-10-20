@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.pzzx.JpPzInDao" >
+  
+  <sql id="where">
+    <where> 
+    	shbh = #{shbh,jdbcType=VARCHAR}
+         <if test="startno != null and startno !='' and  endno != null and endno != '' ">
+         	and to_number(startno) between #{startno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR}
+         	and to_number(endno) between #{startno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR}
+         </if>
+         <if test="startno == '' and endno != '' ">
+         	and endno=#{endno,jdbcType=VARCHAR}
+         </if>
+         <if test="startno != '' and endno =='' ">
+         	and startno=#{startno,jdbcType=VARCHAR}
+         </if>
+         <if test="in_datetime!=null and in_datetime!='' and rkrz!=null and rkrz!=''">
+         	and in_datetime between #{in_datetime} and #{rkrz} 
+         </if>
+         <if test="sfsh != '' ">
+         	and sfsh=#{sfsh,jdbcType=VARCHAR}
+         </if>
+         <if test="pztype != '' ">
+         	and pztype=#{pztype,jdbcType=VARCHAR}
+         </if>
+	</where>
+  </sql>
+  
+  <select id="getListByAll" resultType="cn.vetech.vedsb.jp.entity.pzzx.JpPzIn" parameterType="Map">
+  	SELECT  *
+    FROM (SELECT tt.*, ROWNUM AS rowno      
+    FROM (SELECT  *
+    FROM JP_PZ_In
+    <include refid="where"/> 
+    ORDER BY in_datetime desc) tt
+	 WHERE ROWNUM &lt;= #{pageNum, jdbcType=INTEGER}*#{pageSize, jdbcType=INTEGER}) table_alias
+	 WHERE table_alias.rowno &gt; (#{pageNum, jdbcType=INTEGER} - 1)*#{pageSize, jdbcType=INTEGER}
+  </select>
+  	
+  <!-- 查询记录数 -->
+  <select id="selectCountByAll" parameterType="Map" resultType="Integer">
+ 	select count(1) from JP_PZ_IN <include refid="where"/> 
+  </select>
+
+
+	<!-- 根据inNo主键更改sfsh状态 ,填入审核时间-->
+	<update id="updateByInNo" parameterType="cn.vetech.vedsb.jp.entity.pzzx.JpPzIn" >
+		update JP_PZ_IN 
+		set SFSH = #{sfsh:VARCHAR},
+		SH_DATETIME = #{shDatetime},
+		SH_YHBH = #{shYhbh},
+		SH_BMBH=#{shBmbh}
+		where IN_NO = #{inNo:VARCHAR}
+		AND SHBH= #{shbh}
+	</update>
+
+	<!-- 根据inNo主键更改sfsh状态 ,不更改审核时间-->
+	<update id="updateByInNo2" parameterType="String" >
+		update JP_PZ_IN set SFSH = #{param2:VARCHAR} where IN_NO = #{param1:VARCHAR} and shbh=#{param3:VARCHAR}
+	</update>
+
+	<!-- 根据startno和endno判断表中是否已经有该数据段的记录-->
+	<select id="validateNo" resultType="cn.vetech.vedsb.jp.entity.pzzx.JpPzIn" parameterType="String">
+    SELECT *
+    FROM JP_PZ_IN  xx
+     WHERE #{param1:VARCHAR} between xx.startno and xx.endno or #{param2:VARCHAR} between xx.startno and xx.endno
+    </select>
+  
+</mapper>

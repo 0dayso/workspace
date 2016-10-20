@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.pzzx.JpPzKcDao" >
+  <sql id="where">
+    <where> 
+    	shbh = #{shbh,jdbcType=VARCHAR}
+         <if test="startno != null and startno !='' and  endno != null and endno != '' ">
+         	and to_number(startno) between #{startno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR}
+         	and to_number(endno) between #{startno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR}
+         </if>
+         <if test="startno == '' and endno != '' ">
+         	and endno=#{endno,jdbcType=VARCHAR}
+         </if>
+         <if test="startno != '' and endno =='' ">
+         	and startno=#{startno,jdbcType=VARCHAR}
+         </if>
+         <if test="pzzt == null or pzzt =='' ">
+         	and pzzt ='0'
+         </if>
+         <if test="pzzt != null and pzzt !='' ">
+         	and pzzt =#{pzzt,jdbcType=VARCHAR}
+         </if>
+         <if test="pztype != null and pztype !='' ">
+         	and pztype=#{pztype,jdbcType=VARCHAR}
+         </if>
+         <if test="officeid != null and officeid !='' ">
+         	and officeid=#{officeid,jdbcType=VARCHAR}
+         </if>
+	</where>
+  </sql>
+
+  <!-- 根据条件查询库存表中的记录数 -->
+  <select id="queryFromKC" resultType="cn.vetech.vedsb.jp.entity.pzzx.JpPzKc" parameterType="Map">
+  	SELECT  *
+    FROM (SELECT tt.*, ROWNUM AS rowno      
+    FROM (SELECT  *
+    from JP_PZ_KC
+    <include refid="where"/> 
+    order by CZ_DATETIME desc) tt
+	 WHERE ROWNUM &lt;= #{pageNum, jdbcType=INTEGER}*#{pageSize, jdbcType=INTEGER}) table_alias
+	 WHERE table_alias.rowno &gt; (#{pageNum, jdbcType=INTEGER} - 1)*#{pageSize, jdbcType=INTEGER}
+  </select>
+
+  <!-- 查询记录数 -->
+  <select id="selectCountByAll" parameterType="Map" resultType="Integer">
+	  select count(1) from JP_PZ_KC <include refid="where"/> 
+  </select>
+  
+  <!-- 根据id主键更改pzzt状态,从0改为1，从入库变为发放(未使用) -->
+  <update id="updatePzztById" parameterType="String" >
+	update JP_PZ_KC set pzzt = '1' where id = #{param1:VARCHAR} and shbh=#{param2:VARCHAR} 
+  </update>
+
+  <!-- 根据startno和endno删除库存表中的记录-->
+  <update id="deleteByInNo" parameterType="cn.vetech.vedsb.jp.entity.pzzx.JpPzKc" >
+	delete  from JP_PZ_KC where startno &gt;= #{startno,jdbcType=VARCHAR} and endno &lt;= #{endno,jdbcType=VARCHAR}
+  </update>  
+  
+  <select id="getListByAll" resultType="cn.vetech.vedsb.jp.entity.pzzx.JpPzKc" parameterType="Map">
+  	SELECT  *
+    FROM (SELECT tt.*, ROWNUM AS rowno      
+    FROM (SELECT  *
+    from jp_pZ_kc
+    <include refid="where"/> 
+    order by cz_datetime desc) tt
+	         WHERE ROWNUM &lt;= #{pageNum, jdbcType=INTEGER}*#{pageSize, jdbcType=INTEGER}) table_alias
+	 WHERE table_alias.rowno &gt; (#{pageNum, jdbcType=INTEGER} - 1)*#{pageSize, jdbcType=INTEGER}
+  </select>
+  <!-- 在票证退回区列表显示 -->
+  <select id="getKcThList" resultType="cn.vetech.vedsb.jp.entity.pzzx.JpPzKc" parameterType="Map">
+  	SELECT  *
+    FROM (SELECT tt.*, ROWNUM AS rowno      
+    FROM (select t.*
+  	from (select distinct b.*
+          from jp_pz_kc b, jp_pz_out a
+         <include refid="kcThwhere"/> 
+	 order by b.cz_datetime desc) t) tt
+	         WHERE ROWNUM &lt;= #{pageNum, jdbcType=INTEGER}*#{pageSize, jdbcType=INTEGER}) table_alias
+	 WHERE table_alias.rowno &gt; (#{pageNum, jdbcType=INTEGER} - 1)*#{pageSize, jdbcType=INTEGER}
+  </select>
+  <!-- 在票证退回区列表显示总记录数-->
+  <select id="getKcThCount" resultType="int" parameterType="Map">
+    select count(1)
+  	from (select distinct b.*
+          from jp_pz_kc b, jp_pz_out a
+         <include refid="kcThwhere"/> 
+	 ) 
+  </select>
+  <!-- 在票证退回区列表显示 -->
+  <sql id="kcThwhere">
+  	<where>
+  		b.shbh = #{shbh,jdbcType=VARCHAR} 
+  		and b.pztype = a.pzfl
+        and b.startno &gt;= a.startno
+        and b.startno &lt;= a.endno
+        and b.bmbh = a.ly_bmbh
+        and b.pzzt = '1'
+        and b.sysl &gt; 0
+        and not exists
+         (select 1
+                  from jp_pz_bf
+                 where startno = b.startno
+                   and endno = b.endno
+                   and sfsh &lt;= 1)
+        <if test="pztype !=null and pztype !=''">
+  			and PZTYPE = #{pztype,jdbcType=VARCHAR}
+  		</if>
+       	<if test="startno != null and startno !='' and  endno != null and endno != '' ">
+         	 and ((b.startno BETWEEN #{startno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR}) or
+               (b.endno BETWEEN #{startno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR}) or
+               (b.startno &gt;= #{startno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR} &gt;= b.endno) or
+               (b.startno &lt;= #{startno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR} &lt;= b.endno))
+         </if>
+         <if test="startno != '' and endno =='' ">
+         	 and ((b.startno BETWEEN #{startno,jdbcType=VARCHAR} and #{startno,jdbcType=VARCHAR}) or
+               (b.endno BETWEEN #{startno,jdbcType=VARCHAR} and #{startno,jdbcType=VARCHAR}) or
+               (b.startno &gt;= #{startno,jdbcType=VARCHAR} and #{startno,jdbcType=VARCHAR} &gt;= b.endno) or
+               (b.startno &lt;= #{startno,jdbcType=VARCHAR} and #{startno,jdbcType=VARCHAR} &lt;= b.endno))
+         </if>
+         <if test="startno == '' and endno != '' ">
+         	and ((b.startno BETWEEN #{endno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR}) or
+               (b.endno BETWEEN #{endno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR}) or
+               (b.startno &gt;= #{endno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR} &gt;= b.endno) or
+               (b.startno &lt;= #{endno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR} &lt;= b.endno))
+         </if>
+  	</where>
+  </sql>
+  <!-- 在票证报废区列表显示 -->
+  <select id="getKcBfList" resultType="cn.vetech.vedsb.jp.entity.pzzx.JpPzKc" parameterType="Map">
+  	SELECT  *
+    FROM (SELECT tt.*, ROWNUM AS rowno      
+    FROM (select a.*
+  			from jp_pz_kc a
+ 			<include refid="kcBfwhere"/> 
+ 			order by cz_datetime desc) tt
+	         WHERE ROWNUM &lt;= #{pageNum, jdbcType=INTEGER}*#{pageSize, jdbcType=INTEGER}) table_alias
+	 WHERE table_alias.rowno &gt; (#{pageNum, jdbcType=INTEGER} - 1)*#{pageSize, jdbcType=INTEGER}
+  </select>
+  <!-- 在票证报废区列表显示记录数 -->
+  <select id="getKcBfCount" resultType="int" parameterType="map">
+  	select count(1) from jp_pz_kc a
+ 	<include refid="kcBfwhere"/> 
+  </select>
+  <!-- 在票证报废区列表显示  pzzt 0表示在库-->
+  <sql id="kcBfwhere">
+  	<where>
+  		shbh=#{shbh,jdbcType=VARCHAR}
+  		and pzzt = '0'
+  		<if test="pztype !=null and pztype !=''">
+  			and PZTYPE = #{pztype,jdbcType=VARCHAR}
+  		</if>
+  		and not exists (select 1
+          	from jp_pz_bf
+         	where startno = a.startno
+          	 and endno = a.endno
+           	and sfsh &lt;= 1)
+        <if test="startno != null and startno !='' and  endno != null and endno != '' ">
+         	and ((a.startno &lt;= #{startno,jdbcType=VARCHAR} and #{startno,jdbcType=VARCHAR} &lt;= a.endno and
+       		a.endno &lt;= #{endno,jdbcType=VARCHAR}) or
+       		(a.startno &gt;= #{startno,jdbcType=VARCHAR} and a.startno &lt;= #{endno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR} &lt;= a.endno) or
+       		(a.startno &lt;= #{startno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR} &lt;= a.endno) or
+       		(a.startno &gt;= #{startno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR} &gt;= a.endno))
+         </if>
+         <if test="startno != '' and endno =='' ">
+         	and ((a.startno &lt;= #{startno,jdbcType=VARCHAR} and #{a.startno,jdbcType=VARCHAR} &lt;= a.endno and a.endno &lt;= #{startno,jdbcType=VARCHAR}) or
+       		(a.startno &gt;= #{startno,jdbcType=VARCHAR} and a.startno &lt;= #{startno,jdbcType=VARCHAR} and #{startno,jdbcType=VARCHAR} &lt;= a.endno) or
+       		(a.startno &lt;= #{startno,jdbcType=VARCHAR} and #{startno,jdbcType=VARCHAR} &lt;= a.endno) or
+       		(a.startno &gt;= #{startno,jdbcType=VARCHAR} and #{startno,jdbcType=VARCHAR} &gt;= a.endno))
+         </if>
+         <if test="startno == '' and endno != '' ">
+         and ((a.startno &lt;= #{endno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR} &lt;= a.endno and a.endno &lt;= #{endno,jdbcType=VARCHAR}) or
+       		(a.startno &gt;= #{endno,jdbcType=VARCHAR} and a.startno &lt;= #{endno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR} &lt;= a.endno) or
+       		(a.startno &lt;= #{endno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR} &lt;= a.endno) or
+       		(a.startno &gt;= #{endno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR} &gt;= a.endno))
+         </if>
+  	</where>
+  </sql>
+</mapper>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="cn.vetech.vedsb.common.dao.base.WdXsfaDao">
+	<sql id="where">
+		<where>  
+			<if test="famc != null and famc != '' "> and xsfa.famc like '%${famc}%' </if>
+			<if test="wdmc != null and wdmc != '' "> and exists(select 1 from wd_zlsz zlsz where id=xsfa.wdid and wdmc like '%${wdmc}%')</if>
+	        <if test="zt != null and zt != '' "> and xsfa.zt=#{zt} </if>
+	        <if test="sfbj != null and sfbj != '' "> and xsfa.sfbj=#{sfbj} </if>
+	        <if test="wdpt != null and wdpt != '' "> and xsfa.wdpt=#{wdpt} </if>
+	        <if test="id != null and id != '' "> and xsfa.id=#{id} </if>
+	        <if test="wdid != null and wdid != '' "> and xsfa.wdid=#{wdid} </if>
+	        <if test="shbh != null and shbh != '' "> and xsfa.shbh=#{shbh} </if>
+	        <if test="cjyhxm != null and cjyhxm != '' "> and (select xm from sh_yhb where bh=xsfa.cjyh) like '%${cjyhxm}%'</if>
+	        <if test="zcqd != null and zcqd != '' "> and xsfa.zcqd like '%${zcqd}%'</if>
+	        <if test="zcdmqz != null and zcdmqz != '' "> and xsfa.zcdmqz=#{zcdmqz}</if>
+	        <if test="yhqxjb != null and yhqxjb != '' and yhqxjb != 5 and yhqxjb != 9"> 
+	        	<if test="yhqxjb==1">
+	        		and (cjyh=#{yhbh} or cjyh in (SELECT bh FROM sh_yhb where shfzid=#{yhfzid}))
+	        	</if>
+	        	<if test="yhqxjb==3 and yhbmid != null and yhbmid != ''">
+	        		and cjyh in (SELECT bh FROM sh_yhb where shbmid=#{yhbmid})
+	        	</if>
+	        </if>
+		</where>
+	</sql>
+	<select id="getWdXsfaList" parameterType="cn.vetech.vedsb.common.entity.base.WdXsfa" resultType="cn.vetech.vedsb.common.entity.base.WdXsfa">
+		SELECT B_TABLE.*,
+		(select hkgs from wd_xsfa_mx where id=B_TABLE.wdid and shbh=B_TABLE.shbh) hkgs,
+		(select wdmc from wd_zlsz where id=B_TABLE.wdid) wdmc,
+		(select mc from ve_class where lb='10100' and parid='10100' and id=B_TABLE.wdpt) wdptmc,
+		(select cpdl||DECODE(cpzl,'','','-'||cpzl) from wd_cplx where wdpt=(select wdpt from wd_zlsz where id=B_TABLE.wdid) and id=B_TABLE.wdcplx) cplxmc,
+		(select xm from sh_yhb where bh=B_TABLE.xgyh and shbh=B_TABLE.shbh) xgyhxm,
+		(select xm from ve_user where bh=B_TABLE.xgyh) xgyhxma
+	    FROM (SELECT A_TABLE.*,ROWNUM AS LINENUM  FROM (select xsfa.* from wd_xsfa xsfa 
+	    <include refid="where" />  order by xsfa.xgsj desc
+		) A_TABLE WHERE ROWNUM &lt;=#{count}
+		) B_TABLE WHERE LINENUM &gt;= #{start}
+	</select>
+	<select id="getTotalCount" parameterType="cn.vetech.vedsb.common.entity.base.WdXsfa" resultType="Integer">
+		select count(id) from wd_xsfa  xsfa
+	    <include refid="where" />
+	</select>
+	<select id="getWdXsfaByBean" parameterType="cn.vetech.vedsb.common.entity.base.WdXsfa" resultType="cn.vetech.vedsb.common.entity.base.WdXsfa">
+		select xsfa.*,
+		(SELECT mc FROM VE_CLASS where lb='10100' and parid='10100' and id=xsfa.wdpt and rownum=1) wdptmc,
+		(select wdmc from wd_zlsz where id=xsfa.wdid and shbh=xsfa.shbh and rownum=1) wdmc,
+		(select cpdl||DECODE(cpzl,'','','-'||cpzl) from wd_cplx where wdpt=xsfa.wdpt and id=xsfa.wdcplx and rownum=1) cplxmc
+		from wd_xsfa xsfa 
+		<include refid="where" />
+	</select>
+	<update id="uptZt" parameterType="cn.vetech.vedsb.common.entity.base.WdXsfa">
+		update wd_xsfa set zt=#{zt},xgyh=#{xgyh},xgsj=#{xgsj},czpt='B' where id=#{id}
+	</update>
+	<update id="batchAllUptZt">
+		update wd_xsfa xsfa set zt=#{ztlx},xgyh=#{xgyh},xgsj=#{xgsj},czpt='B'
+		<include refid="where" />
+	</update>
+
+	<select id="getWdXsfaList2" parameterType="cn.vetech.vedsb.common.entity.base.WdXsfa" resultType="cn.vetech.vedsb.common.entity.base.WdXsfa">
+		SELECT * FROM WD_XSFA xsfa
+	    <include refid="where" />  order by xsfa.xgsj desc
+	</select>
+</mapper> 

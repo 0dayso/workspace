@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.vetech.vedsb.common.dao.ShcsbDao">
+	<sql id="where">
+		<where>
+			<if test="id != null and id != '' ">id = #{id}</if>
+			<if test="bh != null and bh  != '' ">and bh = #{bh}</if>
+			<if test="csz1 != null and csz1 != '' ">and csz1 = #{csz1}</if>
+			<if test="csz2 != null and csz2 != '' ">and csz2 = #{csz2}</if>
+			<if test="csms != null and csms != '' ">and csms LIKE '%${csms}%'</if>
+			<if test="cslxbh != null and cslxbh != '' ">and cslxbh = #{cslxbh}</if>
+			<if test="cslxmc != null and cslxmc != '' ">and cslxmc = #{cslxmc}</if>
+			<if test="sfxs != null and sfxs != '' ">and sfxs = #{sfxs}</if>
+			<if test="shbh != null and shbh != '' ">and (shbh = #{shbh} or shbh='0000')</if>
+			<if test="cj_userid != null and cj_userid != '' ">and cj_userid = #{cj_userid}</if>
+			<if test="cjsj != null and cjsj != '' ">and cjsj = #{cjsj}</if>
+			<if test="xg_userid != null and xg_userid != '' ">and xg_userid = #{xg_userid}</if>
+			<if test="xgsj != null and xgsj != '' ">and xgsj = #{xgsj}</if>
+		</where>
+	</sql>
+	<select id="getShcsbList" parameterType="cn.vetech.vedsb.common.entity.Shcsb" resultType="cn.vetech.vedsb.common.entity.Shcsb">
+		select entity.*,
+			(SELECT XM FROM SH_YHB WHERE SHBH = entity.SHBH AND BH = entity.CJ_USERID) CJ_USERMC,
+		    (SELECT XM FROM SH_YHB WHERE SHBH = entity.SHBH AND BH = entity.XG_USERID) XG_USERMC
+		 	from (SELECT A_TABLE.*,ROWNUM AS LINENUM  FROM (
+				select * from ((select * from sh_csb minus select * from sh_csb where shbh='0000'and bh in (select bh from sh_csb where shbh != '0000')))
+				<include refid="where" />
+			)	A_TABLE WHERE ROWNUM &lt;=#{count}
+		) entity WHERE LINENUM &gt;= #{start} order by xgsj desc
+	</select>
+	<select id="getTotalCount" parameterType="cn.vetech.vedsb.common.entity.Shcsb" resultType="Integer">
+		select count(*) from(select * from sh_csb minus select * from sh_csb where shbh='0000'and bh in (select bh from sh_csb where shbh != '0000'))
+		<include refid="where" />
+	</select>
+	<!-- 获取该商户下，机票订单类颜色提醒集合 -->
+	<select id="getListByShbhAndBhs" parameterType="Map" resultType="cn.vetech.vedsb.common.entity.Shcsb">
+		SELECT * FROM sh_csb 
+		WHERE shbh = #{shbh,jdbcType=VARCHAR}  
+		and bh = #{bh,jdbcType=VARCHAR}
+	</select>
+	<!-- 更新机票订单类颜色提醒 -->
+	<update id="updateColorRemind" parameterType="list">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			update sh_csb 
+			<set>
+			csz2=#{item.csz2} , xg_userid=#{item.xg_userid} , xgsj=#{item.xgsj}
+			</set>
+			WHERE shbh = #{item.shbh} and bh = #{item.bh} and csz1=#{item.csz1}
+		</foreach>
+	</update>
+	<!-- 更新机票订单默认排序值 -->
+	<update id="updateMrpx" parameterType="Map">
+		UPDATE sh_csb
+		SET csz1 = #{csz1,jdbcType=VARCHAR},csz2 = #{csz2,jdbcType=VARCHAR},
+		xg_userid = #{xg_userid,jdbcType=VARCHAR} , xgsj = #{xgsj,jdbcType=VARCHAR}
+		WHERE bh = #{bh,jdbcType=VARCHAR} 
+		AND shbh = #{shbh,jdbcType=VARCHAR}
+	</update>
+	<!-- 插入机票订单默认排序值 -->
+	<insert id="insertMrpx" parameterType="cn.vetech.vedsb.common.entity.Shcsb">
+		INSERT INTO sh_csb (id,bh,csz1,csz2,csms,cslxbh,cslxmc,shbh,sfxs,cj_userid,cjsj)
+		VALUES(#{id},#{bh},#{csz1},#{csz2},#{csms},#{cslxbh},#{cslxmc},#{shbh},#{sfxs},#{cj_userid},#{cjsj}) 
+	</insert>
+</mapper> 

@@ -1,0 +1,30 @@
+@charset "utf-8";
+/* CSS Document */
+
+.ticket_cp{width:1000px;margin:8px auto 0 auto;}
+.basic_info{border-top:2px solid #cfcfcf;}
+.basic_info th,td{border:1px solid #cfcfcf;padding:5px;}
+.basic_info th{background:#f6f6f6;color:#5c5c5c;text-align:right;}
+.basic_info td{background:#fff;color:#424242;text-align:left;}
+.pusumInfo{border-bottom:1px solid #d4e3fb;padding:3px 0;text-indent:10px;}
+.t_body td{text-align:center;}
+.compare_color{background:#eef0f1;}
+.codeTips{background:#f8f8f8;border:1px solid #ebebeb;}
+.tickets_issuance{margin-top:10px;}
+.loginBox{margin-top:20px;}
+.loginBox td{border:none;padding:5px;}
+/*table*/
+.list_table{width: 100%;border-top: 1px solid #d3dbde;border-right: 1px solid #d3dbde;background:#fff;}
+.list_table th{background: #fff url(../images/jzcp/th_bg.gif) left bottom repeat-x;height:35px;line-height: 15px;border-left: 1px solid #e3e3e3;border-bottom: 1px solid #e3e3e3;color:#8b8989;font-weight:bold;text-align:center;line-height: 36px;}
+.list_table td{	border-bottom: 1px solid #e3e3e3;border-left: 1px solid #e3e3e3;  padding: 3px;}
+
+.m_filter{margin-bottom:35px}
+.m_filter ul {margin:0;padding:0;width:1000px;}
+.m_filter li {float:left;min-width:60px;font-size:12px;line-height:22px; height:22px;text-align:center;margin-right:3px;margin-top:4px;overflow:hidden;color:#0A44A7; background:#e9f1fe url(../images/ahoverblue.gif) repeat-x 0 bottom;border:1px solid #b8d3fe;cursor:pointer;}
+.m_filter li span{float:left;padding:0 4px;}
+.m_filter a {FLOAT: none;text-decoration: none;}
+.m_filter a:hover {text-decoration: none;}
+.m_filter .current {text-decoration:none; border:1px solid #0845aa;background:#0164de;color:#fff;}
+.m_filter .current a {color:#fff;}
+.up_arrow{background: url(../images/jzcp/a_up.png) no-repeat;cursor:pointer;position:absolute;width:10px;height:5px;top:5px;display:inline-block;}
+.down_arrow{background: url(../images/jzcp/a_down.png) no-repeat;cursor:pointer;position:absolute;width:10px;height:5px;top:5px;display:inline-block;}

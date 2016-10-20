@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpddgl.JpKhddDao">
+	<resultMap id="zklReturnMap" type="java.util.HashMap"></resultMap>
+  <sql id="where">
+    <where> 
+    	and a.shbh=#{shbh, jdbcType=VARCHAR}
+    	<if test="gngj != null and gngj != '' "> and a.gngj=#{gngj, jdbcType=VARCHAR} </if>
+		<if test="wdpt != null and wdpt != '' "> and a.wdpt=#{wdpt, jdbcType=VARCHAR} </if>
+		<if test="wdid != null and wdid != '' "> and a.wdid=#{wdid, jdbcType=VARCHAR} </if>
+		<if test="wdbs != null and wdbs != '' and wdbs != '0'.toString() ">and a.wdpt = #{wdbs, jdbcType=VARCHAR}</if>
+        <if test="wd_zcdm != null and wd_zcdm != '' "> and a.wd_zcdm like #{wd_zcdm, jdbcType=VARCHAR}||'%' </if>
+      	<if test="faid != null and faid != '' "> and a.faid=#{faid, jdbcType=VARCHAR} </if>
+      	<if test="wbdh != null and wbdh != '' "> and a.wbdh=#{wbdh, jdbcType=VARCHAR} </if>
+      	<if test="ddzt != null and ddzt != '' "> and a.ddzt=#{ddzt, jdbcType=VARCHAR} </if>
+      	<if test="cp_sdr != null and cp_sdr != '' "> and a.cp_sdr=#{cp_sdr, jdbcType=VARCHAR} </if>
+      	<if test="lx != null and lx != '' "> and a.ddzt=#{lx, jdbcType=VARCHAR} </if>
+      	<if test="pnr_no != null and pnr_no != '' "> and (a.xs_pnr_no=#{pnr_no, jdbcType=VARCHAR} or a.cg_pnr_no=#{pnr_no, jdbcType=VARCHAR}) </if>
+      	<if test="hkgs_pnr != null and hkgs_pnr != '' "> and (a.CG_HKGS_PNR=#{hkgs_pnr, jdbcType=VARCHAR} or a.XS_HKGS_PNR=#{hkgs_pnr, jdbcType=VARCHAR})  </if>
+      	<if test="cjr != null and cjr != '' "> and a.cjr like '%'||#{cjr, jdbcType=VARCHAR}||'%' </if>
+      	<if test="hc != null and hc != '' "> and a.hc=#{hc, jdbcType=VARCHAR} </if>
+      	<if test="hbh != null and hbh != '' "> 
+      		and (a.XS_HBH=#{hbh, jdbcType=VARCHAR} or a.CG_HBH=#{hbh, jdbcType=VARCHAR} or a.XS_HBH='*'||#{hbh, jdbcType=VARCHAR} or a.CG_HBH='*'||#{hbh, jdbcType=VARCHAR})
+      	</if>
+      	<if test="dateType != null and dateType != '' and dateType == '1'.toString() ">
+      		<if test="ksrq != null and ksrq != ''" > and (ddsj &gt;=to_date(#{ksrq, jdbcType=VARCHAR}, 'yyyy-mm-dd'))</if>
+        	<if test="jsrq != null and jsrq != ''" > and (ddsj &lt;=to_date(#{jsrq, jdbcType=VARCHAR}||'23:59:59', 'yyyy-mm-dd hh24:mi:ss'))</if>
+      	</if>
+      	<if test="dateType != null and dateType != '' and dateType == '2'.toString() ">
+      		<if test="ksrq != null and ksrq != ''" > and (cfrq &gt;=to_date(#{ksrq, jdbcType=VARCHAR}, 'yyyy-mm-dd'))</if>
+        	<if test="jsrq != null and jsrq != ''" > and (cfrq &lt;=to_date(#{jsrq, jdbcType=VARCHAR}||'23:59:59', 'yyyy-mm-dd hh24:mi:ss'))</if>
+      	</if>
+        <if test="jjd != null and jjd != ''"> and b.jjd=#{jjd, jdbcType=VARCHAR} </if>
+        <if test="ddbh != null and ddbh != ''"> and a.ddbh=#{ddbh, jdbcType=VARCHAR} </if>
+        <if test="cgly != null and cgly != ''"> and a.cgly=#{cgly, jdbcType=VARCHAR} </if>
+        <if test="cg_ddbh != null and cg_ddbh != ''"> and a.cg_ddbh=#{cg_ddbh, jdbcType=VARCHAR} </if>
+        <if test="nxdh !=null and nxdh !='' ">and (NXDH=#{nxdh, jdbcType=VARCHAR} or NXSJ=#{nxdh, jdbcType=VARCHAR})</if>
+        <if test="hkgs !=null and hkgs !='' ">and hkgs=#{hkgs, jdbcType=VARCHAR} </if>
+        <if test="sfwbcpz !=null and sfwbcpz !='' ">and nvl(a.sfwbcpz,'0')=#{sfwbcpz, jdbcType=VARCHAR} </if>
+        <if test="sfbwcg !=null and sfbwcg !='' ">and a.sfbwcg=#{sfbwcg, jdbcType=VARCHAR} </if>
+        <if test="cpzt !=null and cpzt !=''">
+	      	and exists(select 1 from JP_ZDCP_JK JK where JK.DDBH=a.DDBH AND JK.SHBH=a.SHBH and 
+	      	<foreach collection="cpzt" index="index" item="item" open="(" separator="or" close=")">  
+	            <if test="item  == '-1'.toString()">
+	            	JK.cpzt &lt; 0
+	      		</if>
+	      		<if test="item  == '0'.toString()">
+	      		    JK.cpzt = 0
+	      		</if>
+	      		<if test="item  == '1'.toString()">
+	      			(JK.cpzt &gt; '0' and JK.cpzt != '40')
+	      		</if>
+	      		<if test="item  == '40'.toString()">
+	      			JK.cpzt = 40
+	      		</if>
+	    	</foreach>
+	    	)
+      </if>
+      <!-- 是否换编码 -->
+      <choose>
+			<!-- 未换编码 -->
+			<when test="sfhbm == '0'.toString()">
+                  and a.xs_pnr_no = a.cg_pnr_no
+			</when>
+			<!-- 换编码 -->
+			<when test="sfhbm == '1'.toString()">
+                  and a.xs_pnr_no != a.cg_pnr_no
+			</when>
+	  </choose>
+	  <!-- 是否回填票号-->
+	  <choose>
+	    <!-- 未回填-->
+	  	<when test="phhtzt == '0'.toString()">
+	    	and ( b.phhtzt = 0 or b.phhtzt is null )
+	    </when>
+		<!-- 回填成功 -->
+		<when test="phhtzt == '1'.toString()">
+	        and b.phhtzt = '1'
+		</when>
+		<!-- 回填失败 -->
+		<when test="phhtzt == '2'.toString()">
+	        and b.phhtzt = '2'
+		</when>
+	  </choose> 
+	</where>
+  </sql>
+ 	<!--  邮寄行程单页面的显示数据 -->
+  <sql id="joinJpkhddyj">
+  	a.ddbh,a.gngj,a.shbh,a.faid,a.wdpt,a.wdid,a.wd_zclx as wdZclx,a.wd_ddlx as wdDdlx,a.wd_zcdm as wdZcdm,a.wbdh,a.ddzt,a.cp_sdr as cpSdr,a.cp_sdsj as cpSdsj,a.nxr,a.nxsj,a.nxdh,a.sfyjxcd,a.sjr,a.yzbm,
+  	a.xjdz,a.ddsj,a.ddyh,a.ddbm,a.xs_pnr_no as xsPnrNo,a.xs_pnr_zt as xsPnrZt,a.xs_hkgs_pnr as xsHkgsPnr,a.hclx,a.hc,a.cfrq,a.cfsj,a.cjrs,a.cjr,a.dxzt,a.dyr,a.dysj,a.xs_hbh as xsHbh,a.xs_cw as xsCw,
+  	a.xs_zdj as xsZdj,a.xs_pj as xsPj,a.xs_jsf as xsJsf,a.xs_tax as xsTax,a.cg_pnr_no as cgPnrNo,a.cg_pnr_zt as cgPnrZt,a.sfzdd,a.zddbh,a.yjzt,a.yjr,a.yjdh,a.yjsj,a.jjcd,a.hkgs,a.bzbz,
+  	b.id as yjId,b.sjr as yjSjr,b.nxdh as yjNxdh,b.yzbm as yjYzbm,b.xjdz as yjXjdz,b.ddbh as yjDdbh,
+  	b.pnr_no as yjPnrno,b.dycs as yjDycs,b.dysj as yjDysj,b.dyr as yjDyr,b.yjzt as yjYjzt,b.yjdh as yjYjdh,
+  	b.cg_yjf as yjCgyjf,b.yjr as yjYjr,b.yjsj as yjYjsj
+  </sql>
+  
+  <select id="query" resultType="HashMap" parameterType="Map">
+			SELECT B_TABLE.*,(select count(1) from jp_qz where ywdh=b_table.DDBH and ywlx='01') QZCOUNT,
+			f_check_sfcp(B_TABLE.ddbh,B_TABLE.shbh) sfcp,
+			(select count(1) all_num from jp_tjsq where ddbh=B_TABLE.ddbh and sq_zt &lt;&gt; '5' and sq_zt &lt;&gt; '6') zw,
+			(SELECT ID  FROM JP_ZDCP_JK JK WHERE JK.DDBH = B_TABLE.DDBH AND JK.SHBH = B_TABLE.SHBH AND ROWNUM = 1) ZDCPJK_ID,
+       	    (SELECT CPZT FROM JP_ZDCP_JK JK WHERE JK.DDBH =B_TABLE.DDBH AND JK.SHBH = B_TABLE.SHBH AND ROWNUM = 1) CPZT
+			 FROM  (
+				 SELECT A_TABLE.*,ROWNUM AS LINENUM FROM (
+					SELECT a.*,B.JJD,B.CPCS,B.ZDCPZT,B.ZDCPSBYY,B.PHHTZT,B.PHHTSBYY,B.PHHTSBCS,B.CPDH
+					FROM JP_KHDD a join JP_KHDD_KZ b on a.DDBH = b.DDBH and a.SHBH = b.SHBH 
+						<include refid="where"/>
+					ORDER BY ${orderBy} 
+				 ) A_TABLE WHERE ROWNUM &lt;= (#{start, jdbcType=INTEGER}+#{count, jdbcType=INTEGER})
+			) B_TABLE WHERE LINENUM &gt; #{start, jdbcType=INTEGER}
+  </select>
+
+  <select id="getPageCount" resultType="integer" parameterType="Map">
+	  SELECT COUNT(1) FROM 
+	  JP_KHDD a join JP_KHDD_KZ b on a.DDBH = b.DDBH  
+	  and a.SHBH = b.SHBH 
+	  <include refid="where"/>
+  </select>
+  
+  <select id="detail" resultType="HashMap" parameterType="Map">
+  	  select a.*,B.JJD,B.CPCS,B.ZDCPZT,B.ZDCPSBYY,B.PHHTZT,B.PHHTSBYY,B.PHHTSBCS,B.CPDH
+  	    from JP_KHDD a join JP_KHDD_KZ b on a.DDBH = b.DDBH and a.SHBH = b.SHBH <include refid="where"/>
+  </select>
+  
+	<!-- 查询待打印订单的状态 -->
+	<select id="findDDYcount" parameterType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhdd" resultType="String">
+		select count(1) from JP_KHDD a where a.DDZT=3 and a.SFYJXCD=1 and a.YJZT=0
+		<include refid="xcdConditions"/>
+	</select>
+	<!-- 查询待邮寄订单的状态 -->
+	<select id="findDYJcount" parameterType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhdd" resultType="String">
+		select count(1) from JP_KHDD a where a.DDZT=3 and a.SFYJXCD=1 and a.YJZT=1 
+		<include refid="xcdConditions"/>
+	</select>
+	<!-- 查询已邮寄订单的状态 -->
+	<select id="findYYJcount" parameterType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhdd" resultType="String">
+		select count(1) from JP_KHDD a where a.DDZT=3 and a.SFYJXCD=1 and a.YJZT=2 
+		<include refid="xcdConditions"/>
+	</select>
+	
+	<!-- 邮寄行程单分页查询 -->
+	<select id="queryXcdList" resultType="java.util.HashMap">
+		SELECT B_TABLE.*,(select count(1) from jp_qz where ywdh=B_TABLE.ddbh and ywlx='01') QZCOUNT FROM  (
+         SELECT A_TABLE.*,ROWNUM AS LINENUM FROM (
+          (select <include refid="joinJpkhddyj"/> from JP_KHDD a left join JP_KHDD_YJ b on a.yjdh = b.yjdh where a.DDZT=3 and a.SFYJXCD=1 and a.YJZT=#{jpKhdd.yjzt}
+		<include refid="xcdConditions"/> order by #{sortType, jdbcType=VARCHAR})
+				 ) A_TABLE WHERE ROWNUM &lt;=(#{pageNum})*#{pageSize}
+			) B_TABLE WHERE LINENUM&gt;(#{pageNum}-1)*#{pageSize}
+	</select>
+	<!-- 邮寄行程单的查询条件 -->
+	<sql id="xcdConditions">
+		<if test="jpKhdd!=null and jpKhdd.faid!=null">
+			and trunc(a.ddsj) = trunc(sysdate)
+		</if>
+		<if test="jpKhdd!=null and (jpKhdd.faid==null or jpKhdd.faid=='')">
+		<choose>
+			<when test="jpKhdd!=null and jpKhdd.startTime!=null and jpKhdd.startTime!='' and jpKhdd.endTime!=null and jpKhdd.endTime!=''">
+				<if test="jpKhdd.ddsj!=null and jpKhdd.ddsj!=''">
+					and a.ddsj &gt;=to_date(#{jpKhdd.startTime},'yyyy-mm-dd hh24:mi:ss') and a.ddsj &lt;=to_date(#{jpKhdd.endTime},'yyyy-mm-dd hh24:mi:ss')
+				</if>
+				<if test="jpKhdd.cfsj!=null and jpKhdd.cfsj!=''">
+					and a.cfrq &gt;=to_date(#{jpKhdd.startTime},'yyyy-mm-dd hh24:mi:ss') and a.cfrq &lt;=to_date(#{jpKhdd.endTime},'yyyy-mm-dd hh24:mi:ss')
+				</if>
+				<if test="jpKhdd.dysj!=null and jpKhdd.dysj!=''">
+					and a.dysj &gt;=to_date(#{jpKhdd.startTime},'yyyy-mm-dd hh24:mi:ss') and a.dysj &lt;=to_date(#{jpKhdd.endTime},'yyyy-mm-dd hh24:mi:ss')
+				</if>
+				<if test="jpKhdd.yjsj!=null and jpKhdd.yjsj!=''">
+					and a.yjsj &gt;=to_date(#{jpKhdd.startTime},'yyyy-mm-dd hh24:mi:ss') and a.yjsj &lt;=to_date(#{jpKhdd.endTime},'yyyy-mm-dd hh24:mi:ss')
+				</if>
+			</when>
+			<when test="jpKhdd!=null and jpKhdd.startTime!=null and jpKhdd.startTime!='' and (jpKhdd.endTime==null||jpKhdd.endTime=='')">
+				<if test="jpKhdd.ddsj!=null and jpKhdd.ddsj!=''">
+					and a.ddsj &gt;=to_date(#{jpKhdd.startTime},'yyyy-mm-dd hh24:mi:ss')
+				</if>
+				<if test="jpKhdd.cfsj!=null and jpKhdd.cfsj!=''">
+					and a.cfrq &gt;=to_date(#{jpKhdd.startTime},'yyyy-mm-dd hh24:mi:ss')
+				</if>
+				<if test="jpKhdd.dysj!=null and jpKhdd.dysj!=''">
+					and a.dysj &gt;=to_date(#{jpKhdd.startTime},'yyyy-mm-dd hh24:mi:ss')
+				</if>
+				<if test="jpKhdd.yjsj!=null and jpKhdd.yjsj!=''">
+					and a.yjsj &gt;=to_date(#{jpKhdd.startTime},'yyyy-mm-dd hh24:mi:ss')
+				</if>
+			</when>
+			<when test="jpKhdd!=null and jpKhdd.endTime!=null and jpKhdd.endTime!='' and (jpKhdd.startTime==null||jpKhdd.startTime=='')">
+				<if test="jpKhdd.ddsj!=null and jpKhdd.ddsj!=''">
+					and a.ddsj &lt;=to_date(#{jpKhdd.endTime},'yyyy-mm-dd hh24:mi:ss')
+				</if>
+				<if test="jpKhdd.cfsj!=null and jpKhdd.cfsj!=''">
+					and a.cfrq &lt;=to_date(#{jpKhdd.endTime},'yyyy-mm-dd hh24:mi:ss')
+				</if>
+				<if test="jpKhdd.dysj!=null and jpKhdd.dysj!=''">
+					and a.dysj &lt;=to_date(#{jpKhdd.endTime},'yyyy-mm-dd hh24:mi:ss')
+				</if>
+				<if test="jpKhdd.yjsj!=null and jpKhdd.yjsj!=''">
+					and a.yjsj &lt;=to_date(#{jpKhdd.endTime},'yyyy-mm-dd hh24:mi:ss')
+				</if>
+			</when>
+		</choose>
+		</if>
+		<if test="jpKhdd!=null and jpKhdd.xsPnrNo!=null and jpKhdd.xsPnrNo!=''">
+			and a.xs_pnr_no=#{jpKhdd.xsPnrNo}
+		</if>
+		<if test="jpKhdd!=null and jpKhdd.sjr!=null and jpKhdd.sjr!=''">
+			and a.sjr=#{jpKhdd.sjr}
+		</if>
+		<if test="jpKhdd!=null and jpKhdd.cjr!=null and jpKhdd.cjr!=''">
+			and a.cjr=#{jpKhdd.cjr}
+		</if>
+		<if test="jpKhdd!=null and jpKhdd.yjr!=null and jpKhdd.yjr!=''">
+			and a.yjr=#{jpKhdd.yjr}
+		</if>
+		<if test="jpKhdd!=null and jpKhdd.yjdh!=null and jpKhdd.yjdh!=''">
+			and a.yjdh=#{jpKhdd.yjdh}
+		</if>
+		<if test="jpKhdd!=null and jpKhdd.wdid!=null and jpKhdd.wdid!=''">
+			and a.wdid=#{jpKhdd.wdid}
+		</if>
+		<if test="jpKhdd!=null and jpKhdd.gngj!=null and jpKhdd.gngj!=''">
+			and a.gngj=#{jpKhdd.gngj}
+		</if>
+		<if test="jpKhdd!=null and jpKhdd.shbh!=null and jpKhdd.shbh!=''">
+			and a.shbh=#{jpKhdd.shbh}
+		</if>
+	</sql>
+	
+	<!-- 邮寄行程单页面分页时找总记录数 -->
+	<select id="queryXcdListCount" parameterType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhdd" resultType="Integer">
+		select count(1) from JP_KHDD a left join JP_KHDD_YJ b on a.ddbh=b.ddbh where a.DDZT=3 and a.SFYJXCD=1 and a.YJZT=#{jpKhdd.yjzt}
+		<include refid="xcdConditions"/>
+	</select>
+
+	<!-- 交票用SQL，根据订单编号数组查询  -->
+	<select id="selectJpByWbdh" resultType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhdd" 
+		parameterType="HashMap">
+		SELECT WDID,DDBH,SHBH,XS_PNR_NO,CG_ZDJ,CG_JSF,CG_TAX,WBDDZT,DDXH FROM JP_KHDD jp where wbdh = #{wbdh} and shbh=#{shbh} and ddzt not in ('4','5')
+		<if test="ddxh!=null and ddxh!=''">
+			and (ddxh is null or ddxh=#{ddxh}) 
+		</if>
+		<if test="ddbh!=null and ddbh!=''">
+			and jp.ddbh=#{ddbh}
+		</if>
+		<if test="cpdh!=null and cpdh!=''">
+			and exists(select 1 from jp_khdd_kz kz where jp.ddbh=kz.ddbh and cpdh = #{cpdh})
+		</if>
+	</select>
+	
+	<!-- 客户取消邮寄行程单 -->
+	<update id="cancelYjdd" parameterType="String">
+		update JP_KHDD set sfyjxcd=0,sjr='',xjdz='',yzbm='',yjzt=0 where ddbh=#{bh}
+	</update>
+	
+	<!-- 当对订单发送短信时,对订单的短信状态修改 -->
+	<update id="updateSmszt" parameterType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhdd">
+		update JP_KHDD set dxzt=#{dxzt} where ddbh=#{ddbh}
+	</update>
+	
+	<!-- 修改 -->
+	<update id="updateJpKhddDdztByWbdh" parameterType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhdd">
+		update JP_KHDD
+		<set >
+	      <if test="ddzt != null and ddzt !=''" >
+	        ddzt = #{ddzt,jdbcType=VARCHAR},
+	      </if>
+	      <if test="sfwbcpz != null and sfwbcpz !=''" >
+	        sfwbcpz = #{sfwbcpz,jdbcType=VARCHAR},
+	      </if>
+	      <if test="xgly != null and xgly !=''" >
+	        xgly = #{xgly,jdbcType=VARCHAR},
+	      </if>
+	      <if test="xgyh != null and xgyh !=''" >
+	        xgyh = #{xgyh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="cgDdbh != null" >
+	        cg_ddbh = #{cgDdbh,jdbcType=VARCHAR},
+	      </if>
+		</set> where wbdh = #{wbdh} and shbh = #{shbh}
+	</update>
+	<select id="getJpKhddForGqApply" parameterType="HashMap" resultType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhdd">
+		SELECT * FROM JP_KHDD a WHERE a.shbh = #{shbh:VARCHAR}
+		<if test="ddbh!=null and ddbh!=''">
+			and a.ddbh=#{ddbh:VARCHAR}
+		</if>
+		<if test="xsPnrNo!=null and xsPnrNo!=''">
+			and a.xs_pnr_no = #{xsPnrNo:VARCHAR}
+		</if>
+		<if test="sjrs != null and sjrs != ''" > and (a.ddsj &gt;=to_date(#{sjrs:VARCHAR}, 'yyyy-mm-dd'))</if>
+        <if test="sjrz != null and sjrz != ''" > and (a.ddsj &lt;=to_date(#{sjrz:VARCHAR}, 'yyyy-mm-dd'))</if>
+        <if test="cjr != null and cjr != '' "> and a.cjr=#{cjr:VARCHAR} </if>
+	</select>
+	
+	<select id="getKhddByDdbh" parameterType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhdd" resultType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhdd">
+		SELECT * FROM JP_KHDD a WHERE a.shbh = #{shbh:VARCHAR} and a.ddbh = #{ddbh:VARCHAR}
+	</select>
+	
+	<!-- 根据订单编号查找邮寄单和订单 -->
+	<select id="queryYjdDdByDdbh" parameterType="String" resultType="HashMap">
+		select <include refid="joinJpkhddyj"/> from JP_KHDD a left join JP_KHDD_YJ b on a.yjdh = b.yjdh where a.ddbh=#{ddbh}
+	</select>
+	<!-- 打印快递单后，将订单的邮寄状态改为待邮寄 或 邮寄之后将邮寄状态改为已邮寄-->
+	<update id="updateYjzt" parameterType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhddYj">
+		update JP_KHDD set yjzt=#{yjzt} 
+		<if test="yjdh!=null and yjdh!=''">
+		,yjdh=#{yjdh}
+		</if>
+		<if test="cg_yjf!=null and cg_yjf!=''">
+	   		,cg_yjf=#{cg_yjf}
+	   	</if>
+		<if test="yjsj!=null and yjsj!=''">
+			,yjsj=#{yjsj}
+		</if>
+		<if test="yjr!=null and yjr!=''">
+			,yjr=#{yjr}
+		</if>
+		<if test="dysj!=null and dysj!=''">
+			,dysj=#{dysj}
+		</if>
+		<if test="sjr!=null and sjr!=''">
+	   		,sjr=#{sjr}
+	   	</if>
+		<if test="nxdh!=null and nxdh!=''">
+	   		,nxdh=#{nxdh}
+	   	</if>
+	   	<if test="yzbm!=null and yzbm!=''">
+	   		,yzbm=#{yzbm}
+	   	</if>
+		<if test="dyr!=null and dyr!=''">
+			,dyr=#{dyr}
+		</if>
+		<if test="xjdz!=null and xjdz!=''">
+	   		,xjdz=#{xjdz}
+	   	</if>
+		where ddbh=#{ddbh}
+	</update>
+	
+	<!-- 采购对账报表采购异常 -->
+	<select id="addcgdzycSearch" parameterType="HashMap" resultType="HashMap">
+		select kh.ddbh,kh.cg_pnr_no,(select wm_concat(tkno) from jp_jp where ddbh = kh.ddbh) tkno 
+		,(select wm_concat(cjr) from jp_khdd_cjr where ddbh=kh.ddbh) cjr ,kh.hc ,kh.cg_pj,kh.hkgs,kh.cg_hkgs_pnr
+		,(select cp_datetime from jp_jp where ddbh=kh.ddbh and rownum=1) cp_datetime from jp_khdd kh where 1=1
+		<if test="shbh!=null and shbh!='' ">and kh.shbh = #{shbh,jdbcType=VARCHAR}</if>
+		<if test="ddbh!=null and ddbh!='' ">and kh.ddbh = #{ddbh,jdbcType=VARCHAR}</if>
+		<if test="pnrno!=null and pnrno!='' ">and kh.xs_pnr_no = #{pnrno,jdbcType=VARCHAR}</if>
+	</select>
+	<!-- 采购对账报表采购异常 -->
+	<!-- 对账专用,根据外部单号查找业务数据 -->
+	<select id="genDzDataByWbdh" parameterType="Map" resultType="Map">
+		select WC_BLSJ wcsj,DDYH,DDSJ,dd.ddbh ddbh,dd.wbdh, '1' ddlx,'正常单' ddlxmc, dd.XS_JE zfje, 
+			   dd.XS_PNR_NO pnrno,(select wm_concat(tkno) from jp_jp where ddbh=dd.ddbh) tknos,cjr cjrs
+             from jp_khdd dd where nvl(dd.SFZDD,'0')='0' and dd.ddzt &lt;&gt; '4' and dd.ddzt &lt;&gt; '5' and dd.SKZT ='1'
+             	and dd.shbh=#{shbh,jdbcType=VARCHAR} and dd.wbdh =#{wbdh,jdbcType=VARCHAR} 
+             	and wc_blsj between to_date(#{dzrqs,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss') 
+             				and to_date(#{dzrqz,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+	</select>
+	<!-- 机票出票报表， 修改出票信息，更新jpkhdd-->
+	<update id="updateCpbbXxgx">
+		update jp_khdd 
+		<set>
+			<if test="cgly!=null and cgly!=''">
+				cgly=#{cgly},
+			</if>
+			<if test="cgkm!=null and cgkm!=''">
+				cgkm=#{cgkm},
+			</if>
+			<if test="cgDdbh!=null and cgDdbh!=''">
+				cg_ddbh=#{cgDdbh},
+			</if>
+			<if test="wbdh!=null">
+				wbdh=#{wbdh},
+			</if>
+			shbh=#{shbh}
+		</set> 
+		where shbh=#{shbh} and ddbh=#{ddbh}
+	</update>
+		<!-- 机票出票报表， 修改出票信息，更新jpkhdd-->
+	<update id="updateXglyByDdbh" parameterType="HashMap">
+		update jp_khdd 
+		<set>
+			<if test="xgly!=null and xgly!=''">
+				xgly=#{xgly},
+			</if>
+			<if test="xgyh!=null and xgyh!=''">
+				xgyh=#{xgyh},
+			</if>
+		</set> 
+		where shbh=#{shbh} and ddbh in
+       	<foreach item="item" index="index" collection="ddbhs" 
+           	open="(" separator="," close=")">
+               #{item}
+        </foreach>
+	</update>
+	<select id="getKhddBySfwbcpz" parameterType="String" resultType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhdd">
+		SELECT * FROM JP_KHDD a WHERE a.wdid = #{wdid:VARCHAR} and a.sfwbcpz in ('1','4') 
+		<if test="kssj != null and kssj != ''" > and (a.ddsj &gt;=to_date(#{kssj:VARCHAR}, 'yyyy-mm-dd'))</if>
+        <if test="jssj != null and jssj != ''" > and (a.ddsj &lt;=to_date(#{jssj:VARCHAR}, 'yyyy-mm-dd'))</if>
+	</select>
+	
+</mapper>

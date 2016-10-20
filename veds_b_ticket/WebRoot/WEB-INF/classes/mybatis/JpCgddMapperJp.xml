@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.cgptsz.JpCgddDao" >
+  <resultMap id="BaseResultMap" type="cn.vetech.vedsb.jp.entity.cgptsz.JpCgdd" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DDBH" property="ddbh" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="VARCHAR" />
+    <result column="CJ_USERID" property="cjUserid" jdbcType="VARCHAR" />
+    <result column="CJDATETIME" property="cjdatetime" jdbcType="TIMESTAMP" />
+    <result column="ERROR" property="error" jdbcType="VARCHAR" />
+    <result column="SUBMIT_PARAM" property="submitParam" jdbcType="VARCHAR" />
+    <result column="ORDERHKGS" property="orderhkgs" jdbcType="VARCHAR" />
+    <result column="HKGS" property="hkgs" jdbcType="VARCHAR" />
+    <result column="HKGS_DDBH" property="hkgsDdbh" jdbcType="VARCHAR" />
+    <result column="PNRNO" property="pnrno" jdbcType="VARCHAR" />
+    <result column="HKGS_PNRNO" property="hkgsPnrno" jdbcType="VARCHAR" />
+    <result column="PAYKIND" property="paykind" jdbcType="VARCHAR" />
+    <result column="TRADE_NO" property="tradeNo" jdbcType="VARCHAR" />
+    <result column="ZFZH" property="zfzh" jdbcType="VARCHAR" />
+    <result column="HKGSZH" property="hkgszh" jdbcType="VARCHAR" />
+    <result column="HBH" property="hbh" jdbcType="VARCHAR" />
+    <result column="CW" property="cw" jdbcType="VARCHAR" />
+    <result column="CWPJ" property="cwpj" jdbcType="DECIMAL" />
+    <result column="DDLY" property="ddly" jdbcType="VARCHAR" />
+    <result column="IFQZDCP" property="ifqzdcp" jdbcType="VARCHAR" />
+    <result column="YSMCS" property="ysmcs" jdbcType="DECIMAL" />
+    <result column="CG_ZFKM" property="cgZfkm" jdbcType="VARCHAR" />
+    <result column="CG_ZFFS" property="cgZffs" jdbcType="VARCHAR" />
+    <result column="IFXEPNR" property="ifxepnr" jdbcType="VARCHAR" />
+    <result column="CGLY" property="cgly" jdbcType="VARCHAR" />
+    <result column="CGDW" property="cgdw" jdbcType="VARCHAR" />
+    <result column="SHBH" property="shbh" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DDBH, ZT, CJ_USERID, CJDATETIME, ERROR, SUBMIT_PARAM, ORDERHKGS, 
+    HKGS, HKGS_DDBH, PNRNO, HKGS_PNRNO, PAYKIND, TRADE_NO, ZFZH, ZFJE, HKGSZH, HBH, CW, 
+    CWPJ, DDLY, IFQZDCP, YSMCS, CG_ZFKM, CG_ZFFS, IFXEPNR, CGLY, CGDW, SHBH
+  </sql>
+  <sql id="sqlsearch">
+		<where>
+			and shbh = #{shbh:VARCHAR}
+			<if test="tkno != null and tkno != '' ">
+			and EXISTS (
+				SELECT 1 FROM jp_gqd_cjr jm WHERE j.gqdh = jm.gqdh AND j.shbh = jm.shbh
+				 and (jm.tkno=#{tkno:VARCHAR} or jm.gq_tkno=#{tkno:VARCHAR}) 
+			)
+			</if>
+			and j.shbh=#{shbh:VARCHAR}
+			<if test="gqdh != null and gqdh != '' "> and j.gqdh=#{gqdh:VARCHAR} </if>
+			<if test="gqlx != null and gqlx != '' "> and j.gqlx=#{gqlx:VARCHAR} </if>
+			<if test="gqzt != null  and gqzt != '' "> and j.gqzt=#{gqzt:VARCHAR} </if>
+			<if test="faid != null  and faid != '' "> and j.faid=#{faid:VARCHAR} </if>
+			<if test="wdpt != null  and wdpt != '' "> and j.wdpt=#{wdpt:VARCHAR} </if>
+			<if test="wdid != null  and wdid != '' "> and j.wdid=#{wdid:VARCHAR} </if>
+			<if test="wdZcdm != null  and wdZcdm != '' "> and j.wd_zcdm like #{wdZcdm:VARCHAR}||'%' </if>
+			<if test="wbdh != null  and wbdh != '' "> and j.wbdh=#{wbdh:VARCHAR} </if>
+			<if test="nxr != null  and nxr != '' "> and j.nxr=#{nxr:VARCHAR} </if>
+			<if test="nxsj != null  and nxsj != '' "> and (j.nxsj=#{nxsj:VARCHAR} or j.nxdh=#{nxsj:VARCHAR}) </if>
+			<if test="cjr != null  and cjr != '' "> and j.cjr=#{cjr:VARCHAR} </if>
+			<if test="xsPnrNo != null  and xsPnrNo != '' "> 
+				and (j.xs_pnr_no=#{xsPnrNo:VARCHAR} or j.gq_xs_pnr_no=#{xsPnrNo:VARCHAR} 
+				or j.cg_pnr_no=#{xsPnrNo:VARCHAR} or j.gq_cg_pnr_no=#{xsPnrNo:VARCHAR}) 
+			</if>
+			<if test="xsHbh != null  and xsHbh != '' "> 
+				and (j.xs_hbh=#{xsHbh:VARCHAR} or j.gq_xs_hbh=#{xsHbh:VARCHAR}
+				or j.cg_hbh=#{xsHbh:VARCHAR} or j.gq_cg_hbh=#{xsHbh:VARCHAR}) 
+			</if>
+			<if test="ksrq != null  and ksrq != '' "> and j.ddsj &gt;= to_date(#{ksrq:VARCHAR}||'00:00:00','YYYY-MM-DD hh24:mi:ss') </if>
+			<if test="jsrq != null  and jsrq != '' "> and j.ddsj &lt;= to_date(#{jsrq:VARCHAR}||'23:59:59','YYYY-MM-DD hh24:mi:ss') </if>
+		</where>
+	</sql>
+  
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from JP_CGDD
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from JP_CGDD
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+ 
+
+  <update id="updateById" parameterType="cn.vetech.vedsb.jp.entity.cgptsz.JpCgdd" >
+    update JP_CGDD
+    <set >
+      <if test="ddbh != null" >
+        DDBH = #{ddbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=VARCHAR},
+      </if>
+      <if test="cjUserid != null" >
+        CJ_USERID = #{cjUserid,jdbcType=VARCHAR},
+      </if>
+      <if test="cjdatetime != null" >
+        CJDATETIME = #{cjdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="error != null" >
+        ERROR = #{error,jdbcType=VARCHAR},
+      </if>
+      <if test="submitParam != null" >
+        SUBMIT_PARAM = #{submitParam,jdbcType=VARCHAR},
+      </if>
+      <if test="orderhkgs != null" >
+        ORDERHKGS = #{orderhkgs,jdbcType=VARCHAR},
+      </if>
+      <if test="hkgs != null" >
+        HKGS = #{hkgs,jdbcType=VARCHAR},
+      </if>
+      <if test="hkgsDdbh != null" >
+        HKGS_DDBH = #{hkgsDdbh,jdbcType=VARCHAR},
+      </if>
+      <if test="pnrno != null" >
+        PNRNO = #{pnrno,jdbcType=VARCHAR},
+      </if>
+      <if test="hkgsPnrno != null" >
+        HKGS_PNRNO = #{hkgsPnrno,jdbcType=VARCHAR},
+      </if>
+      <if test="paykind != null" >
+        PAYKIND = #{paykind,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeNo != null" >
+        TRADE_NO = #{tradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="zfzh != null" >
+        ZFZH = #{zfzh,jdbcType=VARCHAR},
+      </if>
+      <if test="zfje != null" >
+        ZFJE = #{zfje,jdbcType=DECIMAL},
+      </if>
+      <if test="hkgszh != null" >
+        HKGSZH = #{hkgszh,jdbcType=VARCHAR},
+      </if>
+      <if test="hbh != null" >
+        HBH = #{hbh,jdbcType=VARCHAR},
+      </if>
+      <if test="cw != null" >
+        CW = #{cw,jdbcType=VARCHAR},
+      </if>
+      <if test="cwpj != null" >
+        CWPJ = #{cwpj,jdbcType=DECIMAL},
+      </if>
+      <if test="ddly != null" >
+        DDLY = #{ddly,jdbcType=VARCHAR},
+      </if>
+      <if test="ifqzdcp != null" >
+        IFQZDCP = #{ifqzdcp,jdbcType=VARCHAR},
+      </if>
+      <if test="ysmcs != null" >
+        YSMCS = #{ysmcs,jdbcType=DECIMAL},
+      </if>
+      <if test="cgZfkm != null" >
+        CG_ZFKM = #{cgZfkm,jdbcType=VARCHAR},
+      </if>
+      <if test="cgZffs != null" >
+        CG_ZFFS = #{cgZffs,jdbcType=VARCHAR},
+      </if>
+      <if test="ifxepnr != null" >
+        IFXEPNR = #{ifxepnr,jdbcType=VARCHAR},
+      </if>
+      <if test="cgly != null" >
+        CGLY = #{cgly,jdbcType=VARCHAR},
+      </if>
+      <if test="cgdw != null" >
+        CGDW = #{cgdw,jdbcType=VARCHAR},
+      </if>
+      <if test="shbh != null" >
+        SHBH = #{shbh,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

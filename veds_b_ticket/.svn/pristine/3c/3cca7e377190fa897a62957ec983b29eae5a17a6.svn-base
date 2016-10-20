@@ -1,0 +1,36 @@
+@CHARSET "UTF-8";
+  .shareto_div_01{text-decoration:none;border:#CCCCCC solid 1px; width:240px;background:#ffffff;text-align:left;}
+  .shareto_div_01 .link_01{text-decoration:none; font-size:12px}
+  .shareto_div_01 .link_01:hover{text-decoration:none; font-size:12px}
+  .shareto_div_02{text-decoration:none;padding:1px!important; font-size:14px!important; text-align:left!important;}
+  .shareto_div_02 .stitle{margin:0px 0;height:22px;padding-left:0px;padding-top:0px;width:136px;float:left;display:block;border:1px solid #ffffff;background:#ffffff;text-decoration:none;color:#000000;font-size:11px!important;}
+  .shareto_div_02 .stitle:hover{background:#F2F2F2;border:1px solid #E5E5E5;text-decoration:none;}
+  .shareto_div_02 .stitle img{margin:3px 0 -3px 0;border:0;}
+  .shareto_div_03 .stitle{text-decoration:none;margin:0px 0;height:22px;padding-left:0px;padding-top:0px;width:136px;float:left;display:block;border:1px solid #ffffff;background:#ffffff;text-decoration:none;color:#000000;font-size:11px!important;}
+  .shareto_div_03 .stitle:hover{background:#F2F2F2;border:1px solid #E5E5E5;text-decoration:none;}
+  .shareto_div_03 .stitle img{margin:3px 0 -3px 0;border:0;}
+
+  .stico{overflow:hidden;display:block!important;height:16px!important;line-height:16px!important;padding-left:2px!important;cursor:pointer}
+  
+  .ptc_show {padding-left:20px; display:block;}
+.ptc_MU {background:url(../ptc_logo.gif) no-repeat ;}
+.ptc_CA {background:url(../ptc_logo.gif) no-repeat 0 -70px;}
+.ptc_CZ {background:url(../ptc_logo.gif) no-repeat 0 -140px;}
+.ptc_FM {background:url(../ptc_logo.gif) no-repeat 0 -210px;}
+.ptc_ZH {background:url(../ptc_logo.gif) no-repeat 0 -280px;}
+.ptc_MF {background:url(../ptc_logo.gif) no-repeat 0 -350px;}
+.ptc_HU {background:url(../ptc_logo.gif) no-repeat 0 -420px;}
+.ptc_8L {background:url(../ptc_logo.gif) no-repeat 0 -490px;}
+.ptc_3U {background:url(../ptc_logo.gif) no-repeat 0 -570px;}
+.ptc_SC {background:url(../ptc_logo.gif) no-repeat 0 -650px;}
+.ptc_8C {background:url(../ptc_logo.gif) no-repeat 0 -700px;}
+.ptc_HO {background:url(../ptc_logo.gif) no-repeat 0 -790px;}
+.ptc_BK {background:url(../ptc_logo.gif) no-repeat 0 -860px;}
+.ptc_EU {background:url(../ptc_logo.gif) no-repeat 0 -930px;}
+.ptc_G5 {background:url(../ptc_logo.gif) no-repeat 0 -1000px;}
+.ptc_KN {background:url(../ptc_logo.gif) no-repeat 0 -1070px;}
+.ptc_NX {background:url(../ptc_logo.gif) no-repeat 0 -1140px;}
+.ptc_PN {background:url(../ptc_logo.gif) no-repeat 0 -1210px;}
+.ptc_GS {background:url(../ptc_logo.gif) no-repeat 0 -1280px;}
+.ptc_CN {background:url(../ptc_logo.gif) no-repeat 0 -1420px;}
+	

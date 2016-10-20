@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.cpsz.JpZdtpJkDao" >
+ <resultMap id="BaseResultMap" type="cn.vetech.vedsb.jp.entity.cpsz.JpZdtpJk" >
+ <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="SHBH" jdbcType="VARCHAR" property="shbh" />
+    <result column="TPDH" jdbcType="VARCHAR" property="tpdh" />
+    <result column="ZDTP_SFFH" jdbcType="VARCHAR" property="zdtpSffh" />
+    <result column="GZID" jdbcType="VARCHAR" property="gzid" />
+    <result column="CJSJ" jdbcType="TIMESTAMP" property="cjsj" />
+    <result column="TPZT" jdbcType="VARCHAR" property="tpzt" />
+    <result column="TPLX" jdbcType="VARCHAR" property="tplx" />
+    <result column="CG_PNR_NO" jdbcType="VARCHAR" property="cgPnrNo" />
+    <result column="CG_HKGS_PNR" jdbcType="VARCHAR" property="cgHkgsPnr" />
+    <result column="HKGS" jdbcType="VARCHAR" property="hkgs" />
+    <result column="HCLX" jdbcType="VARCHAR" property="hclx" />
+    <result column="GNGJ" jdbcType="VARCHAR" property="gngj" />
+    <result column="HC" jdbcType="VARCHAR" property="hc" />
+    <result column="CW" jdbcType="VARCHAR" property="cw" />
+    <result column="HBH" jdbcType="VARCHAR" property="hbh" />
+    <result column="QFSJ" jdbcType="VARCHAR" property="qfsj" />
+    <result column="CJR" jdbcType="VARCHAR" property="cjr" />
+    <result column="CJRS" jdbcType="DECIMAL" property="cjrs" />
+    <result column="TKNO" jdbcType="VARCHAR" property="tkno" />
+    <result column="CG_PJ" jdbcType="DECIMAL" property="cgPj" />
+    <result column="CG_ZDJ" jdbcType="DECIMAL" property="cgZdj" />
+    <result column="CG_JSF" jdbcType="DECIMAL" property="cgJsf" />
+    <result column="CG_TAX" jdbcType="DECIMAL" property="cgTax" />
+    <result column="CG_JLJE" jdbcType="DECIMAL" property="cgJlje" />
+    <result column="CG_DLF" jdbcType="DECIMAL" property="cgDlf" />
+    <result column="CG_TPF" jdbcType="DECIMAL" property="cgTpf" />
+    <result column="CG_TKJE" jdbcType="DECIMAL" property="cgTkje" />
+    <result column="CG_STJE" jdbcType="DECIMAL" property="cgStje" />
+    <result column="CG_TKKM" jdbcType="VARCHAR" property="cgTkkm" />
+    <result column="CGLY" jdbcType="VARCHAR" property="cgly" />
+    <result column="CG_PTBS" jdbcType="VARCHAR" property="cgPtbs" />
+    <result column="HKGS_DDBH" jdbcType="VARCHAR" property="hkgsDdbh" />
+    <result column="CG_DDBH" jdbcType="VARCHAR" property="cgDdbh" />
+    <result column="ZDTPY" jdbcType="VARCHAR" property="zdtpy" />
+    <result column="ZDTPYMM" jdbcType="VARCHAR" property="zdtpymm" />
+    <result column="SM" jdbcType="VARCHAR" property="sm" />
+    <result column="ZWCGTJSJ" jdbcType="TIMESTAMP" property="zwcgtjsj" />
+    <result column="TPWCSJ" jdbcType="TIMESTAMP" property="tpwcsj" />
+  </resultMap>
+
+
+  <select id="selectAllJpZdtpJk" resultType="HashMap" parameterType="HashMap">
+	select * from (
+		select t.*,rownum from (
+		SELECT a.*,k.WD_ZCDM WDZCDM,k.DDSJ DDSJ,k.CG_TPZT CGTPZT,k.DDBH,
+    	k.WD_ZCLX WDZCLX,k.WDID WDID,k.FAID FAID,k.XS_PNR_NO XS_PNR_NO,K.CG_BLLX,k.WBDDBH WBDH,k.CG_TPZT
+    	FROM JP_ZDTP_JK a ,JP_TPD k
+   			<include refid="where"/>
+    	order by ${orderBy} ) t where rownum &lt;=(#{pageNum})*#{pageSize}) z
+ 		where z.rownum &gt;(#{pageNum}-1)*#{pageSize} 
+  </select>
+  <select id="selectAllJpZdtpJkCount" resultType="int" parameterType="HashMap">
+    SELECT count(1)  FROM JP_ZDTP_JK a ,JP_TPD k
+   <include refid="where"/>
+  </select>
+  <sql id="where">
+  	<where>
+  	  k.TPDH=a.TPDH
+   	  <if test="shbh !=null and shbh !=''">
+    	and a.SHBH = #{shbh,jdbcType=VARCHAR}
+      </if> 
+      <if test="gngj !=null and gngj !=''">
+      	and a.GNGJ=#{gngj,jdbcType=VARCHAR}
+      </if>
+      <if test="hc !=null and hc !=''">
+      	and a.HC like '%'||#{hc,jdbcType=VARCHAR}||'%'
+      </if>
+      <if test="hbh !=null and hbh !=''">
+      	and (a.HBH = #{hbh,jdbcType=VARCHAR} or a.HBH = '*'||#{hbh,jdbcType=VARCHAR})
+      </if>
+      <if test="cjr !=null and cjr !=''">
+      	and a.CJR like '%'||#{cjr,jdbcType=VARCHAR}||'%'
+      </if>
+      <if test="pnr !=null and pnr !=''">
+      	and a.CG_PNR_NO=#{pnr,jdbcType=VARCHAR}
+      </if>
+      <if test="ksrq !=null and ksrq !=''">
+     
+      	and a.CJSJ &gt;= to_date(#{ksrq,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+      </if>
+      <if test="jsrq !=null and jsrq !=''">
+      
+      	and a.CJSJ &lt;= to_date(#{jsrq,jdbcType=VARCHAR}||'23:59:59','yyyy-mm-dd hh24:mi:ss')
+      </if>
+      <if test="cgly !=null and cgly !=''">
+      	and a.CGLY=#{cgly,jdbcType=VARCHAR}
+      </if>
+      <if test="cgtfpzt !=null and cgtfpzt !=''">
+      	and k.CG_TPZT=#{cgtfpzt,jdbcType=VARCHAR}
+      </if>
+       <if test="tpzt !=null and tpzt !=''">
+        <choose>
+	        <when test="tpzt=='0'.toString() or tpzt=='1'.toString() or tpzt=='2'.toString() or tpzt=='3'.toString() or tpzt=='4'.toString()">
+	          and a.TPZT =#{tpzt}
+	        </when> 
+	        <otherwise> 
+	      		and  a.TPZT in 
+		      	<foreach collection="tpzt" index="index" item="item" open="(" separator="," close=")">  
+		           #{item}
+		    	</foreach>
+	    	</otherwise>
+    	</choose>
+      </if>
+      <if test="hkgs !=null and hkgs !=''">
+      	and a.HKGS=#{hkgs,jdbcType=VARCHAR}
+      </if>
+      <if test="tpdh !=null and tpdh !=''">
+      	and a.TPDH=#{tpdh,jdbcType=VARCHAR}
+      </if>
+      <if test="wdid !=null and wdid !=''">
+      	and k.WDID=#{wdid,jdbcType=VARCHAR}
+      </if>
+      <if test="wbdh !=null and wbdh !=''">
+      	and k.WBDDBH=#{wbdh,jdbcType=VARCHAR}
+      </if>
+      <if test="zdtp_sffh !=null and zdtp_sffh !='' and zdtp_sffh == '1'.toString()">
+      		and a.ZDTP_SFFH =#{zdtp_sffh,jdbcType=VARCHAR}
+      </if>
+      
+       <choose>
+			<!-- 非自愿 -->
+			<when test="sfzytp == '0'.toString()">
+	                and K.xs_sfzytp='0'  and K.cg_sfzytp='0'
+			</when>
+			<!-- 自愿 -->
+			<when test="sfzytp == '1'.toString()">
+	                and K.xs_sfzytp='1'  and K.cg_sfzytp='1'
+			</when>
+			<!-- 自愿转非自愿 -->
+			<when test="sfzytp == '2'.toString()">
+	                and K.xs_sfzytp='1'  and K.cg_sfzytp='0'
+			</when>
+			<!-- 全部 -->
+			<otherwise></otherwise>
+		</choose>
+  	</where>
+  </sql>
+  
+  
+   <select id="getJpZdtpJkCreateInfo" resultMap="BaseResultMap" parameterType="HashMap">
+	   select tpdh,shbh,cg_pnr_no,cg_hkgs_pnr,
+	   gngj,hc, cfsj as cfrq,cjrs,cg_pj,
+	   cg_zdj,cg_jsf,cg_tax,0 cg_dlf,
+	   cg_tpf,cg_tkje,cg_stje,
+	   cg_tkkm,cgly,cg_hbh hbh,cg_sfzytp tplx,'0' tpzt,
+	   (select WM_CONCAT(cjr) from jp_tpd_mx mx where mx.tpdh=#{param2}) cjr,
+	   (select WM_CONCAT(tkno) from jp_tpd_mx mx where mx.tpdh=#{param2}) tkno,
+	   (select WM_CONCAT(distinct(cg_cw)) from jp_tpd_mx mx where mx.tpdh=#{param2}) cw
+	   from jp_tpd  
+   	   where shbh=#{param1} and  tpdh=#{param2} 
+   </select>
+   
+    <select id="getJpZdtpJkInfo" resultMap="BaseResultMap" parameterType="cn.vetech.vedsb.jp.entity.cpsz.JpZdtfpGzsz">
+	   select * from JP_ZDTP_JK  
+   	   where shbh=#{shbh} and  tpdh=#{tpdh} 
+   </select>
+   
+</mapper>

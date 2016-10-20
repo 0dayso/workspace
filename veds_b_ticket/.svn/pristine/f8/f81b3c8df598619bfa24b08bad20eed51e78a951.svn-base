@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.pzzx.JpPzOutDao" >
+ 
+   <sql id="where">
+    <where> 
+    	shbh = #{shbh,jdbcType=VARCHAR}
+         <if test="startno != null and startno !='' and  endno != null and endno != '' ">
+         	and to_number(startno) between #{startno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR}
+         	and to_number(endno) between #{startno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR}
+         </if>
+         <if test="startno == '' and endno != '' ">
+         	and endno=#{endno,jdbcType=VARCHAR}
+         </if>
+         <if test="startno != '' and endno =='' ">
+         	and startno=#{startno,jdbcType=VARCHAR}
+         </if>
+         <if test="bmbh != null and bmbh !='' ">
+         	and bmbh=#{bmbh,jdbcType=VARCHAR}
+         </if>
+         <if test="pzfl != null and pzfl !='' ">
+         	and pzfl=#{pzfl,jdbcType=VARCHAR}
+         </if>
+         <if test="out_datetime!=null and out_datetime!='' and ffrz!=null and ffrz!=''">
+         	and out_datetime between #{out_datetime} and #{ffrz} 
+         </if>
+	</where>
+  </sql>
+  	
+  <!-- 批量添加到发放表 -->  
+  <insert id="batchInsertJpPzOut" parameterType="java.util.List">
+  	  INSERT INTO JP_PZ_OUT
+  	  (OUT_NO, OUT_DATETIME, YHBH, BMBH, SHBH, STARTNO, ENDNO, BZBZ, OFFICEID, PZFL, FFSL, SYSL, SHSL,LY_BMBH,LY_YHBH) 
+  	  <foreach collection="list" item="item" index="index"  separator="union all" >  
+       	 SELECT  #{item.outNo},#{item.outDatetime},#{item.yhbh},#{item.bmbh},#{item.shbh},#{item.startno},#{item.endno},
+         #{item.bzbz},#{item.officeid},#{item.pzfl},#{item.ffsl},#{item.sysl},#{item.shsl},#{item.lyBmbh},#{item.lyYhbh} FROM DUAL
+      </foreach>
+  </insert>
+  
+  <!-- 根据选择的条件查询票证发放表中的记录 -->
+  <select id="getListByAll" resultType="cn.vetech.vedsb.jp.entity.pzzx.JpPzOut" parameterType="Map">
+  	SELECT  *
+    FROM (SELECT tt.*, ROWNUM AS rowno      
+    FROM (SELECT  *
+    FROM JP_PZ_OUT
+    <include refid="where"/> 
+    ORDER BY OUT_DATETIME desc) tt
+	 WHERE ROWNUM &lt;= #{pageNum, jdbcType=INTEGER}*#{pageSize, jdbcType=INTEGER}) table_alias
+	 WHERE table_alias.rowno &gt; (#{pageNum, jdbcType=INTEGER} - 1)*#{pageSize, jdbcType=INTEGER}
+  </select>
+  	
+  <!-- 查询记录条数 -->
+  <select id="selectCountByAll" parameterType="Map" resultType="Integer">
+	  select count(1) from JP_PZ_OUT <include refid="where"/> 
+  </select>
+  
+  <!-- 根据startno和endno查询JpPzOut表中是否存在此号段的记录 -->
+  <select id="queryJpPzOutByNo" parameterType="String" resultType="Integer">
+	  select count(1) from JP_PZ_OUT where startno &gt;= #{param1:VARCHAR} and startno &lt;= #{param2:VARCHAR}
+  </select>
+  
+</mapper>

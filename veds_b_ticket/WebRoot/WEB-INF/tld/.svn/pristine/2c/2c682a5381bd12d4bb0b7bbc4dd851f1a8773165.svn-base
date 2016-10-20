@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd" version="2.0">
+	<description>通用的功能性函数如：日期计算、MD5方法等</description>
+	<display-name>JSTL functions</display-name>
+	<tlib-version>1.1</tlib-version>
+	<short-name>vfn</short-name>
+	<uri>http://vetech.cn/jsp/jstl/functions</uri>
+	<function>
+		<description>获取map中的值</description>
+		<name>mapValue</name>
+		<function-class>org.vetech.core.business.tag.Function</function-class>
+		<function-signature>java.lang.String mapValue(java.util.Map, java.lang.String)</function-signature>
+		<example>${vfn:mapValue(map, key)}</example>
+	</function>
+	
+	<function>
+		<description>获得当前时间</description>
+		<name>getTime</name>
+		<function-class>org.vetech.core.business.tag.Function</function-class>
+		
+		<function-signature>java.lang.String getTime()</function-signature>
+		<example>${vfn:getTime()}</example>
+	</function>
+	
+	<function>
+		<description>获得当前日期</description>
+		<name>dateShort</name>
+		<function-class>org.vetech.core.business.tag.Function</function-class>
+		
+		<function-signature>java.lang.String dateShort()</function-signature>
+		<example>${vfn:dateShort()}</example>
+	</function>
+	
+	<function>
+		<description>获得当前日期前推或后推的天数</description>
+		<name>dateShortPre</name>
+		<function-class>org.vetech.core.business.tag.Function</function-class>
+		
+		<function-signature>java.lang.String dateShortPre(java.lang.Integer)</function-signature>
+		<example>${vfn:dateShortPre(-1)}</example>
+	</function>	
+	
+	<function>
+		<description>获取当前时间yyyy-mm-dd HH:MM:SS</description>
+		<name>longDate</name>
+		<function-class>org.vetech.core.business.tag.Function</function-class>
+		
+		<function-signature>java.lang.String longDate()</function-signature>
+		<example>${vfn:longDate()}</example>
+	</function>
+	
+	<function>
+		<description>获取当前时间HH:mm</description>
+		<name>timeShort</name>
+		<function-class>org.vetech.core.business.tag.Function</function-class>
+		
+		<function-signature>java.lang.String timeShort()</function-signature>
+		<example>${vfn:timeShort()}</example>
+	</function>	
+	
+	<function>
+		<description>获取前后天数</description>
+		<name>getPreDay</name>
+		<function-class>org.vetech.core.business.tag.Function</function-class>
+		<function-signature>java.lang.String getPreDay(java.lang.String,java.lang.Integer)</function-signature>
+		<example>${vfn:getPreDay(s,s)}</example>
+	</function>
+	
+	<function>
+		<description>获取前后分钟数</description>
+		<name>getPreMin</name>
+		<function-class>org.vetech.core.business.tag.Function</function-class>
+		<function-signature>java.lang.String getPreMin(java.lang.String,java.lang.Integer)</function-signature>
+		<example>${vfn:getPreMin(s,s)}</example>
+	</function>
+	
+    <function>
+		<description>把数字或字符串格式化</description>
+		<name>format</name>
+		<function-class>org.vetech.core.business.tag.Function</function-class>
+		<function-signature>java.lang.String format(java.lang.Object,java.lang.String)</function-signature>
+		<example>${vfn:format(1.23,#.##%)}</example>
+	</function>
+
+    <function>
+		<description>截取字符串,如果超过长度会加上...并且放在title中显示全部</description>
+		<name>cut</name>
+		<function-class>org.vetech.core.business.tag.Function</function-class>
+		<function-signature>java.lang.String cut(java.lang.String,java.lang.Integer)</function-signature>
+		<example>${vfn:cut("需要截取的字符串",保留的长度)}</example>
+	</function>	
+	
+    <function>
+		<description>转Json对象</description>
+		<name>toJSON</name>
+		<function-class>org.vetech.core.business.tag.Function</function-class>
+		<function-signature>java.lang.String toJSON(java.lang.Object)</function-signature>
+		<example>${vfn:toJSON(需要转换的对象)}</example>
+	</function>
+
+    <function>
+		<description>url中文转指定编码</description>
+		<name>urie</name>
+		<function-class>org.vetech.core.business.tag.Function</function-class>
+		<function-signature>java.lang.String urie(java.lang.String , java.lang.String)</function-signature>
+		<example>${vfn:urie(需要转换的http连接,字符编码)}</example>
+	</function>
+		
+    <function>
+		<description>机票系统定义的键值对应关系</description>
+		<name>dictList</name>
+		<function-class>org.vetech.core.business.tag.Function</function-class>
+		<function-signature>java.lang.String dictList(java.lang.String)</function-signature>
+		<example>${vfn:dictList("DictEnum中定义的静态类名")}</example>
+	</function>	
+	
+	
+	<function>
+		<description>通过url编码转换成汉字.</description>
+		<name>urid</name>
+		<function-class>org.vetech.core.business.tag.Function</function-class>
+		<function-signature>java.lang.String urid(java.lang.String)</function-signature>
+		<example>${vfn:urid(param.name)}</example>
+	</function>
+	
+</taglib>

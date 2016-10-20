@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+						http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd"
+	default-lazy-init="true">
+
+	<description>Quartz的定时集群任务配置</description>
+    <!-- Quartz集群Schduler 产生投放数据 多个机器负载时需要建立多个Quartz数据源 -->
+	<bean id="clusterQuartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<!-- Triggers集成 -->
+		<!-- quartz配置文件路径, 指向cluster配置 -->
+		<property name="configLocation" value="classpath:schedule/quartz-cluster.properties" />
+		<!-- 启动时延期2秒开始任务 -->
+		<property name="startupDelay" value="2" />
+		<!-- 保存Job数据到数据库所需的数据源 -->
+		<property name="dataSource" ref="quartzDataSource" />
+		<!-- Job接受applicationContext的成员变量名 -->
+		<property name="applicationContextSchedulerContextKey" value="applicationContext" />
+		<!-- 不启动job -->
+		<property name="autoStartup" value="false"></property>
+	</bean>
+</beans>

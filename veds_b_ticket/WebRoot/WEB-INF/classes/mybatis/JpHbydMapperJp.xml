@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jphbyd.JpHbydDao">
+	<!-- 航班异动分页查询 -->
+	<select id="queryHbydList" resultType="java.util.HashMap">
+		select z.*,(select count(1) from jp_hbyd_mx b	where b.ddbh in
+               		(select c.ddbh from jp_khdd_cjr c where c.tkno not in (select d.tkno from jp_tpd_mx d, jp_tpd e where d.tpdh=e.tpdh and e.ddbh=c.ddbh  and e.xs_tpzt != '2'))
+           				and b.ddbh in (select jp_khdd.ddbh from jp_khdd where jp_khdd.ddzt in ('1', '2', '3')) and b.ydid = z.id) alldd,
+       			(select count(1) from jp_hbyd_mx b where b.ddbh in 
+       			    (select c.ddbh from jp_khdd_cjr c where c.tkno not in (select d.tkno from jp_tpd_mx d, jp_tpd e where d.tpdh=e.tpdh and e.ddbh=c.ddbh  and e.xs_tpzt != '2'))
+           				and b.ddbh in (select jp_khdd.ddbh from jp_khdd where jp_khdd.ddzt in ('1', '2', '3') ) and b.cl_zt = '1' and b.ydid = z.id) ycldd from (
+		select t.*,rownum from (
+			select distinct a.*  from jp_hbyd a  where 1=1 
+ 					<include refid="queryHbyd"/> 
+ 					order by cjtime desc ) t where rownum &lt;=(#{pageNum})*#{pageSize}) z
+ 		where z.rownum &gt;(#{pageNum}-1)*#{pageSize} 
+	</select>
+
+	<select id="queryHbydCount" parameterType="cn.vetech.vedsb.jp.entity.jphbyd.JpHbyd" resultType="Integer">
+        select count(1) from jp_hbyd a where  1=1 
+   		 <include refid="queryHbyd"/>
+	</select>
+
+	<sql id="queryHbyd">
+		and a.shbh=#{hbyd.shbh, jdbcType=VARCHAR}
+		<if test="hbyd.rqtj != null">
+			<choose>
+				<when test="hbyd.rqtj == '1'.toString()">
+					<if test="hbyd.kssj!=null and hbyd.kssj!=''">and a.cjtime &gt;=to_date(#{hbyd.kssj:VARCHAR}||'00:00:00','YYYY-MM-DD hh24:mi:ss') </if>
+					<if test="hbyd.jssj!=null and hbyd.jssj!=''">and a.cjtime &lt;=to_date(#{hbyd.jssj:VARCHAR}||'23:59:59','YYYY-MM-DD hh24:mi:ss') </if>
+				</when>
+				<when test="hbyd.rqtj == '2'.toString() ">
+					<if test="hbyd.kssj!=null and hbyd.kssj!=''">and a.cfrq &gt;=to_date(#{hbyd.kssj:VARCHAR}||'00:00','YYYY-MM-DD hh24:mi') </if>
+					<if test="hbyd.jssj!=null and hbyd.jssj!=''">and a.cfrq &lt;=to_date(#{hbyd.jssj:VARCHAR}||'23:59','YYYY-MM-DD hh24:mi') </if>
+				</when>
+			</choose>
+		</if>
+		<if test="hbyd.cfrq != null and hbyd.cfrq != '' "> and (a.cfrq=#{hbyd.cfrq, jdbcType=VARCHAR}) </if>
+		<if test="hbyd.hc != null and hbyd.hc != '' "> and a.hc like '%'||#{hbyd.hc, jdbcType=VARCHAR}||'%' </if>
+		<if test="hbyd.hkgs != null and hbyd.hkgs != '' "> and a.hkgs like '%'||#{hbyd.hkgs, jdbcType=VARCHAR}||'%' </if>
+		<if test="hbyd.hbh != null and hbyd.hbh != '' "> and (a.hbh=#{hbyd.hbh, jdbcType=VARCHAR}) </if>
+		<if test="hbyd.czly != null and hbyd.czly != '' "> and (a.czly=#{hbyd.czly, jdbcType=VARCHAR}) </if>
+		<if test="hbyd.ddzt != null and hbyd.ddzt != '' "> and (c.ddzt=#{hbyd.ddzt, jdbcType=VARCHAR}) </if>
+		<if test="hbyd.sfyfdx != null and hbyd.sfyfdx != '' "> and (b.sfyfdx=#{hbyd.sfyfdx, jdbcType=VARCHAR}) </if>
+		<if test="hbyd.clzt != null and hbyd.clzt != '' "> and (b.cl_zt=#{hbyd.clzt, jdbcType=VARCHAR}) </if>
+	</sql>
+		
+	<select id="queryHbydClList" resultType="java.util.HashMap">
+		select <include refid="joinHbydCl"/> from jp_hbyd a,jp_hbyd_mx b, jp_khdd c,jp_khdd_cjr d 
+			where exists
+ 				(select 1 from jp_khdd_cjr d, jp_hbyd_mx b where d.ddbh = b.ddbh and d.tkno not in 
+ 					(select f.tkno from jp_tpd_mx f, jp_tpd e where f.tpdh=e.tpdh and e.ddbh=d.ddbh) and b.ydid  = a.id )  
+ 				and a.id = b.ydid and b.ddbh = c.ddbh and c.ddbh = d.ddbh and c.ddzt in ('1', '2', '3')
+			 <include refid="queryHbyd"/>
+			 order by a.cjtime
+	</select>
+	
+	<select id="queryHbydClCount" parameterType="cn.vetech.vedsb.jp.entity.jphbyd.JpHbyd" resultType="Integer">
+		select count(1) from jp_hbyd a,jp_hbyd_mx b, jp_khdd c,jp_khdd_cjr d 
+			where exists
+ 				(select 1 from jp_khdd_cjr d, jp_hbyd_mx b where d.ddbh = b.ddbh and d.tkno not in 
+ 					(select f.tkno from jp_tpd_mx f, jp_tpd e where f.tpdh=e.tpdh and e.ddbh=d.ddbh) and b.ydid  = a.id ) 
+ 				and a.id = b.ydid and b.ddbh = c.ddbh and c.ddbh = d.ddbh and c.ddzt in ('1', '2', '3')
+			 <include refid="queryHbyd"/>
+	</select>
+	<sql id="joinHbydCl">
+	  	a.hbh,a.hc,b.sfyfdx,b.cl_zt,b.cl_bz,b.cl_datetime,c.ddzt,c.xs_pnr_no,c.xs_pnr_zt,c.cfsj,c.nxr,c.nxsj,c.ddyh,c.ddsj,d.cjr
+    </sql>
+    
+    <select id="isHbyd"  resultType="Integer" parameterType="cn.vetech.vedsb.jp.entity.jphbyd.JpHbyd" >
+       select count(0) from jp_hbyd a 
+       where a.shbh=#{shbh} 
+       and   a.hc like '%'||#{hc}||'%'   
+       and   a.hbh = #{hbh} 
+       and   a.cfrq like #{cfrq}||'%' 
+       and   a.ywsc>=(nvl((select sc from B_Hkgs_Hbgz hbgz where hbgz.hkgs='---' or hbgz.hkgs like '%'||#{hkgs}||'%'),0)) 
+       and   a.zt='1'
+       and   exists(select 1 from jp_jp jp where jp.shbh=a.shbh and ddbh=#{by3} and jp.cp_datetime &lt;= to_date(a.cjtime, 'yyyy-mm-dd hh24:mi:ss'))
+       and   rownum=1 
+    </select>
+    
+    <select id="getHbydByHbh"  resultType="cn.vetech.vedsb.jp.entity.jphbyd.JpHbyd" parameterType="cn.vetech.vedsb.jp.entity.jphbyd.JpHbyd" >
+       select a.* from jp_hbyd a 
+       where a.shbh=#{shbh} 
+       and   a.hbh=#{hbh}  
+       and   a.cfrq like #{cfrq}||'%'  
+       and   a.zt='1'
+       and   exists(select 1 from jp_jp jp where jp.shbh=a.shbh and ddbh=#{by3} and jp.cp_datetime &lt;= to_date(a.cjtime, 'yyyy-mm-dd hh24:mi:ss'))
+       and   rownum=1 
+    </select>
+    
+</mapper>

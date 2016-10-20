@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.pzzx.JpXcdDao" >
+  <sql id="where">
+    <where>
+    	 SHBH = #{shbh,jdbcType=VARCHAR}
+         <if test="startno == '' and endno != '' ">
+         	and XCD_NO=#{xcdNo,jdbcType=VARCHAR}
+         </if>
+         <if test="pzzt !=null and pzzt !='' ">
+         	and PZZT IN 
+         	<foreach item="item" index="index" collection="pzzt" open="(" separator="," close=")">  
+  				#{item}  
+			</foreach>
+         </if>
+         <if test="rqtj !=null and rqtj !='' and rqtj =='zf'">
+         	<if test="ksrq !=null and ksrq !='' and jsrq !=null and jsrq !='' ">
+         		and TF_DATETIME between #{ksrq,jdbcType=VARCHAR} and #{jsrq,jdbcType=VARCHAR}
+         	</if>
+         </if>
+         <if test="rqtj !=null and rqtj !='' and rqtj =='hs'">
+         	<if test="ksrq !=null and ksrq !='' and jsrq !=null and jsrq !='' ">
+         		and CK_DATETIME between #{ksrq,jdbcType=VARCHAR} and #{jsrq,jdbcType=VARCHAR}
+         	</if>
+         </if>
+         <if test="pztype !=null and pztype !='' ">
+         	and PZTYPE=#{pztype,jdbcType=VARCHAR}
+         </if>
+         <if test="xcdNo !=null and xcdNo !=''">
+         	and XCD_NO=#{xcdNo,jdbcType=VARCHAR}
+         </if>
+         <if test="bmbh !=null and bmbh !=''">
+         	and OUT_BMBH=#{bmbh,jdbcType=VARCHAR}
+         </if>
+         <if test="tkNo !=null and tkNo !=''">
+         	and TKNO=#{tkNo,jdbcType=VARCHAR}
+         </if>
+	</where>
+  </sql>
+  <select id="getListByAll" resultType="cn.vetech.vedsb.jp.entity.pzzx.JpXcd" parameterType="Map">
+  	SELECT  *
+    FROM (SELECT tt.*, ROWNUM AS rowno      
+    FROM (SELECT  *
+    from JP_XCD
+    <include refid="where"/> 
+    order by OUT_DATETIME desc) tt
+	         WHERE ROWNUM &lt;= #{pageNum, jdbcType=INTEGER}*#{pageSize, jdbcType=INTEGER}) table_alias
+	 WHERE table_alias.rowno &gt; (#{pageNum, jdbcType=INTEGER} - 1)*#{pageSize, jdbcType=INTEGER}
+  </select>
+  	<!-- 查询记录数 -->
+    <select id="selectCountByAll" parameterType="Map" resultType="Integer">
+	  	select count(1) from JP_XCD <include refid="where"/> 
+  </select>
+  <!-- 批量更新 -->
+  <update id="batchUpdate"  parameterType="java.util.List">
+     <foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
+         update JP_XCD 
+         <set>
+           CK_BMBH=#{item.ckBmbh},CK_YHBH=#{item.ckYhbh},PZZT=#{item.pzzt},CK_DATETIME=#{item.ckDatetime}
+         </set>
+         where XCD_NO = #{item.xcdNo} and SHBH = #{item.shbh}
+     </foreach>
+    </update>
+    <select id="getBeanByXcdNo" parameterType="Map" resultType="cn.vetech.vedsb.jp.entity.pzzx.JpXcd">
+    	SELECT * from JP_XCD
+    	<where>
+    		<if test="shbh !=null and shbh !=''">
+    			SHBH=#{shbh,jdbcType=VARCHAR}
+    		</if>
+    		<if test="pztype !=null and pztype !=''">
+    			AND PZTYPE=#{pztype,jdbcType=VARCHAR}
+    		</if>
+    		<if test="pzzt !=null and pzzt !=''">
+    			AND PZZT=#{pzzt,jdbcType=VARCHAR}
+    		</if>
+    	</where>
+    	AND ROWNUM=1
+    </select>
+    
+     <select id="getJpXcd" parameterType="Map" resultType="cn.vetech.vedsb.jp.entity.pzzx.JpXcd">
+    	SELECT * from JP_XCD
+    	<where>
+    		<if test="shbh !=null and shbh !=''">
+    			SHBH=#{shbh,jdbcType=VARCHAR}
+    		</if>
+    		<if test="pztype !=null and pztype !=''">
+    			AND PZTYPE=#{pztype,jdbcType=VARCHAR}
+    		</if>
+    		<if test="tkno !=null and tkno !=''">
+    			AND TKNO=#{tkno,jdbcType=VARCHAR}
+    		</if>
+    		<if test="xcdNo !=null and xcdNo !=''">
+    			AND XCD_NO=#{xcdNo,jdbcType=VARCHAR}
+    		</if>
+    	</where>
+    	AND ROWNUM=1
+    </select>
+    
+    
+     <sql id="where2">
+    <where>
+    		SHBH = #{shbh,jdbcType=VARCHAR}
+         <if test="xcdNo_start == '' and xcdNo_end != '' ">
+         	and XCD_NO=#{xcdNo_end,jdbcType=VARCHAR}
+         </if>
+         <if test="xcdNo_end == '' and xcdNo_start != '' ">
+         	and XCD_NO=#{xcdNo_start,jdbcType=VARCHAR}
+         </if>
+         <if test="xcdNo_start !=''and xcdNo_start !=null and xcdNo_end !='' and xcdNo_end !=null">
+         	and XCD_NO between #{xcdNo_start,jdbcType=VARCHAR} and #{xcdNo_end,jdbcType=VARCHAR}
+         </if>
+          <if test="rkDatetime_end !=null and rkDatetime_end !=''">
+         	and RK_DATETIME &lt;=to_date(#{rkDatetime_end,jdbcType=VARCHAR}||'23:59:59','yyyy-mm-dd hh24:mi:ss')
+         </if>
+          <if test="rkDatetime_start !=null and rkDatetime_start !=''">
+         	and RK_DATETIME &gt;=to_date(#{rkDatetime_start,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+         </if>
+        
+         <if test="pzzt !=null and pzzt !=''">
+    		and PZZT = #{pzzt,jdbcType=VARCHAR}
+    	 </if> 
+	</where>
+  </sql>
+    
+    <select id="getListByYhbh" resultType="cn.vetech.vedsb.jp.entity.pzzx.JpXcd" parameterType="Map">
+  	SELECT  *
+    FROM (SELECT tt.*, ROWNUM AS rowno      
+    FROM (SELECT  *
+    from JP_XCD
+    <include refid="where2"/> 
+    order by RK_DATETIME desc) tt
+	         WHERE ROWNUM &lt;= #{pageNum, jdbcType=INTEGER}*#{pageSize, jdbcType=INTEGER}) table_alias
+	 WHERE table_alias.rowno &gt; (#{pageNum, jdbcType=INTEGER} - 1)*#{pageSize, jdbcType=INTEGER}
+  </select>
+  
+  
+  <select id="getListByYhbhCount" resultType="int">
+  	select count(1) from jp_xcd
+  	<include refid="where2"/>
+  </select>
+    
+    <!-- 根据starno和endno删除JpXcd表中的数据 -->
+  	<delete id="deleteJpXcdByInNoAndPzzt"  parameterType="String">
+  		  delete from JP_XCD 
+  		  where PZZT  = #{param1:VARCHAR}
+  		  and XCD_NO &gt;= #{param2:VARCHAR} 
+  		  and XCD_NO &lt;=  #{param3:VARCHAR} 
+  		  and shbh = #{param4:VARCHAR}
+  	</delete>
+  	
+  	<!-- 根据startno和endno查询行程单表中是否存在pzzt！=0的记录，如果存在不等于0的记录，说明该号段的票证已经开始使用，不能进行反审核 -->
+  	<select id="queryJpXcdByStartnoEndnoPzzt" resultType="int" parameterType="String">
+  		  select count(1) from jp_xcd 
+  		  where xcd_no &gt;= #{param1:VARCHAR} 
+  		  and xcd_no &lt;= #{param2:VARCHAR} 
+  		  and pzzt != #{param3:VARCHAR}
+  		  and shbh = #{param4:VARCHAR}
+    </select>
+  	
+    <!-- 根据startno和endno判断表中是否已经有该数据段的记录-->
+	<select id="validateNo" resultType="cn.vetech.vedsb.jp.entity.pzzx.JpXcd" parameterType="String">
+    SELECT *
+    FROM JP_XCD  xx
+     WHERE xcd_no &gt;= #{param1:VARCHAR} and  xcd_no &lt;= #{param2:VARCHAR}
+    </select>
+    
+    <!-- 根据startno和endno判断表中是否已经有该数据段的记录-->
+	<select id="queryJpXcdByNo" resultType="int" parameterType="String">
+    SELECT count(1)
+    FROM JP_XCD  xx
+     WHERE xcd_no &gt;= #{param1:VARCHAR} and  xcd_no &lt;= #{param2:VARCHAR} 
+     and PZZT not in ('0','1') 
+    </select>
+     <!-- 检查该号段是否使用  其中pzzt 0在库  1未使用--> 
+    <select id="xcdIfSy" resultType="int" parameterType="map">
+    	select count(1) from jp_xcd 
+    	where SHBH=#{shbh,jdbcType=VARCHAR}
+    	and PZZT != '0' 
+    	and PZZT != '1' 
+    	<if test="startno != null and startno !='' and endno != null and endno != ''">
+    		and XCD_NO &gt;= #{startno,jdbcType=VARCHAR} and  XCD_NO &lt;= #{endno,jdbcType=VARCHAR} 
+    	</if>
+    </select>
+ 
+</mapper>

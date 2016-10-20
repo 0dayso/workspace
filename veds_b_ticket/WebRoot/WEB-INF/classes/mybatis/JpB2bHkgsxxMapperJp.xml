@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.b2bsz.JpB2bHkgsxxDao" >
+  <resultMap id="BaseResultMap" type="cn.vetech.vedsb.jp.entity.b2bsz.JpB2bHkgsxx" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="HKGS" property="hkgs" jdbcType="VARCHAR" />
+    <result column="MC" property="mc" jdbcType="VARCHAR" />
+    <result column="SFZC" property="sfzc" jdbcType="VARCHAR" />
+    <result column="FS0" property="fs0" jdbcType="VARCHAR" />
+    <result column="FS1" property="fs1" jdbcType="VARCHAR" />
+    <result column="FS2" property="fs2" jdbcType="VARCHAR" />
+    <result column="FS3" property="fs3" jdbcType="VARCHAR" />
+    <result column="FS4" property="fs4" jdbcType="VARCHAR" />
+    <result column="FS5" property="fs5" jdbcType="VARCHAR" />
+    <result column="FS6" property="fs6" jdbcType="VARCHAR" />
+    <result column="FS7" property="fs7" jdbcType="VARCHAR" />
+    <result column="FS8" property="fs8" jdbcType="VARCHAR" />
+    <result column="FS9" property="fs9" jdbcType="VARCHAR" />
+    <result column="SM0" property="sm0" jdbcType="VARCHAR" />
+    <result column="SM1" property="sm1" jdbcType="VARCHAR" />
+    <result column="SM2" property="sm2" jdbcType="VARCHAR" />
+    <result column="SM3" property="sm3" jdbcType="VARCHAR" />
+    <result column="SM4" property="sm4" jdbcType="VARCHAR" />
+    <result column="SM5" property="sm5" jdbcType="VARCHAR" />
+    <result column="SM6" property="sm6" jdbcType="VARCHAR" />
+    <result column="SM7" property="sm7" jdbcType="VARCHAR" />
+    <result column="SM8" property="sm8" jdbcType="VARCHAR" />
+    <result column="SM9" property="sm9" jdbcType="VARCHAR" />
+    <result column="BY1" property="by1" jdbcType="VARCHAR" />
+    <result column="BY2" property="by2" jdbcType="VARCHAR" />
+    <result column="BY3" property="by3" jdbcType="VARCHAR" />
+    <result column="BY4" property="by4" jdbcType="DECIMAL" />
+    <result column="BY5" property="by5" jdbcType="DECIMAL" />
+    <result column="SXH" property="sxh" jdbcType="DECIMAL" />
+    <result column="QZZFFS" property="qzzffs" jdbcType="VARCHAR" />
+    <result column="BCA" property="bca" jdbcType="VARCHAR" />
+    <result column="ZDZFZC" property="zdzfzc" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, HKGS, MC, SFZC, FS0, FS1, FS2, FS3, FS4, FS5, FS6, FS7, FS8, FS9, SM0, SM1, SM2, 
+    SM3, SM4, SM5, SM6, SM7, SM8, SM9, BY1, BY2, BY3, BY4, BY5, 
+    SXH, QZZFFS, BCA, ZDZFZC
+  </sql>
+  
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from JP_B2B_HKGSXX
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+   <select id="selectByHkgs_Bca" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from JP_B2B_HKGSXX
+    where hkgs = #{param1,jdbcType=VARCHAR} and nvl(bca,'720102')=#{param2,jdbcType=VARCHAR}
+    order by sxh
+  </select>
+  
+  <select id="selectByBca" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from JP_B2B_HKGSXX 
+    where nvl(bca,'720102')=#{bca,jdbcType=VARCHAR}
+    order by hkgs asc
+  </select>
+  
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from JP_B2B_HKGSXX
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+ 
+  <update id="updateById" parameterType="cn.vetech.vedsb.jp.entity.b2bsz.JpB2bHkgsxx" >
+    update JP_B2B_HKGSXX
+    <set >
+      <if test="hkgs != null" >
+        HKGS = #{hkgs,jdbcType=VARCHAR},
+      </if>
+      <if test="mc != null" >
+        MC = #{mc,jdbcType=VARCHAR},
+      </if>
+      <if test="sfzc != null" >
+        SFZC = #{sfzc,jdbcType=VARCHAR},
+      </if>
+      <if test="fs0 != null" >
+        FS0 = #{fs0,jdbcType=VARCHAR},
+      </if>
+      <if test="fs1 != null" >
+        FS1 = #{fs1,jdbcType=VARCHAR},
+      </if>
+      <if test="fs2 != null" >
+        FS2 = #{fs2,jdbcType=VARCHAR},
+      </if>
+      <if test="fs3 != null" >
+        FS3 = #{fs3,jdbcType=VARCHAR},
+      </if>
+      <if test="fs4 != null" >
+        FS4 = #{fs4,jdbcType=VARCHAR},
+      </if>
+      <if test="fs5 != null" >
+        FS5 = #{fs5,jdbcType=VARCHAR},
+      </if>
+      <if test="fs6 != null" >
+        FS6 = #{fs6,jdbcType=VARCHAR},
+      </if>
+      <if test="fs7 != null" >
+        FS7 = #{fs7,jdbcType=VARCHAR},
+      </if>
+      <if test="fs8 != null" >
+        FS8 = #{fs8,jdbcType=VARCHAR},
+      </if>
+      <if test="fs9 != null" >
+        FS9 = #{fs9,jdbcType=VARCHAR},
+      </if>
+      <if test="sm0 != null" >
+        SM0 = #{sm0,jdbcType=VARCHAR},
+      </if>
+      <if test="sm1 != null" >
+        SM1 = #{sm1,jdbcType=VARCHAR},
+      </if>
+      <if test="sm2 != null" >
+        SM2 = #{sm2,jdbcType=VARCHAR},
+      </if>
+      <if test="sm3 != null" >
+        SM3 = #{sm3,jdbcType=VARCHAR},
+      </if>
+      <if test="sm4 != null" >
+        SM4 = #{sm4,jdbcType=VARCHAR},
+      </if>
+      <if test="sm5 != null" >
+        SM5 = #{sm5,jdbcType=VARCHAR},
+      </if>
+      <if test="sm6 != null" >
+        SM6 = #{sm6,jdbcType=VARCHAR},
+      </if>
+      <if test="sm7 != null" >
+        SM7 = #{sm7,jdbcType=VARCHAR},
+      </if>
+      <if test="sm8 != null" >
+        SM8 = #{sm8,jdbcType=VARCHAR},
+      </if>
+      <if test="sm9 != null" >
+        SM9 = #{sm9,jdbcType=VARCHAR},
+      </if>
+      <if test="by1 != null" >
+        BY1 = #{by1,jdbcType=VARCHAR},
+      </if>
+      <if test="by2 != null" >
+        BY2 = #{by2,jdbcType=VARCHAR},
+      </if>
+      <if test="by3 != null" >
+        BY3 = #{by3,jdbcType=VARCHAR},
+      </if>
+      <if test="by4 != null" >
+        BY4 = #{by4,jdbcType=DECIMAL},
+      </if>
+      <if test="by5 != null" >
+        BY5 = #{by5,jdbcType=DECIMAL},
+      </if>
+      <if test="sxh != null" >
+        SXH = #{sxh,jdbcType=DECIMAL},
+      </if>
+      <if test="qzzffs != null" >
+        QZZFFS = #{qzzffs,jdbcType=VARCHAR},
+      </if>
+      <if test="bca != null" >
+        BCA = #{bca,jdbcType=VARCHAR},
+      </if>
+      <if test="zdzfzc != null" >
+        ZDZFZC = #{zdzfzc,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+ 
+</mapper>

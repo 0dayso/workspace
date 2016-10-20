@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.vetech.vedsb.common.dao.base.ShzfkmDao">
+	<!-- 获得开启的机票网店 -->
+	<select id="getShzfkmList" parameterType="cn.vetech.vedsb.common.entity.base.Shzfkm" resultType="cn.vetech.vedsb.common.entity.base.Shzfkm">
+		select * from sh_zfkm where shbh = #{shbh:VARCHAR} and sycp like '%'||#{sycp}||'%' 
+		<if test="sffkkm!=null and sffkkm!=''">
+			and sffkkm=#{sffkkm:VARCHAR}
+		</if>
+		<if test="sfskkm!=null and sfskkm!=''">
+			and sfskkm=#{sfskkm:VARCHAR}
+		</if>
+		<if test="sfqy!=null and sfqy!=''">
+			and sfqy=#{sfqy:VARCHAR}
+		</if>
+	</select>
+	<!-- 出票报表中 通过商户编号和科目编号获取科目-->
+	<select id="getShzfkmByBh" parameterType="cn.vetech.vedsb.common.entity.base.Shzfkm" resultType="cn.vetech.vedsb.common.entity.base.Shzfkm">
+		select * from sh_zfkm where shbh = #{shbh:VARCHAR} and kmbh = #{kmbh:VARCHAR} 
+	</select>
+	
+</mapper> 

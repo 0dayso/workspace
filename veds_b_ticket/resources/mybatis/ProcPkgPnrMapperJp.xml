@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.procedures.ProcPkgPnrDao">
+  	<select id="insertJpKhdd" parameterType="cn.vetech.vedsb.jp.entity.jpddsz.BookOrder" statementType="CALLABLE" >
+		{
+			#{result,mode=OUT,jdbcType=INTEGER}=call pkg_pnr.f_pnr(
+						#{orderXml,mode=IN,jdbcType=CLOB},
+						#{errmsg,mode=OUT,jdbcType=VARCHAR},
+						#{ddbh,mode=OUT,jdbcType=VARCHAR})
+		}
+	</select>
+</mapper>

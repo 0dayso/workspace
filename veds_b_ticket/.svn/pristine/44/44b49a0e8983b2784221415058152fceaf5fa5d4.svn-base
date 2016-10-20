@@ -1,0 +1,8 @@
+@CHARSET "UTF-8";
+a{
+	padding: 0 3px;
+}
+
+.w35{
+	width : 25px;
+}

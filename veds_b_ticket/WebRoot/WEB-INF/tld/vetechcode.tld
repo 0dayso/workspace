@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+	version="2.0">
+	<description>通用的缓存数据获取</description>
+	<display-name>JSTL functions</display-name>
+	<tlib-version>1.1</tlib-version>
+	<short-name>vfc</short-name>
+	<uri>http://code.vetech.cn/jsp/jstl/functions</uri>
+	<function>
+		<description>通过航空公司二字码，获取航空公司对象</description>
+		<name>getHkgs</name>
+		<function-class>org.vetech.core.business.tag.FunctionCode</function-class>
+		<function-signature>java.lang.Object getHkgs(java.lang.String)</function-signature>
+		<example>${vfc:getHkgs(ezdh)}</example>
+	</function>
+
+	<function>
+		<description>通过机场三字码获取机场对象</description>
+		<name>getBcity</name>
+		<function-class>org.vetech.core.business.tag.FunctionCode</function-class>
+		<function-signature>java.lang.Object getBcity(java.lang.String)</function-signature>
+		<example>${vfc:getBcity(nbbh)}</example>
+	</function>
+	
+   <function>
+		<description> 通过id获取数据字典中的一个对象</description>
+		<name>getVeclass</name>
+		<function-class>org.vetech.core.business.tag.FunctionCode</function-class>
+		<function-signature>java.lang.Object getVeclass(java.lang.String)</function-signature>
+		<example>${vfc:getVeclass(id)}</example>
+	</function>	
+	
+   <function>
+		<description>通过类别获取数据字典的集合</description>
+		<name>getVeclassLb</name>
+		<function-class>org.vetech.core.business.tag.FunctionCode</function-class>
+		<function-signature>java.lang.Object getVeclassLb(java.lang.String)</function-signature>
+		<example>${vfc:getVeclassLb(lb)}</example>
+	</function>
+</taglib>

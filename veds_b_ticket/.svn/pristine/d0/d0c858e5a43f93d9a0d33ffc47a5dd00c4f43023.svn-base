@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.b2bsz.JpB2bHkgsDao" >
+  <resultMap id="BaseResultMap" type="cn.vetech.vedsb.jp.entity.b2bsz.JpB2bHkgs" >
+    <result column="HKGS" property="hkgs" jdbcType="VARCHAR" />
+    <result column="MC" property="mc" jdbcType="VARCHAR" />
+    <result column="ZDDL" property="zddl" jdbcType="VARCHAR" />
+    <result column="ZDMR" property="zdmr" jdbcType="VARCHAR" />
+    <result column="ZDCP" property="zdcp" jdbcType="VARCHAR" />
+    <result column="ZDZF" property="zdzf" jdbcType="VARCHAR" />
+    <result column="DKHBM" property="dkhbm" jdbcType="VARCHAR" />
+    <result column="XYKHH" property="xykhh" jdbcType="VARCHAR" />
+    <result column="SPYDM" property="spydm" jdbcType="VARCHAR" />
+    <result column="LXR" property="lxr" jdbcType="VARCHAR" />
+    <result column="LXDH" property="lxdh" jdbcType="VARCHAR" />
+    <result column="SJ" property="sj" jdbcType="VARCHAR" />
+    <result column="EMAIL" property="email" jdbcType="VARCHAR" />
+    <result column="MRWZ" property="mrwz" jdbcType="VARCHAR" />
+    <result column="BZBZ" property="bzbz" jdbcType="VARCHAR" />
+    <result column="FS0" property="fs0" jdbcType="VARCHAR" />
+    <result column="FS1" property="fs1" jdbcType="VARCHAR" />
+    <result column="FS2" property="fs2" jdbcType="VARCHAR" />
+    <result column="FS3" property="fs3" jdbcType="VARCHAR" />
+    <result column="FS4" property="fs4" jdbcType="VARCHAR" />
+    <result column="FS5" property="fs5" jdbcType="VARCHAR" />
+    <result column="FS6" property="fs6" jdbcType="VARCHAR" />
+    <result column="FS7" property="fs7" jdbcType="VARCHAR" />
+    <result column="FS8" property="fs8" jdbcType="VARCHAR" />
+    <result column="FS9" property="fs9" jdbcType="VARCHAR" />
+    <result column="SFZC" property="sfzc" jdbcType="VARCHAR" />
+    <result column="SFSYDL" property="sfsydl" jdbcType="VARCHAR" />
+    <result column="DLIPPORT" property="dlipport" jdbcType="VARCHAR" />
+    <result column="ZDTSS" property="zdtss" jdbcType="VARCHAR" />
+    <result column="BCA" property="bca" jdbcType="VARCHAR" />
+    <result column="LXRSJQZ" property="lxrsjqz" jdbcType="VARCHAR" />
+    <result column="LXRPTSJ" property="lxrptsj" jdbcType="VARCHAR" />
+    <result column="ZDZFFS" property="zdzffs" jdbcType="VARCHAR" />
+    <result column="WCPBM" property="wcpbm" jdbcType="VARCHAR" />
+    <result column="SHBH" property="shbh" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+        HKGS, MC, ZDDL, ZDMR, ZDCP, ZDZF, DKHBM, XYKHH, SPYDM, LXR, LXDH, SJ, EMAIL, MRWZ, 
+        BZBZ, FS0, FS1, FS2, FS3, FS4, FS5, FS6, FS7, FS8, FS9, SFZC, SFSYDL,  
+        DLIPPORT, ZDTSS, BCA, LXRSJQZ, LXRPTSJ, ZDZFFS, 
+        WCPBM, SHBH 
+  </sql>
+  
+   <select id="selectByHkgs_Bca" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from JP_B2B_HKGS
+    where  shbh=#{param1,jdbcType=VARCHAR} 
+	and hkgs = #{param2,jdbcType=VARCHAR} 
+	and nvl(bca,'720102')=#{param3,jdbcType=VARCHAR} 
+  </select>
+  
+   <update id="updateByhkgs" parameterType="cn.vetech.vedsb.jp.entity.b2bsz.JpB2bHkgs">
+    update JP_B2B_HKGS
+    <set>
+      <if test="hkgs != null">
+        HKGS = #{hkgs,jdbcType=VARCHAR},
+      </if>
+      <if test="mc != null">
+        MC = #{mc,jdbcType=VARCHAR},
+      </if>
+      <if test="zddl != null">
+        ZDDL = #{zddl,jdbcType=VARCHAR},
+      </if>
+      <if test="zdmr != null">
+        ZDMR = #{zdmr,jdbcType=VARCHAR},
+      </if>
+      <if test="zdcp != null">
+        ZDCP = #{zdcp,jdbcType=VARCHAR},
+      </if>
+      <if test="zdzf != null">
+        ZDZF = #{zdzf,jdbcType=VARCHAR},
+      </if>
+      <if test="dkhbm != null">
+        DKHBM = #{dkhbm,jdbcType=VARCHAR},
+      </if>
+      <if test="xykhh != null">
+        XYKHH = #{xykhh,jdbcType=VARCHAR},
+      </if>
+      <if test="spydm != null">
+        SPYDM = #{spydm,jdbcType=VARCHAR},
+      </if>
+      <if test="lxr != null">
+        LXR = #{lxr,jdbcType=VARCHAR},
+      </if>
+      <if test="lxdh != null">
+        LXDH = #{lxdh,jdbcType=VARCHAR},
+      </if>
+      <if test="sj != null">
+        SJ = #{sj,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        EMAIL = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="mrwz != null">
+        MRWZ = #{mrwz,jdbcType=VARCHAR},
+      </if>
+      <if test="bzbz != null">
+        BZBZ = #{bzbz,jdbcType=VARCHAR},
+      </if>
+      <if test="fs0 != null">
+        FS0 = #{fs0,jdbcType=VARCHAR},
+      </if>
+      <if test="fs1 != null">
+        FS1 = #{fs1,jdbcType=VARCHAR},
+      </if>
+      <if test="fs2 != null">
+        FS2 = #{fs2,jdbcType=VARCHAR},
+      </if>
+      <if test="fs3 != null">
+        FS3 = #{fs3,jdbcType=VARCHAR},
+      </if>
+      <if test="fs4 != null">
+        FS4 = #{fs4,jdbcType=VARCHAR},
+      </if>
+      <if test="fs5 != null">
+        FS5 = #{fs5,jdbcType=VARCHAR},
+      </if>
+      <if test="fs6 != null">
+        FS6 = #{fs6,jdbcType=VARCHAR},
+      </if>
+      <if test="fs7 != null">
+        FS7 = #{fs7,jdbcType=VARCHAR},
+      </if>
+      <if test="fs8 != null">
+        FS8 = #{fs8,jdbcType=VARCHAR},
+      </if>
+      <if test="fs9 != null">
+        FS9 = #{fs9,jdbcType=VARCHAR},
+      </if>
+      <if test="sfzc != null">
+        SFZC = #{sfzc,jdbcType=VARCHAR},
+      </if>
+      <if test="sfsydl != null">
+        SFSYDL = #{sfsydl,jdbcType=VARCHAR},
+      </if>
+      <if test="dlipport != null">
+        DLIPPORT = #{dlipport,jdbcType=VARCHAR},
+      </if>
+      <if test="zdtss != null">
+        ZDTSS = #{zdtss,jdbcType=VARCHAR},
+      </if>
+      <if test="bca != null">
+        BCA = #{bca,jdbcType=VARCHAR},
+      </if>
+      <if test="lxrsjqz != null">
+        LXRSJQZ = #{lxrsjqz,jdbcType=VARCHAR},
+      </if>
+      <if test="lxrptsj != null">
+        LXRPTSJ = #{lxrptsj,jdbcType=VARCHAR},
+      </if>
+      <if test="zdzffs != null">
+        ZDZFFS = #{zdzffs,jdbcType=VARCHAR},
+      </if>
+      <if test="wcpbm != null">
+        WCPBM = #{wcpbm,jdbcType=VARCHAR},
+      </if>
+      <if test="shbh != null">
+        SHBH = #{shbh,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where shbh = #{shbh,jdbcType=VARCHAR} and bca = #{bca,jdbcType=VARCHAR} and hkgs = #{hkgs,jdbcType=VARCHAR}
+  </update>
+</mapper>

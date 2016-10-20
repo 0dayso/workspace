@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
+  "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib>
+	<tlib-version>1.1</tlib-version>
+	<jsp-version>1.2</jsp-version>
+	<short-name>BaseTag</short-name>
+	<uri>http://vetech.cn/jsp/jstl/baseTag</uri>
+	
+	<!-- 参数标签 -->
+	<tag>
+		<name>csb</name>
+		<tag-class>org.vetech.core.business.tag.ACsbTag</tag-class>
+		<description>默认返回参数表的csz1</description>
+		<attribute>
+			<name>var</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>为返回值取一个名字</description>
+		</attribute>
+		<attribute>
+			<name>bh</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>参数编号</description>
+		</attribute>
+	</tag>
+	
+	<!-- 参数标签 -->
+	<tag> 
+		<name>groupsList</name>
+		<tag-class>org.vetech.core.business.tag.GroupListTag</tag-class>
+		<description>返回所有的组</description>
+		<attribute>
+			<name>shbh</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>商户编号</description>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>为返回值取一个名字</description>
+		</attribute>
+		
+	</tag>
+</taglib>

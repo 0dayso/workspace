@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpgqgl.JpGqdCzrzDao">
+  <sql id="where">
+    <where> 
+    	and a.shbh=#{shbh, jdbcType=VARCHAR}
+		<if test="ywid != null and ywid != '' "> and a.ywid=#{ywid, jdbcType=VARCHAR} </if>
+	</where>
+  </sql>
+  
+  <select id="getCzRzByEntity" parameterType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhddCzrz" resultType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhddCzrz" >
+   	  SELECT * FROM JP_GQD_CZRZ A <include refid="where"/> order by czsj
+  </select>
+ 
+</mapper> 

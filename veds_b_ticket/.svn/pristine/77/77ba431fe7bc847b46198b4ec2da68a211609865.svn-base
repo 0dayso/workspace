@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jptpgl.JpTpdDao">
+
+ <sql id="cpkztwhere">
+	<where>
+	    and t.shbh=#{shbh:VARCHAR}
+	    
+		<choose>
+			<!-- 已提交未完成(YTJ) -->
+			<when test="yw_type == 'YTJ'.toString()">
+                  and t.cg_tpzt='2'
+			</when>
+			<!-- 已办理完成(YBL)-->
+			<when test="yw_type == 'YBL'.toString()">
+                  and t.cg_tpzt='3'   
+			</when>
+			<!-- 待办理(WBL) -->
+			<otherwise>
+			      and ( t.cg_tpzt='0'  or t.cg_tpzt='1' or t.cg_tpzt='4')
+			</otherwise>
+		</choose>
+		<choose> 
+           <!-- 起飞日期 -->
+           <when test="rqtj == '2'.toString()">        
+           	<if test="ksrq != null and ksrq != ''" > and t.cfrq &gt;=to_date(#{ksrq:VARCHAR}, 'yyyy-MM-dd HH24:mi:ss') </if>
+           	<if test="jsrq != null and jsrq != ''" > and t.cfrq &lt;=to_date(#{jsrq:VARCHAR}||'23:59:59', 'yyyy-MM-dd HH24:mi:ss') </if>
+           </when> 
+           <!-- 最晚采购办理时间 -->
+           <when test="rqtj == '3'.toString()">       	
+           	<if test="ksrq != null and ksrq != ''" > and t.cg_zwblsj &gt;=to_date(#{ksrq:VARCHAR}, 'yyyy-MM-dd HH24:mi:ss') </if>
+           	<if test="jsrq != null and jsrq != ''" > and t.cg_zwblsj &lt;=to_date(#{jsrq:VARCHAR}||'23:59:59', 'yyyy-MM-dd HH24:mi:ss') </if>
+           </when> 
+           <!-- 申请日期 -->
+           <otherwise>       	
+           	<if test="ksrq != null and ksrq != ''" > and t.ddsj &gt;=to_date(#{ksrq:VARCHAR}, 'yyyy-MM-dd HH24:mi:ss') </if>
+           	<if test="jsrq != null and jsrq != ''" > and t.ddsj &lt;=to_date(#{jsrq:VARCHAR}||'23:59:59', 'yyyy-MM-dd HH24:mi:ss') </if>
+           </otherwise> 
+	    </choose>  
+	    
+	    <if test="gngj != null and gngj != '' "> 
+	    	and t.gngj=#{gngj:VARCHAR} 
+	    </if>
+	    <if test="xs_tpzt != null and xs_tpzt != '' "> and t.xs_tpzt=#{xs_tpzt:VARCHAR} </if>
+	    <if test="cg_tpzt != null and cg_tpzt != '' "> and t.cg_tpzt=#{cg_tpzt:VARCHAR} </if>
+	    <if test="cg_sfzytp != null and cg_sfzytp != '' "> and t.cg_sfzytp=#{cg_sfzytp:VARCHAR} </if>
+	    <if test="wdid != null and wdid != '' "> and t.wdid=#{wdid:VARCHAR} </if>
+	    <if test="wd_zcdm != null and wd_zcdm != '' "> and t.wd_zcdm like #{wd_zcdm:VARCHAR}||'%' </if>
+	    <if test="wbdh != null and wbdh != '' "> and t.wbdh=#{wbdh:VARCHAR} </if>
+	    <if test="xs_pnr_no != null and xs_pnr_no != '' "> and t.xs_pnr_no=#{xs_pnr_no:VARCHAR} </if>
+	    <if test="tkno != null and tkno != '' "> and exists (select 1 from jp_tpd_mx mx where t.tpdh=tpdh  and mx.tkno=#{tkno:VARCHAR}) </if>
+	    <if test="hc != null and hc != '' "> and t.hc=#{hc:VARCHAR} </if>
+	    <if test="xs_hbh != null and xs_hbh != '' "> and (t.xs_hbh = #{xs_hbh:VARCHAR} or t.xs_hbh = '*'||#{xs_hbh:VARCHAR}) </if>
+	    <if test="cjr != null and cjr != '' "> and t.cjr=#{cjr:VARCHAR} </if>
+	    
+	</where>
+ </sql>
+	
+  <select id="tpCpkztCount" resultType="HashMap" parameterType="java.util.Map" >
+      <!-- 采购退票状态0待提交，1提交中，2已提交，3已办理，4已拒单，9已取消 -->
+       select sum(decode(cg_tpzt, '0', 1, '1', 1, '4', 1, 0)) wbl,
+       sum(decode(cg_tpzt, '2', 1, 0)) ytj,
+       sum(decode(cg_tpzt, '3', 1, 0)) ybl
+       from jp_tpd t
+       <include refid="cpkztwhere"/>
+  </select>
+  
+  <select id="tpCpkztCgLyCount" resultType="HashMap" parameterType="java.util.Map" >
+	 select 
+	       cgly,
+	       cgdw,
+	       sum(decode(cg_tpzt, '0', 1, '1', 1, '4', 1, 0)) wbl,
+	       sum(decode(cg_tpzt, '3', 1, 0)) ybl,
+	       sum(decode(cg_tpzt, '2', 1, 0)) ytj
+	 from (
+               select distinct t.tpdh,
+               decode(t.cgly,'BOP','BSP',t.cgly) cgly,
+               t.cgdw,
+               t.cg_tpzt
+               from jp_tpd t
+               <include refid="cpkztwhere"/>       
+	       )
+	 group by cgly, cgdw
+	 order by cgly, cgdw
+  </select>
+  
+   <select id="tpCpkztQuery" resultType="HashMap" parameterType="java.util.Map">
+   		SELECT B_TABLE.* FROM  (
+        SELECT A_TABLE.*,ROWNUM AS LINENUM FROM (
+       		select t.*,replace((select to_char(wm_concat(tkno)) from  jp_tpd_mx mx where mx.tpdh=t.tpdh and mx.shbh=t.shbh ),',','&lt;br&gt;') tkno,
+       		(select count(1) from jp_qz where ywdh=t.ddbh and ywlx='01') QZCOUNT  from jp_tpd t 
+        		<include refid="cpkztwhere"/>
+        		<if test="cgly != null and cgly != '' "> and t.cgly=#{cgly:VARCHAR} </if>
+	    		<if test="cgdw != null and cgdw != '' "> and t.cgdw=#{cgdw:VARCHAR} </if>
+	     ) A_TABLE WHERE ROWNUM &lt;=(#{pageNum})*#{pageSize}
+		) B_TABLE WHERE LINENUM&gt;(#{pageNum}-1)*#{pageSize}
+   </select>
+   
+   <select id="tpCpkztQueryCount" resultType="int" parameterType="java.util.Map">
+       select count(1)  from jp_tpd t
+        <include refid="cpkztwhere"/>
+        <if test="cgly != null and cgly != '' "> and t.cgly=#{cgly:VARCHAR} </if>
+	    <if test="cgdw != null and cgdw != '' "> and t.cgdw=#{cgdw:VARCHAR} </if>
+   </select>
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpzdcp.JpZdcpCsszDao" >
+
+	<sql id="where">
+		<where>
+			<if test="id != null">
+				and ID = #{id,jdbcType=VARCHAR}
+			</if>
+			<if test="cgly != null">
+				and CGLY = #{cgly,jdbcType=VARCHAR}
+			</if>
+			<if test="cwdm != null">
+				and CWDM = #{cwdm,jdbcType=VARCHAR}
+			</if>
+			<if test="cwxx != null">
+				and CWXX = #{cwxx,jdbcType=VARCHAR}
+			</if>
+			<if test="cscs != null">
+				and CSCS = #{cscs,jdbcType=DECIMAL}
+			</if>
+			<if test="sjjg != null">
+				and SJJG = #{sjjg,jdbcType=DECIMAL}
+			</if>
+			<if test="cjsj != null">
+				and CJSJ = #{cjsj,jdbcType=DATE}
+			</if>
+			<if test="cjUserid != null">
+				and CJ_USERID = #{cjUserid,jdbcType=VARCHAR}
+			</if>
+			<if test="xgsj != null">
+				and XGSJ = #{xgsj,jdbcType=DATE}
+			</if>
+			<if test="xgyh != null">
+				and XGYH = #{xgyh,jdbcType=VARCHAR}
+			</if>
+			<if test="zt != null">
+				and ZT = #{zt,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</sql>
+  
+  <select id="selectAllJpZdcpCssz" resultType="cn.vetech.vedsb.jp.entity.jpzdcp.JpZdcpCssz" parameterType="cn.vetech.vedsb.jp.entity.jpzdcp.JpZdcpCssz" >
+    select * from JP_ZDCP_CSSZ
+    <include refid="where"></include>
+  </select>
+  
+</mapper>

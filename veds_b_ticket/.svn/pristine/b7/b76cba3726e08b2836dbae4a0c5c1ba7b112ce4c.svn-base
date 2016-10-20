@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpddsz.JpKhddJplbDao">
+ 
+  	<select id="selectByJp" resultType="cn.vetech.vedsb.jp.entity.jpddsz.JpKhddJplb" 
+		parameterType="HashMap" >
+		SELECT * FROM JP_KHDD_JPLB WHERE wdid =#{wdid} and shbh=#{shbh}
+		and (phhtzt = '0' or (phhtzt = '2' and  (xchtsj is null or xchtsj &lt; sysdate ))) 
+		and cjsj &gt; to_date(#{zwhtsj},'yyyy-mm-dd hh24:mi:ss')
+	</select>
+	
+	<update id="updateJplbByBean" parameterType="cn.vetech.vedsb.jp.entity.jpddsz.JpKhddJplb">
+		update JP_KHDD_JPLB 
+   		<set>
+  	 		<if test="phhtzt != null" >
+      		PHHTZT = #{phhtzt:VARCHAR},
+            </if>
+     		<if test="phhtsbyy != null" >
+       		PHHTSBYY = #{phhtsbyy:VARCHAR},
+      		</if>
+      		<if test="phhtsbcs != null" >
+       		PHHTSBCS = #{phhtsbcs:VARCHAR},
+      		</if>
+      		<if test="xchtsj != null" >
+       		XCHTSJ = #{xchtsj:TIMESTAMP},
+      		</if>
+      		<if test="xgsj != null" >
+       		XGSJ = #{xgsj:TIMESTAMP},
+      		</if>
+      		<if test="xgyh != null" >
+       		XGYH = #{xgyh:VARCHAR},
+      		</if>
+    	</set>
+    	where shbh =#{shbh} and wbdh=#{wbdh}
+    	<if test="ddbh != null and ddbh != ''" > 
+    		and ddbh = #{ddbh}
+    	</if>
+	</update>
+	
+</mapper>

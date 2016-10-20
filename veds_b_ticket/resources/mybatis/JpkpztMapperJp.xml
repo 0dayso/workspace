@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpztjk.JpkpztDao">
+	<!-- 到期OPEN票分页查询 -->
+	<select id="queryJpkpztList" resultType="java.util.HashMap">
+		select * from (
+			select t.*,rownum from (
+				select tas.*, alls.CP_DATETIME,alls.CJR,alls.HC,alls.XS_HBH,alls.HKGS,
+					alls.XS_CW,alls.CFRQ,alls.CFSJ,alls.XS_ZDJ,alls.XS_JSF,alls.XS_TAX,
+					alls.CP_OFFICEID,alls.WORKNO,alls.PRINTNO,alls.CP_BMBH,alls.CP_YHBH,
+					(nvl(alls.XS_ZDJ, 0) + nvl(alls.XS_JSF, 0) + nvl(alls.XS_TAX, 0)) xj,
+					(nvl(alls.CG_PJ, 0) + nvl(alls.CG_JSF, 0) + nvl(alls.CG_TAX, 0) + nvl(alls.CG_DLF, 0)) cgje,
+			        decode(tas.CL_ZT, 0, '未处理', 1, '已处理') cl_ztmc,
+			        (case
+			          when instr(tas.status, 'OPEN FOR USE') = 0 and
+			               instr(tas.status, 'REFUNDED') > 0 then
+			           decode(tas.bdwt, '1', '未退', '已退')
+			          else
+			           ''
+			        end) bdwtzt
+   	    	from jp_kpzt tas left join jp_jp alls on tas.tkno = alls.tkno and tas.shbh=alls.shbh where 1 = 1
+					<include refid="queryJpkpzt"/>
+					order by #{sortType, jdbcType=VARCHAR} ) t	) 
+		where rownum &gt;(#{pageNum}-1)*#{pageSize} and rownum &lt;=(#{pageNum})*#{pageSize}
+	</select>
+
+	<select id="queryJpkpztSlist" resultType="java.util.HashMap">
+		select * from (
+			select t.*,rownum from (
+				select sum(nvl(alls.XS_ZDJ, 0)) jpzdjs,sum(nvl(alls.XS_JSF, 0)) jpjsfs,sum(NVL(alls.XS_TAX, 0)) jptaxs,
+       				(sum(nvl(alls.XS_ZDJ, 0)) + sum(NVL(alls.XS_JSF, 0)) + sum(NVL(alls.XS_TAX, 0))) xjs
+  			from jp_kpzt tas left join jp_jp alls on tas.tkno = alls.tkno and tas.shbh=alls.shbh where 1 = 1
+  				<include refid="queryJpkpzt"/>
+				order by #{sortType, jdbcType=VARCHAR} ) t	) 
+		where rownum &gt;(#{pageNum}-1)*#{pageSize} and rownum &lt;=(#{pageNum})*#{pageSize}
+	</select>
+
+	<select id="queryJpkpztCount" parameterType="cn.vetech.vedsb.jp.entity.jpztjk.Jpkpzt" resultType="Integer">
+		select count(1) from jp_kpzt tas left join jp_jp alls on tas.tkno = alls.tkno and tas.shbh=alls.shbh 
+			where 1 = 1 <include refid="queryJpkpzt"/>
+	</select>
+
+	<update id="updateByTkno" parameterType="cn.vetech.vedsb.jp.entity.jpztjk.Jpkpzt">
+		update jp_kpzt
+		<set>
+			<if test="clZt != null and clZt != ''">CL_ZT = #{clZt,jdbcType=VARCHAR},</if>
+			<if test="clDatetime != null and clDatetime != ''">CL_DATETIME = #{clDatetime,jdbcType=VARCHAR},</if>
+			<if test="clUserid != null and clUserid != ''">CL_USERID = #{clUserid,jdbcType=VARCHAR},</if>
+			<if test="clDeptid != null and clDeptid != ''">CL_DEPTID = #{clDeptid,jdbcType=VARCHAR},</if>
+			<if test="clCompid != null and clCompid != ''">CL_COMPID = #{clCompid,jdbcType=VARCHAR},</if>
+			<if test="clBz != null and clBz != ''">CL_BZ = #{clBz,jdbcType=VARCHAR}</if>
+		</set>
+		WHERE TKNO = #{tkno,jdbcType=VARCHAR} and SHBH=#{shbh,jdbcType=VARCHAR} 
+	</update>
+
+	<sql id="queryJpkpzt">
+		and tas.SHBH=#{jpkpzt.shbh, jdbcType=VARCHAR}
+		<if test="jpkpzt.kssj!=null and jpkpzt.kssj!=''">
+			and tas.ZH_DATETIME &gt;= #{jpkpzt.kssj} 
+		</if>
+		<if test="jpkpzt.jssj!=null and jpkpzt.jssj!=''">
+			and tas.ZH_DATETIME &lt;= #{jpkpzt.jssj} 
+		</if>
+		<if test="jpkpzt.status != null and jpkpzt.status != '' ">
+			and (tas.STATUS like '%'||#{jpkpzt.status, jdbcType=VARCHAR}||'%' or tas.ZH_STATUS like '%'||#{jpkpzt.status, jdbcType=VARCHAR}||'%')
+		</if>
+		<if test="jpkpzt.clZt!=null and jpkpzt.clZt!=''">
+			and tas.CL_ZT = #{jpkpzt.clZt, jdbcType=VARCHAR} 
+		</if>
+		<if test="jpkpzt.cgly!=null and jpkpzt.cgly!=''">
+			and tas.CGLY = #{jpkpzt.cgly, jdbcType=VARCHAR} 
+		</if>
+		<if test="jpkpzt.cprs!=null and jpkpzt.cprs!=''">
+			and tas.CP_DATE &gt;= #{jpkpzt.cprs} 
+		</if>
+		<if test="jpkpzt.cprz!=null and jpkpzt.cprz!=''">
+			and tas.CP_DATE &lt;= #{jpkpzt.cprz} 
+		</if>
+		<if test="jpkpzt.tkno!=null and jpkpzt.tkno!=''">
+			and tas.TKNO = #{jpkpzt.tkno, jdbcType=VARCHAR} 
+		</if>
+		<if test="jpkpzt.pnrNo!=null and jpkpzt.pnrNo!=''">
+			and tas.PNR_NO = #{jpkpzt.pnrNo, jdbcType=VARCHAR} 
+		</if>
+	</sql>
+</mapper>

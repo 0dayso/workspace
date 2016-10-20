@@ -1,0 +1,269 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@include file="/WEB-INF/layouts/asms/taglib.jsp"%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>景区列表界面</title>
+<script type="text/javascript" src="/static/core/component/common/jquery.menu.js"></script>
+</head>
+
+<body>
+	<script type="text/javascript">
+		$(function() {
+		    // 页面加载时获取省份的选择状态
+			loadCity($("#sssf option:selected").val());
+			
+			initMenu($(".order_menu"));
+			
+		});
+
+		var nodes = 
+		[ 
+			{
+				"items" : "priceplan_edit",
+				"text" : "编辑",
+				"icon" : "/static/asms/images/op-qz.gif"
+			},
+		
+			 {
+				"items" : "priceplan_open",
+				"text" : "开放",
+				"icon" : "/static/asms/images/gogo.png"
+			}, 
+			
+			{
+				"items" : "priceplan_close",
+				"text" : "关闭",
+				"icon" : "/static/asms/images/del.gif"
+			},
+		 ];
+		
+		function callback($element, menuItem) {
+			var item = menuItem.items;
+			var jqid = $element.attr("jqid");
+			
+
+			if (item == "priceplan_edit") {//编辑
+				//priceplan_edit(jhbh); 
+				save(jqid);
+				
+			} else if (item == "priceplan_open") {// 开放
+				updateJqzt(jqid, "1");
+			} else if (item == "priceplan_close"){ // 关闭
+				updateJqzt(jqid, "0");
+			}
+		}
+		
+		
+		function updateJqzt(jqid, jqzt){
+			$.post("/asms/mticket/jingqu/jq_jbxx/save", {"jqid" : jqid, "jqzt" : jqzt}, function(res){
+				if(res.status != "1" ){
+					var index = layer.alert("修改失败：" + res.errorMessage,function(){
+						layer.closeAll();
+					});
+				}else{
+					var index = layer.alert("修改成功",function(){
+						
+						if(jqzt == "1"){
+							$("#jqzt_" + jqid).html("开启");
+						}
+						else{
+							$("#jqzt_" + jqid).html("关闭");
+						}
+						
+						layer.close(index);
+						$("#order_menu_" + jqid).attr("jqzt", jqzt);
+						initMenu($("#order_menu_" + jqid));
+						
+					});
+			    }
+			
+			});
+		}
+		
+		
+		//省份城市连联动
+		function loadCity(id) {
+			//先删除原来的城市数据
+			$("#sscs option").filter(function(){
+				return this.innerHTML.indexOf("==") != 0;
+			}).remove();
+			
+			$.get("/asms/sysconfig/jcsj/b_city/loadCity", { id : id }, function(response) {
+				//	获取页面原来的状态
+				var old_city = "${param.sscs}";
+				
+				//遍历json数组
+				$(response).each( function(i) {
+					//相等说明就要回显
+					if (old_city == response[i].cityid) 
+						$("#sscs").append( "<option value="+response[i].cityid+" selected='selected'>" + response[i].cityname + "</option>");
+					else 
+						$("#sscs").append( "<option value="+response[i].cityid+">" + response[i].cityname + "</option>");
+					
+				});
+			});
+		}
+		
+		// 关闭新增窗口,刷新页面
+		function closeWindowAndRefresh(){
+			layer.close();
+			$("#queryForm").submit();
+		}
+		
+		
+		// 重写初始化
+		function initMenu($obj){
+			$obj.createMenu(nodes,callback, {"width":"90","model":2, "beforeInit":function($elem,$li,model,data){
+  		
+	  			var item = data.items;
+	  			var jqzt = $elem.attr("jqzt");
+				if(item == "priceplan_edit"){	//编辑
+					return true;
+				}
+				else if(item == "priceplan_open"){	//开放
+				
+					if(jqzt == "1")
+						return false;
+					else
+						return true;
+				}
+				else if(item == "priceplan_close"){//关闭
+					if(jqzt != "1")
+						return false;
+					else
+						return true;
+				}
+	  		}});
+		}
+		
+		// 去编辑页面
+		function save(jqid){
+			var index = layer.open({
+				
+		    //title: '提示',
+		    title: '',
+		    type: 2,
+		    skin: 'layui-layer-rim', //加上边框
+		    area: ['420px', '240px'], //宽高
+		    content: '/asms/mticket/jingqu/jq_jbxx/load?jqid=' + jqid,
+		    maxmin: true
+		    
+			});
+			
+			layer.full(index);
+		}
+	</script>
+
+
+	<form id="queryForm" action="/asms/mticket/jingqu/jq_jbxx/query" method="get">
+		<table width="100%" class="tableOne" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td class="tableRight" style="width:110px">景区名称：</td>
+				
+				<td>
+					<input type="text" id="jqmc" name="jqmc" value="${param.jqmc }" />
+				</td>
+				
+				<td class="tableRight" style="width:110px">所属省份：</td>
+				
+				<td>
+					<select name="sssf" id="sssf" onchange="loadCity(this.value)">
+						<option value="">==请选择==</option>
+						<c:forEach items="${provinces }" var="one">
+							<option value="${one.id }" ${one.id eq param.sssf ? 'selected=selected':'' }>${one.name }</option>
+						</c:forEach>
+					</select>
+				</td>
+				
+				<td class="tableRight" style="width:110px">所属城市：</td>
+				
+				<td>
+					<select name="sscs" id="sscs">
+						<option value="">==请选择==</option>
+					</select>
+				</td>
+				
+				<td class="tableRight" style="width:110px">景区主题：</td>
+				
+				<td>
+					<select name="ztbh" id="ztbh">
+						<option value="">==请选择==</option>
+						<c:forEach items="${classes }" var="one">
+							<option value="${one.id }" ${param.ztbh eq one.id ? 'selected=selected':'' }>${one.mc }</option>
+						</c:forEach>
+					</select>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="tableRight" style="width:110px">是否热门景区：</td>
+				
+				<td>
+					<select name="rmjq">
+						<option value="">==请选择==</option>
+						<option value="1" ${param.rmjq eq '1' ? 'selected=selected':'' }>是</option>
+						<option value="0" ${param.rmjq eq '0' ? 'selected=selected':'' }>否</option>
+					</select>
+				</td>
+				
+				<td class="tableRight" style="width:110px">是否推荐景区：</td>
+				
+				<td>
+					<select name="tjjq">
+						<option value="">==请选择==</option>
+						<option value="1" ${param.tjjq eq '1' ? 'selected=selected':'' }>是</option>
+						<option value="0" ${param.tjjq eq '0' ? 'selected=selected':'' }>否</option>
+					</select>
+				</td>
+				
+				<td class="tableRight" style="width:110px">景区等级：</td>
+				
+				<td>
+					<select name="jqdj">
+						<option value="">==请选择==</option>
+						<option value="AAAAA" ${param.jqdj eq 'AAAAA' ? 'selected=selected':'' }>AAAAA</option>
+						<option value="AAAA" ${param.jqdj eq 'AAAA' ? 'selected=selected':'' }>AAAA</option>
+						<option value="AAA" ${param.jqdj eq 'AAA' ? 'selected=selected':'' }>AAA</option>
+						<option value="AA" ${param.jqdj eq 'AA' ? 'selected=selected':'' }>AA</option>
+						<option value="A" ${param.jqdj eq 'A' ? 'selected=selected':'' }>A</option>
+					</select>
+				</td>
+				
+				<td colspan="2">
+					<input type="submit" value="查询" class="asms_icons searchBtn" />
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+					<input type="button" value="新增" class="yellowBtn" onclick="save()"/>
+				</td>
+			</tr>
+		</table>
+	</form>
+	<multipage:pone actionFormName="page" page="/asms/mticket/jingqu/jq_jbxx/query" var="var" curl="surl" />
+	${var}
+	<display:table id="vc" name="page.list" class="tableList tableLine" style="width:100%;" sort="external"
+		decorator="org.displaytag.decorator.TotalTableDecorator" requestURI="/asms/mticket/jingqu/jq_jbxx/query">
+		<display:column title="序号" style="text-align:center;">${vc_rowNum}</display:column>
+		<display:column title="操作">
+			<!-- 自定义属性，用于操作判断景区状态 -->
+			<input type="button" id="order_menu_${vc.jqid }" class="order_menu initiBtn" value="操 作 " jqzt="${vc.jqzt }" jqid="${vc.jqid}" />
+		</display:column>
+		<display:column title="景区名称" style="text-align:center;">${vc.jqmc }</display:column>
+		<display:column title="所属省份" style="text-align:center;">${vc.sssf } </display:column>
+		<display:column title="所属城市" style="text-align:center;">${vc.sscs }</display:column>
+		<display:column title="景区主题" style="text-align:center;">${vc.ztbh } </display:column>
+		<display:column title="景区等级" style="text-align:center;" sortable="true" sortName="jqdj">${vc.jqdj } </display:column>
+		<display:column title="景区状态" style="text-align:center;"><span id="jqzt_${vc.jqid }">${vc.xsjqzt }</span></display:column>
+		<display:column title="是否热门" style="text-align:center;" sortable="true" sortName="rmjq">${vc.rmjqzt }</display:column>
+		<display:column title="是否推荐" style="text-align:center;" sortable="true" sortName="tjjq">${vc.sftjjq }</display:column>
+		<display:column title="客服电话" style="text-align:center;">${vc.jqdh }</display:column>
+	</display:table>
+	${var }
+
+
+</body>
+
+</html>

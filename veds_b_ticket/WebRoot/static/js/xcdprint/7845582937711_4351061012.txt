@@ -1,0 +1,21 @@
+<Response><StatementName>INV</StatementName><ServiceType>TKT</ServiceType><SerialNo>1</SerialNo><Encryption>Y</Encryption><Method>6</Method><Flag>S</Flag><TKTS><Command>DETR:TN/7845582937711,T/P/4351061012</Command><TKT>
+
+ 
+ TEST/SHEN       429006198802068016           按总则执行
+
+ JW66FB
+
+  T3北京首都         T1南航CZ3784  W 2011-12-15 12:25  YRT95      06DEC  06DEC 20K
+
+  武汉         南航CZ3783  Y 2011-12-16 10:00  YRT95      06DEC  06DEC 20K
+
+  北京首都
+
+
+
+             CNY 1520.00CN   100.00YQ   140.00           CNY 1760.00
+    7845582937711       1012                                         XXX
+
+    XXX191                                                    2011-12-06
+    08318505            XXXX航空服务公司
+</TKT><TIMESTAMP>24d465e1</TIMESTAMP></TKTS></Response>

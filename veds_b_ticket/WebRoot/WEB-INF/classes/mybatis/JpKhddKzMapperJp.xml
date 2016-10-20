@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpddgl.JpKhddKzDao" >
+
+  <select id="query" resultType="HashMap"
+		parameterType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhddKz">
+		SELECT * FROM JP_KHDD_KZ
+	</select>
+
+
+	<select id="detail" resultType="HashMap"
+		parameterType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhddKz">
+		SELECT * FROM JP_KHDD_KZ where id=#{id} and shbh=#{shbh}
+	</select>
+
+
+	<select id="getJpKhddKzByDdbh" resultType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhddKz"
+		parameterType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhddKz">
+		SELECT * FROM JP_KHDD_KZ where ddbh=#{ddbh} and shbh=#{shbh}
+	</select>
+
+	<select id="getPageCount" resultType="integer"
+		parameterType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhddKz">
+		SELECT COUNT(1) FROM JP_KHDD_KZ where  shbh=#{shbh}
+	</select>
+	<!-- 交票用SQL，根据订单编号数组查询  -->
+	<select id="selectJpByDdbh" resultType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhddKz" 
+		parameterType="HashMap">
+		SELECT DDBH,SHBH,PHHTZT,CPDH 
+        	FROM JP_KHDD_KZ where shbh =#{shbh} and ddbh in
+        	<foreach item="item" index="index" collection="ddbhs" 
+            	open="(" separator="," close=")">
+                #{item}
+            </foreach>
+	</select>
+	<update id="updateKzByCpdh" parameterType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhddKz">
+		update JP_KHDD_KZ
+		<set> PHHTSBYY
+			<if test="jjd != null" >
+      		JJD = #{jjd:VARCHAR},
+            </if>
+            <if test="cpcs != null" >
+      		CPCS = #{cpcs:VARCHAR},
+            </if>
+    	</set>
+    	where shbh =#{shbh} and cpdh =#{cpdh}
+	</update>
+	<update id="updateJpZtByDdbh" parameterType="HashMap">
+		update JP_KHDD_KZ 
+   		<set>
+  	 		<if test="phhtzt != null" >
+      		PHHTZT = #{phhtzt:VARCHAR},
+            </if>
+     		<if test="phhtsbyy != null" >
+       		PHHTSBYY = #{phhtsbyy:VARCHAR},
+      		</if>
+      		phhtsbcs = (phhtsbcs+1),
+    	</set>
+    	where shbh =#{shbh}
+	   	  and ddbh in
+	      <foreach item="item" index="index" collection="ddbhs" 
+	          	open="(" separator="," close=")">
+	              #{item}
+	       </foreach>
+	</update>
+</mapper>

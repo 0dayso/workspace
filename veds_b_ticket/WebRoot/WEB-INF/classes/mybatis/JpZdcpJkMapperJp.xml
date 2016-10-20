@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpzdcp.JpZdcpJkDao" >
+
+<sql id="where">
+  	<where>
+  	  a.DDBH = k.DDBH
+   	  <if test="shbh !=null and shbh !=''">
+    	and a.SHBH = #{shbh,jdbcType=VARCHAR}
+      </if> 
+      <if test="hc !=null and hc !=''">
+      	and a.DD_HC like '%'||#{hc,jdbcType=VARCHAR}||'%'
+      </if>
+      <if test="hbh !=null and hbh !=''">
+      	and (a.DD_HBH = #{hbh,jdbcType=VARCHAR} or a.DD_HBH = '*'||#{hbh,jdbcType=VARCHAR})
+      </if>
+      <if test="cjr !=null and cjr !=''">
+      	and k.CJR like '%'||#{cjr,jdbcType=VARCHAR}||'%'
+      </if>
+      <if test="cpy !=null and cpy !=''">
+      	and a.ZDCPY like '%'||#{cpy,jdbcType=VARCHAR}||'%'
+      </if>
+      <if test="gngj !=null and gngj !=''">
+      	and k.GNGJ=#{gngj,jdbcType=VARCHAR}
+      </if>
+      <if test="pnr !=null and pnr !=''">
+      	and (a.DD_PNRNO=#{pnr,jdbcType=VARCHAR} or a.NEW_PNR=#{pnr,jdbcType=VARCHAR})
+      </if>
+      <if test="ksrq !=null and ksrq !=''">
+      	and k.DDSJ &gt;= to_date(#{ksrq,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+      	and a.CJSJ &gt;= to_date(#{ksrq,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+      </if>
+      <if test="jsrq !=null and jsrq !=''">
+      	and k.DDSJ &lt;= to_date(#{jsrq,jdbcType=VARCHAR}||'23:59:59','yyyy-mm-dd hh24:mi:ss')
+      	and a.CJSJ &lt;= to_date(#{jsrq,jdbcType=VARCHAR}||'23:59:59','yyyy-mm-dd hh24:mi:ss')
+      </if>
+      <if test="cgly !=null and cgly !=''">
+      	and k.CGLY=#{cgly,jdbcType=VARCHAR}
+      </if>
+      
+      
+      <if test="cpcgsjs !=null and cpcgsjs != '' ">
+      	and a.cpwcsj &gt;= to_date(#{cpcgsjs,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+      </if>
+      <if test="cpcgsjz !=null and cpcgsjz != '' ">
+      	and a.cpwcsj &lt;= to_date(#{cpcgsjz,jdbcType=VARCHAR}||'23:59:59','yyyy-mm-dd hh24:mi:ss')
+      </if>
+      
+      <if test="cpzt !=null and cpzt !=''">
+      	and
+      	<foreach collection="cpzt" index="index" item="item" open="(" separator="or" close=")">  
+            <if test="item  == '-1'.toString()">
+      			a.cpzt &lt; '0'
+      		</if>
+      		<if test="item  == '0'.toString()">
+      			a.cpzt = '0'
+      		</if>
+      		<if test="item  == '1'.toString()">
+      			a.cpzt &gt; '0' and a.cpzt != '40'
+      		</if>
+      		<if test="item  == '40'.toString()">
+      			a.cpzt = '40'
+      		</if>
+    	</foreach>
+      </if>
+      <if test="zdcp_sffh !=null and zdcp_sffh !='' and zdcp_sffh == '1'.toString()">
+      		and a.ZDCP_SFFH =#{zdcp_sffh,jdbcType=VARCHAR}
+      </if>
+      <if test="hkgs !=null and hkgs !=''">
+      	and a.DD_HKGS=#{hkgs,jdbcType=VARCHAR}
+      </if>
+      <if test="ddbh !=null and ddbh !=''">
+      	and a.DDBH=#{ddbh,jdbcType=VARCHAR}
+      </if>
+      <if test="wdid !=null and wdid !=''">
+      	and k.WDID=#{wdid,jdbcType=VARCHAR}
+      </if>
+  	</where>
+  </sql>
+
+  <select id="selectAllJpZdcpJk" resultType="HashMap" parameterType="HashMap">
+  select * from (
+		select t.*,rownum from (
+    SELECT 
+    a.*,k.WD_ZCDM WD_ZCDM,K.DDZT DDZT,k.CJR CJR,k.CGZT CGZT,k.DDSJ DDSJ,
+    k.WD_ZCLX,k.WDID WDID ,k.HKGS HKGS,k.FAID,k.CGLY,K.CP_SDR
+    FROM JP_ZDCP_JK a ,JP_KHDD k
+   <include refid="where"/>
+    order by ${orderBy} ) t where rownum &lt;=(#{pageNum})*#{pageSize}) z
+ 		where z.rownum &gt;(#{pageNum}-1)*#{pageSize} 
+  </select>
+  
+  <select id="selectAllJpZdcpJkCount" resultType="int" parameterType="HashMap">
+    SELECT count(1)  FROM JP_ZDCP_JK a ,JP_KHDD k
+   <include refid="where"/>
+  </select>
+  
+  
+ <select id="getZdcpDdByWdid" resultType="HashMap" parameterType="HashMap">
+    select * from (
+    select ddbh from jp_khdd dd
+  	where dd.wdid = #{wdid,jdbcType=VARCHAR}  
+  	and dd.shbh=#{shbh,jdbcType=VARCHAR}  
+  	and dd.ddzt='1' 
+  	and nvl(dd.cg_pnr_zt,'HK') != 'RR' 
+  	and dd.gngj=#{gngj,jdbcType=VARCHAR}
+    and not exists(select 1 from jp_zdcp_jk jk where jk.ddbh = dd.ddbh and jk.shbh=dd.shbh ) 
+    and dd.sfsgd = '0'      
+  	and dd.ddsj >= sysdate-0.5 
+  	order by dd.ddsj ) b_table 
+  	<if test="count != null and count != ''">
+      	where rownum &lt;=#{count,jdbcType=VARCHAR}
+    </if>
+
+ </select>
+ 
+  
+</mapper>

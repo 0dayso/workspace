@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.office.JpOfficeDao" >
+<select id="getJpOffice" parameterType="cn.vetech.vedsb.jp.entity.office.JpOffice"  resultType="cn.vetech.vedsb.jp.entity.office.JpOffice">
+    SELECT * FROM JP_OFFICE WHERE SHBH=#{shbh} 
+    <if test="id != null and id != ''" >
+  	   AND ID=#{id}
+  	</if>
+    <if test="officeid != null and officeid != ''" >
+  	   AND OFFICEID=#{officeid}
+  	</if>
+  	<if test="sfbopcp != null and sfbopcp != ''" >
+  	   AND SFBOPCP=#{sfbopcp}
+  	</if>
+  	
+     AND ROWNUM=1
+</select>
+
+
+<select id="selectJpOfficeByShbh" parameterType="cn.vetech.vedsb.jp.entity.office.JpOffice"  resultType="cn.vetech.vedsb.jp.entity.office.JpOffice">
+    SELECT * FROM JP_OFFICE WHERE SHBH=#{shbh} 
+</select>
+
+<select id="selectJpOfficeByOffice"  resultType="cn.vetech.vedsb.jp.entity.office.JpOffice">
+    SELECT * FROM JP_OFFICE WHERE OFFICEID=#{officeid} 
+</select>
+
+</mapper>

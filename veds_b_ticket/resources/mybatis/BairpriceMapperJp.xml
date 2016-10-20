@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.airway.BairpriceDao">
+	<sql id="where">
+	    <where>
+			<if test="cfcity != null and cfcity != '' "> and a.CFCITY=#{cfcity,jdbcType=VARCHAR} </if>
+	        <if test="ddcity != null and ddcity != '' "> and a.DDCITY=#{ddcity,jdbcType=VARCHAR} </if>
+	      	<if test="hkgs != null and hkgs != '' "> and a.HKGS=#{hkgs,jdbcType=VARCHAR} </if>
+	      	<if test="yxq != null and yxq != '' "> and a.YXQ &lt;= #{yxq,jdbcType=VARCHAR} </if>
+		</where>
+  	</sql>
+  	
+  	<select id="getYcj" resultType="Double" parameterType="cn.vetech.vedsb.jp.entity.airway.Bairprice">
+  		SELECT YCJ FROM ( SELECT YCJ  FROM B_AIR_PRICE A
+  		    <include refid="where"/>
+  		ORDER BY NVL(a.YXQ, '1900-01-01') DESC )
+  		WHERE ROWNUM = 1
+  	</select>
+  	
+</mapper>

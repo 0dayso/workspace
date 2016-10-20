@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.procedures.PkgExtendDao">
+	<!-- 根据商户编号获取本地扫描需要扫描的OPEN票-->
+	<select id="getTksForCompanies" parameterType="Map" statementType="CALLABLE">
+		{ call pkg_extend.proc_get_tks_for_companies(#{CPRQ,mode=IN,jdbcType=VARCHAR},
+													   #{SHBH,mode=IN,jdbcType=VARCHAR},
+													   #{list,mode=OUT,jdbcType=CURSOR,resultMap=returnMap})
+		}
+	</select>
+	
+	<!-- DETR回写接口 -->
+	<select id="fUpdateTkState" parameterType="Map" statementType="CALLABLE">
+		{ #{result,mode=OUT,jdbcType=INTEGER}=call pkg_extend.f_update_tkstate(
+														#{p_xml,mode=IN,jdbcType=VARCHAR},
+														#{ERROR,mode=OUT,jdbcType=VARCHAR})
+		}
+	</select>
+</mapper>
+

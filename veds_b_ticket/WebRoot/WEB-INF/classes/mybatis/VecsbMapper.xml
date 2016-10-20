@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.vetech.vedsb.common.dao.base.VecsbDao">
+	<!-- 根据参数编号和商户编号查找参数对象 -->
+	<select id="getVecsbByBh" parameterType="cn.vetech.vedsb.common.entity.base.Vecsb" resultType="cn.vetech.vedsb.common.entity.base.Vecsb">
+		select id,bh,csz1,csz2,csms,cslxbh,cslxmc,compid,sfxs,cj_userid,cjsj,xg_userid,xgsj
+		 from ve_csb where bh=#{bh}
+	</select>
+	
+	<update id="updateVecsbMb" parameterType="cn.vetech.vedsb.common.entity.base.Vecsb">
+		update ve_csb set xg_userid=#{xg_userid},xgsj=#{xgsj},csz1=#{csz1} where bh=#{bh} and compid=#{compid}
+	</update>
+</mapper> 

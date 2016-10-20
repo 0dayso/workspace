@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.procedures.PkgZjpSgDao">
+
+	 <select id="sgZjp" parameterType="map" statementType="CALLABLE" >
+		{#{result,mode=OUT,jdbcType=INTEGER}=call pkg_zjp_sg.f_zjp_sg(
+		                                     #{p_xml,mode=IN,jdbcType=VARCHAR},
+		                                     #{error,mode=OUT,jdbcType=VARCHAR})}
+  	</select>
+  	
+  	 <!-- cps出票通知给电商转机票 -->
+	  <select id="fzdzjpCps" parameterType="map" statementType="CALLABLE">
+	  	{#{result,mode=OUT,jdbcType=INTEGER}=call pkg_zjp_sg.f_zdzjp_cps(
+	  										#{p_xml,mode=IN,jdbcType=CLOB},
+	  										#{perror,mode=OUT,jdbcType=VARCHAR})
+	    }
+	  </select>
+	  
+	   <!-- 平台通知给电商转机票 -->
+	  <select id="fzjppt" parameterType="map" statementType="CALLABLE">
+	   {#{result,mode=OUT,jdbcType=INTEGER}=call pkg_zjp_sg.f_zjp_pt(
+	   										#{p_xml,mode=IN,jdbcType=CLOB},
+	   										#{perror,mode=OUT,jdbcType=VARCHAR})}
+	  </select>
+	  
+	  <!-- 航司官网订单转机票 -->
+	  <select id="fzjpb2b" parameterType="map" statementType="CALLABLE">
+	   {#{result,mode=OUT,jdbcType=INTEGER}=call pkg_zjp_sg.f_zjp_b2b(
+	   										#{p_xml,mode=IN,jdbcType=CLOB},
+	   										#{perror,mode=OUT,jdbcType=VARCHAR})
+	   }
+	  </select>
+	  <!-- 淘宝派单业务转机票 -->
+	  <select id="fzjppd" parameterType="map" statementType="CALLABLE">
+	   {#{result,mode=OUT,jdbcType=INTEGER}=call pkg_zjp_sg.f_zjp_pd(
+	   										#{p_xml,mode=IN,jdbcType=CLOB},
+	   										#{perror,mode=OUT,jdbcType=VARCHAR})
+	   }
+	  </select>
+	  
+</mapper>

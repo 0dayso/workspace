@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.pzzx.JpPzThDao" >
+  <insert id="batchInsertJpPzTh" parameterType="java.util.List">
+  	  INSERT INTO JP_PZ_TH (TH_NO, TH_DATETIME, YHBH, BMBH, SHBH, PZTYPE, STARTNO, ENDNO, SHSL,BZBZ,OFFICEID) 
+	<foreach collection="list" item="item" index="index"  separator="union all" >  
+       SELECT #{item.thNo},#{item.thDatetime},#{item.yhbh},#{item.bmbh},#{item.shbh},#{item.pztype},
+        #{item.startno},#{item.endno},#{item.shsl},#{item.bzbz},#{item.officeid} FROM DUAL 
+    </foreach>
+  </insert>
+  <sql id="where">
+    <where>
+    	 <if test="shbh !=null and shbh !=''">
+    		SHBH = #{shbh,jdbcType=VARCHAR}
+    	 </if> 
+         <if test="startno != null and startno !='' and  endno != null and endno != '' ">
+         	and to_number(startno) between #{startno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR}
+         	and to_number(endno) between #{startno,jdbcType=VARCHAR} and #{endno,jdbcType=VARCHAR}
+         </if>
+         <if test="startno == '' and endno != '' ">
+         	and endno=#{endno,jdbcType=VARCHAR}
+         </if>
+         <if test="startno != '' and endno =='' ">
+         	and startno=#{startno,jdbcType=VARCHAR}
+         </if>
+         <if test="pztype !=null and pztype !='' ">
+         	and pztype=#{pztype,jdbcType=VARCHAR}
+         </if>
+         <if test="ksrq !=null and ksrq !='' and jsrq !=null and jsrq !='' ">
+         	and th_datetime between #{ksrq,jdbcType=VARCHAR} and #{jsrq,jdbcType=VARCHAR}
+         </if>
+         <if test="bmbh !=null and bmbh !='' ">
+         	and bmbh=#{bmbh,jdbcType=VARCHAR}
+         </if>
+         <if test="pztype !=null and pztype !='' ">
+         	and pztype=#{pztype,jdbcType=VARCHAR}
+         </if>
+	</where>
+  </sql>
+  <select id="getListByAll" resultType="cn.vetech.vedsb.jp.entity.pzzx.JpPzTh" parameterType="Map">
+  	SELECT  *
+    FROM (SELECT tt.*, ROWNUM AS rowno      
+    FROM (SELECT  *
+    from JP_PZ_TH
+    <include refid="where"/> 
+    order by th_datetime desc) tt
+	         WHERE ROWNUM &lt;= #{pageNum, jdbcType=INTEGER}*#{pageSize, jdbcType=INTEGER}) table_alias
+	 WHERE table_alias.rowno &gt; (#{pageNum, jdbcType=INTEGER} - 1)*#{pageSize, jdbcType=INTEGER}
+  </select>
+  	<!-- 查询记录数 -->
+    <select id="selectCountByAll" parameterType="Map" resultType="Integer">
+	  	select count(1) from JP_PZ_TH <include refid="where"/> 
+  </select>
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpjpgl.JpSmfsSzDao" >
+	<!-- 根据商户编号查找open票DETR方式列表 -->
+	<select id="queryJpSmfsszListByShbh" parameterType="String" resultType="cn.vetech.vedsb.jp.entity.jpjpgl.JpSmfsSz">
+		select id,smlx,cgly,detr_lx,shbh,yhbh,czsj from jp_smfs_sz 
+		where shbh=#{shbh}
+	</select>
+	
+	<!-- 根据扫描类型删除 -->
+	<delete id="deleteBySmlx" parameterType="String">
+		delete from jp_smfs_sz where SMLX=#{param1:VARCHAR} and SHBH=#{param2:VARCHAR}
+	</delete>
+	
+	<insert id="batchInsert" parameterType="java.util.List">
+		INSERT INTO jp_smfs_sz
+  	  (id,smlx,cgly,detr_lx,shbh,yhbh,czsj) 
+  	  <foreach collection="list" item="item" index="index"  separator="union all" >  
+       	 SELECT  #{item.id},#{item.smlx},#{item.cgly},#{item.detrlx},#{item.shbh},#{item.yhbh},#{item.czsj} FROM DUAL
+      </foreach>
+	</insert>
+	<!-- 根据扫描类型查找所有的JpSmfsSz -->
+	<select id="queryJpSmfsszListBySmlx" resultType="Map" parameterType="String">
+		SELECT j.smlx,j.shbh,j.detr_lx,s.tqts,s.pidyhbh,s.pidmm FROM  jp_smfs_sz  j,jp_smsjsz s 
+		WHERE j.SHBH=s.SHBH 
+		AND j.SMLX=#{param1:VARCHAR}  
+		AND (j.CGLY=#{param2:VARCHAR} or j.CGLY='---')  
+		AND j.DETR_LX=#{param3:VARCHAR}
+		AND s.SFKQ='1'
+	</select>
+	<!-- 根据采购来源 、扫描方式查找所有对应的JpSmFsSz -->
+	<select id="queryJpSmfsszListByCgly" parameterType="HashMap" resultType="HashMap">
+		SELECT aa.wdid wdid,aa.cgly,bb.detr_lx,bb.wdid Szwdid FROM(
+			SELECT * FROM ((SELECT NVL(REGEXP_SUBSTR(#{cglyIds,jdbcType=VARCHAR}, '[^,]+', 1, LEVEL, 'i'), '') AS cgly FROM DUAL  
+			CONNECT BY
+			<if test="prior == '1'.toString()">
+				PRIOR
+			</if>
+			 LEVEL &lt;=#{cglyLen,jdbcType=VARCHAR}  )b
+			CROSS JOIN ((SELECT NVL(REGEXP_SUBSTR(#{wdIds,jdbcType=VARCHAR}, '[^,]+', 1, LEVEL, 'i'), '') AS wdid FROM DUAL  
+     			CONNECT BY
+     		<if test="prior == '1'.toString()">
+				PRIOR
+			</if>
+     			 LEVEL &lt;=#{wdIdlen,jdbcType=VARCHAR}))))aa
+		 	LEFT JOIN 
+			(SELECT wdid,cgly,detr_lx FROM jp_smfs_sz WHERE SHBH=#{shbh,jdbcType=VARCHAR})bb
+		ON (aa.wdid=bb.wdid or bb.wdid='---') 
+		AND (aa.cgly=bb.cgly or bb.cgly='---')
+		ORDER BY aa.cgly,aa.wdid
+	</select>
+	
+</mapper>

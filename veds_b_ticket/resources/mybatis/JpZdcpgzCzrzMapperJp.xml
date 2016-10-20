@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpzdcp.JpzdcpgzCzrzDao">
+  <sql id="where">
+    <where> 
+    	and a.czshbh=#{czshbh, jdbcType=VARCHAR}
+		<if test="gzbh != null and gzbh != '' "> and a.gzbh=#{gzbh, jdbcType=VARCHAR} </if>
+	</where>
+  </sql>
+  
+  <select id="getCzRzByEntity" parameterType="map" resultType="map" >
+  		SELECT * FROM JP_ZDCPGZ_CZRZ A
+   	<include refid="where"/> 
+   	ORDER BY a.CZ_DATETIME
+  </select>
+ 
+</mapper>

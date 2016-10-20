@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.procedures.PkgWdCwDao">
+	<select id="procupdateysdz" parameterType="Map" statementType="CALLABLE">
+		{ call PKG_WD_CW.proc_update_wddzzt(#{wdpt,mode=IN,jdbcType=VARCHAR},
+											  #{wdid,mode=IN,jdbcType=VARCHAR},
+											  #{zwrq,mode=IN,jdbcType=VARCHAR},
+											  #{userid,mode=IN,jdbcType=VARCHAR},
+											  #{deptid,mode=IN,jdbcType=VARCHAR},
+											  #{shbh,mode=IN,jdbcType=VARCHAR},
+											  #{error,mode=OUT,jdbcType=VARCHAR})
+		}
+	</select>
+	
+	<select id="createTodayDz" parameterType="Map" statementType="CALLABLE">
+		{ #{result,mode=OUT,jdbcType=INTEGER}=call PKG_WD_CW.f_wd_ysdz(#{p_dzrq,mode=IN,jdbcType=VARCHAR},
+			                                                             #{p_shbh,mode=IN,jdbcType=VARCHAR})
+		}
+	</select>
+	
+	<!-- 调后台过程汇总网店数据 -->
+	<select id="wdDataHz" statementType="CALLABLE">
+		{
+			call PKG_WD_CW.proc_wd_hz()
+		}
+	</select>
+</mapper>
+

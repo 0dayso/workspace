@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpddsz.JpQzDao">
+
+	<!-- 行程单中在待打印里,点击签注时.根据订单号(业务单号)查询签注 -->
+	<select id="queryListByYwdh" parameterType="String" resultType="cn.vetech.vedsb.jp.entity.jpddsz.JpQz">
+		select id,shbh,ywlx,ywdh,qz_nr,qz_yhbh,qz_bmbh,qz_sj from jp_qz where ywdh=#{ddbh} order by qz_sj desc
+	</select>
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpgqgl.JpGqdCjrDao" >
+  <update id="updateByIdSelective" parameterType="cn.vetech.vedsb.jp.entity.jpgqgl.JpGqdCjr" >
+    update JP_GQD_CJR
+    <set >
+      <if test="gqdh != null and gqdh != ''" >
+        GQDH = #{gqdh,jdbcType=VARCHAR},
+      </if>
+      <if test="tkno != null and tkno != ''" >
+        TKNO = #{tkno,jdbcType=VARCHAR},
+      </if>
+      <if test="shbh != null and shbh != ''" >
+        SHBH = #{shbh,jdbcType=VARCHAR},
+      </if>
+      <if test="xcdh != null and xcdh != ''" >
+        XCDH = #{xcdh,jdbcType=VARCHAR},
+      </if>
+      <if test="sxh != null and sxh != ''" >
+        SXH = #{sxh,jdbcType=DECIMAL},
+      </if>
+      <if test="cjrlx != null and cjrlx != ''" >
+        CJRLX = #{cjrlx,jdbcType=VARCHAR},
+      </if>
+      <if test="cjr != null and cjr != ''" >
+        CJR = #{cjr,jdbcType=VARCHAR},
+      </if>
+      <if test="zjlx != null and zjlx != ''" >
+        ZJLX = #{zjlx,jdbcType=VARCHAR},
+      </if>
+      <if test="zjhm != null and zjhm != ''" >
+        ZJHM = #{zjhm,jdbcType=VARCHAR},
+      </if>
+      <if test="sjhm != null and sjhm != ''" >
+        SJHM = #{sjhm,jdbcType=VARCHAR},
+      </if>
+      <if test="gqXsfy != null and gqXsfy != ''" >
+        GQ_XSFY = #{gqXsfy,jdbcType=DECIMAL},
+      </if>
+      <if test="gqCgfy != null and gqCgfy != ''" >
+        GQ_CGFY = #{gqCgfy,jdbcType=DECIMAL},
+      </if>
+      <if test="xb != null and xb != ''" >
+        XB = #{xb,jdbcType=VARCHAR},
+      </if>
+      <if test="gj != null and gj != ''" >
+        GJ = #{gj,jdbcType=VARCHAR},
+      </if>
+      <if test="csrq != null and csrq != ''" >
+        CSRQ = #{csrq,jdbcType=VARCHAR},
+      </if>
+      <if test="zjyxq != null and zjyxq != ''" >
+        ZJYXQ = #{zjyxq,jdbcType=VARCHAR},
+      </if>
+      <if test="zjqfg != null and zjqfg != ''" >
+        ZJQFG = #{zjqfg,jdbcType=VARCHAR},
+      </if>
+      <if test="gqTkno != null and gqTkno != ''" >
+        GQ_TKNO = #{gqTkno,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR} and shbh = #{shbh,jdbcType=VARCHAR}
+  </update>
+</mapper>

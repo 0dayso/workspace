@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.cgdzbb.JpCgdzDao">
+	<select id="genCgdzData" parameterType="Map" resultType="Map">
+		<!-- 正常票对账 -->
+		<if test="zctp == '1'.toString() or zctp=='2'.toString()">
+			select '0' pzzt,'正常票' pzztmc,CG_PNR_NO pnrno,tkno,(CG_PJ+CG_JSF+CG_TAX) cgje,CJR,hc,CGKM,
+					CP_DATETIME,CG_HKGS_PNR,cgly,ddbh,CG_ZFLSH,1 TKCOUNT
+			from jp_jp 
+			where shbh=#{shbh,jdbcType=VARCHAR} and cgly &lt;&gt; 'BSPET' and cgly &lt;&gt; 'BSP'
+			and CP_DATETIME between to_date(#{kssj,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss') and to_date(#{jssj,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+			<if test="cgkm != '' and cgkm != null ">and CGKM=#{cgkm,jdbcType=VARCHAR}</if>
+			<if test="zctp == '2'.toString()">
+				union all 
+				select CG_BLLX pzzt,decode(CG_BLLX,'1','退票','废票') pzztmc,CG_PNR_NO pnrno,(select wm_concat(tkno) from jp_tpd_mx where tpdh=tp.tpdh) tkno,-1*CG_TKJE cgje,CJR,hc,CG_TKKM CGKM,
+					CG_TJSJ CP_DATETIME,CG_HKGS_PNR,cgly,tpdh,' ' CG_ZFLSH,(select count(1) from jp_tpd_mx where tpdh=tp.tpdh) TKCOUNT
+				from jp_tpd tp
+				where shbh=#{shbh,jdbcType=VARCHAR} and cgly &lt;&gt; 'BSPET' and cgly &lt;&gt; 'BSP' and XS_TPZT &lt;&gt; '9'
+				and CG_TJSJ between to_date(#{kssj,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss') and to_date(#{jssj,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+				<if test="cgkm != '' and cgkm != null ">and CG_TKKM=#{cgkm,jdbcType=VARCHAR}</if>
+			</if>
+		</if>
+		<!-- 退废票对账 -->
+		<if test="zctp == '3'.toString()">
+			select CG_BLLX pzzt,decode(CG_BLLX,'1','退票','废票') pzztmc,CG_PNR_NO pnrno,(select wm_concat(tkno) from jp_tpd_mx where tpdh=tp.tpdh) tkno,
+			<if test="rqtj =='1'.toString()">
+				CG_TKJE cgje,
+			</if>
+			<if test="rqtj =='2'.toString()">
+				CG_STJE cgje,
+			</if>
+			CJR,hc,CG_TKKM CGKM,CG_TJSJ CP_DATETIME,CG_HKGS_PNR,cgly,tpdh,(select count(1) from jp_tpd_mx where tpdh=tp.tpdh) TKCOUNT 
+			from jp_tpd tp
+			where shbh=#{shbh,jdbcType=VARCHAR} and cgly &lt;&gt; 'BSPET' and cgly &lt;&gt; 'BSP' and XS_TPZT &lt;&gt; '9'
+			<if test="rqtj =='1'.toString()">
+				and CG_TJSJ between to_date(#{kssj,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss') and to_date(#{jssj,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+			</if>
+			<if test="rqtj =='2'.toString()">
+				and CG_SJHKSJ between to_date(#{kssj,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss') and to_date(#{jssj,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+			</if>
+			<if test="cgkm != '' and cgkm != null ">and CG_TKKM=#{cgkm,jdbcType=VARCHAR}</if>
+		</if>
+	</select>
+	
+	<!-- 正常票对账 -->
+	<select id="genZcpData" parameterType="Map" resultType="Map">
+			select '0' pzzt,'正常票' pzztmc,CG_PNR_NO pnrno,tkno,(CG_PJ+CG_JSF+CG_TAX) cgje,CJR,hc,CGKM,
+					CP_DATETIME,CG_HKGS_PNR,cgly,ddbh,CG_ZFLSH   from jp_jp 
+			where shbh=#{shbh,jdbcType=VARCHAR} 
+			<if test="cglys != null">
+				and <foreach item="item" index="index" collection="cglys" open="(" separator="or" close=")">cgly = #{item}</foreach>
+			</if>
+			and CP_DATETIME between to_date(#{kssj,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+			and to_date(#{jssj,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+	</select>
+	
+	<!-- 退废票对账 -->
+	<select id="genTfpData" parameterType="Map" resultType="Map">
+	    select tp.CG_BLLX pzzt,decode(tp.CG_BLLX,'1','退票','废票') pzztmc,tp.CG_PNR_NO pnrno,mx.tkno tkno,
+			<if test="rqtj =='1'.toString()">
+				tp.CG_TKJE cgje,
+			</if>
+			<if test="rqtj =='2'.toString()">
+				tp.CG_STJE cgje,
+			</if>
+			tp.CJR,tp.hc,tp.CG_TKKM CGKM,tp.CG_TJSJ CP_DATETIME,tp.CG_HKGS_PNR,tp.cgly,tp.tpdh 
+			from jp_tpd tp ,jp_tpd_mx mx 
+			where tp.tpdh = mx.tpdh and tp.shbh=#{shbh,jdbcType=VARCHAR} 
+			<if test="cglys != null">
+				and <foreach item="item" index="index" collection="cglys" open="(" separator="or" close=")">tp.cgly = #{item}</foreach>
+			</if>
+
+           and tp.XS_TPZT &lt;&gt; '9'
+			<if test="rqtj =='1'.toString()">
+				and tp.CG_TJSJ between to_date(#{kssj,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss') and to_date(#{jssj,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+			</if>
+			<if test="rqtj =='2'.toString()">
+				and tp.CG_SJHKSJ between to_date(#{kssj,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss') and to_date(#{jssj,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+			</if>
+	</select>
+	
+</mapper>

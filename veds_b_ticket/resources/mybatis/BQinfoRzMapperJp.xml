@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.qxxgl.BQinfoRzDao">
+	<select id="queryByShbhAndId" parameterType="map" resultType="cn.vetech.vedsb.jp.entity.qxxgl.BQinfoRz">
+		SELECT  *
+		    FROM (SELECT tt.*, ROWNUM AS rowno      
+		    FROM (SELECT * FROM B_QINFO_RZ WHERE shbh = #{shbh} AND q_info_bh = #{qinfobh}
+		    order by ck_datetime desc) tt
+			         WHERE ROWNUM &lt;= #{pageNum, jdbcType=INTEGER}*#{pageSize, jdbcType=INTEGER}) table_alias
+			 WHERE table_alias.rowno &gt; (#{pageNum, jdbcType=INTEGER} - 1)*#{pageSize, jdbcType=INTEGER}
+	</select>
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpzdcp.JpZdcpgzDao">
+	<sql id="sqltj">  
+	  <where>
+	  	and shbh = #{shbh}
+	  	<if test="gzmc != null and gzmc != '' "> and (gzmc like '%'||#{gzmc,jdbcType=VARCHAR}||'%' ) </if>
+	  	<if test="zcdm != null and zcdm != '' "> and (zcdm like '%'||#{zcdm,jdbcType=VARCHAR}||'%' ) </if>
+	  	<if test="hkgs != null and hkgs != '' "> and (hkgs like '%'||#{hkgs,jdbcType=VARCHAR}||'%' or hkgs='---') </if> 
+		<if test="cfcity != null and cfcity != '' "> and (cfcity like '%'||#{cfcity,jdbcType=VARCHAR}||'%' or cfcity='---') </if>
+		<if test="ddcity != null and ddcity != '' "> and (ddcity like '%'||#{ddcity,jdbcType=VARCHAR}||'%' or ddcity='---') </if>
+    	<if test="cw != null and cw != '' "> and (cw like '%'||#{cw,jdbcType=VARCHAR}||'%' or cw='---') </if>
+    	<if test="cjrqs != null and cjrqs != '' "> and cjrqs &gt;=#{cjrqs,jdbcType=VARCHAR} </if>
+    	<if test="cjrqz != null and cjrqz != '' "> and cjrqz &lt;=#{cjrqz,jdbcType=VARCHAR} </if>
+    	<if test="zt != null and zt != '' "> and zt =#{zt,jdbcType=VARCHAR} </if>
+    	<if test="id != null and id != '' "> and id =#{id,jdbcType=VARCHAR} </if>		
+	  </where>  
+	</sql>
+	<select id="queryPage" parameterType="cn.vetech.vedsb.jp.entity.jpzdcp.JpZdcpgz" resultType="cn.vetech.vedsb.jp.entity.jpzdcp.JpZdcpgz">
+		SELECT B_TABLE.*
+		FROM (SELECT A_TABLE.*,ROWNUM AS LINENUM FROM(
+			SELECT * FROM JP_ZDCPGZ t where 
+			     	<include refid="sqltj"/>
+				ORDER BY YXJ DESC
+			) A_TABLE WHERE ROWNUM &lt;= #{count,jdbcType=NUMERIC} 
+		) B_TABLE WHERE LINENUM &gt;= #{start,jdbcType=NUMERIC}
+	</select>	
+	<select id="getCpgzList" parameterType="cn.vetech.vedsb.jp.entity.jpzdcp.JpZdcpgz" resultType="cn.vetech.vedsb.jp.entity.jpzdcp.JpZdcpgz">
+		SELECT * FROM ( SELECT * FROM JP_ZDCPGZ t 
+			     	<include refid="sqltj"/>
+				ORDER BY YXJ DESC )B WHERE B.ZT!='2'
+	</select>
+	
+<!--获得总条数 -->
+	<select id="getTotalCount" resultType="integer" parameterType="cn.vetech.vedsb.jp.entity.jpzdcp.JpZdcpgz">
+		SELECT COUNT(1) FROM JP_ZDCPGZ 
+			<include refid="sqltj"/>
+	</select>
+
+
+
+</mapper>

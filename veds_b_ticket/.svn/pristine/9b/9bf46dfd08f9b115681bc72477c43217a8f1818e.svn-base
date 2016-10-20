@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.b2bsz.JpB2bZfzhDao" >
+  <resultMap id="BaseResultMap" type="cn.vetech.vedsb.jp.entity.b2bsz.JpB2bZfzh" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="CJTIME" property="cjtime" jdbcType="VARCHAR" />
+    <result column="SHBH" property="shbh" jdbcType="VARCHAR" />
+    <result column="YHBH" property="yhbh" jdbcType="VARCHAR" />
+    <result column="ZFLX" property="zflx" jdbcType="VARCHAR" />
+    <result column="ZFZH" property="zfzh" jdbcType="VARCHAR" />
+    <result column="ZFZZH" property="zfzzh" jdbcType="VARCHAR" />
+    <result column="SFXS" property="sfxs" jdbcType="VARCHAR" />
+    <result column="SFSYZZH" property="sfsyzzh" jdbcType="VARCHAR" />
+    <result column="SFQY" property="sfqy" jdbcType="VARCHAR" />
+    <result column="ZFXX1" property="zfxx1" jdbcType="VARCHAR" />
+    <result column="ZFXX2" property="zfxx2" jdbcType="VARCHAR" />
+    <result column="ZFXX3" property="zfxx3" jdbcType="VARCHAR" />
+    <result column="ZFXX4" property="zfxx4" jdbcType="VARCHAR" />
+    <result column="SFKQ" property="sfkq" jdbcType="VARCHAR" />
+    <result column="ZCHKGS" property="zchkgs" jdbcType="VARCHAR" />
+    <result column="CZYKZ" property="czykz" jdbcType="VARCHAR" />
+    <result column="ZFXX5" property="zfxx5" jdbcType="VARCHAR" />
+    <result column="ZFXX6" property="zfxx6" jdbcType="VARCHAR" />
+    <result column="ZFXX7" property="zfxx7" jdbcType="VARCHAR" />
+    <result column="ZFXX8" property="zfxx8" jdbcType="VARCHAR" />
+    <result column="ZFXX9" property="zfxx9" jdbcType="VARCHAR" />
+    <result column="ZFXX10" property="zfxx10" jdbcType="VARCHAR" />
+    <result column="ZFXX11" property="zfxx11" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, CJTIME, SHBH, YHBH, ZFLX, ZFZH, SFQY, ZFXX1, ZFXX2, ZFXX3, ZFXX4,ZFZZH,SFSYZZH,SFXS 
+    SFKQ, ZCHKGS, CZYKZ, ZFXX5, ZFXX6, ZFXX7, ZFXX8, ZFXX9, ZFXX10, ZFXX11
+  </sql>
+  
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from JP_B2B_ZFZH
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryByMap" resultType="cn.vetech.vedsb.jp.entity.b2bsz.JpB2bZfzh" parameterType="HashMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from JP_B2B_ZFZH
+    where SHBH = #{shbh} and SFKQ = #{sfkq} and zflx in 
+    <foreach item="item" index="index" collection="zflxList" 
+    	open="(" separator="," close=")">
+        #{item}
+    </foreach>
+    
+  </select>
+  
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from JP_B2B_ZFZH
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+ 
+  <update id="updateById" parameterType="cn.vetech.vedsb.jp.entity.b2bsz.JpB2bZfzh" >
+    update JP_B2B_ZFZH
+    <set >
+      <if test="cjtime != null and cjtime != ''" >
+        CJTIME = #{cjtime,jdbcType=VARCHAR},
+      </if>
+      <if test="yhbh != null and yhbh != ''" >
+        YHBH = #{yhbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zflx != null and zflx != ''" >
+        ZFLX = #{zflx,jdbcType=VARCHAR},
+      </if>
+      <if test="zfzh != null and zfzh != ''" >
+        ZFZH = #{zfzh,jdbcType=VARCHAR},
+      </if>
+      <if test="sfqy != null and sfqy != ''" >
+        SFQY = #{sfqy,jdbcType=VARCHAR},
+      </if>
+      <if test="sfsyzzh != null and sfsyzzh != ''" >
+        SFSYZZH = #{sfsyzzh,jdbcType=VARCHAR},
+      </if>
+      <if test="zfzzh != null and zfzzh != ''" >
+        ZFZZH = #{zfzzh,jdbcType=VARCHAR},
+      </if>
+      <if test="sfxs != null and sfxs != ''" >
+        SFXS = #{sfxs,jdbcType=VARCHAR},
+      </if>
+      <if test="zfxx1 != null and zfxx1 != ''" >
+        ZFXX1 = #{zfxx1,jdbcType=VARCHAR},
+      </if>
+      <if test="zfxx2 != null and zfxx2 != ''" >
+        ZFXX2 = #{zfxx2,jdbcType=VARCHAR},
+      </if>
+      <if test="zfxx3 != null and zfxx3 != ''" >
+        ZFXX3 = #{zfxx3,jdbcType=VARCHAR},
+      </if>
+      <if test="zfxx4 != null and zfxx4 != ''" >
+        ZFXX4 = #{zfxx4,jdbcType=VARCHAR},
+      </if>
+      <if test="sfkq != null and sfkq != ''" >
+        SFKQ = #{sfkq,jdbcType=VARCHAR},
+      </if>
+      <if test="zchkgs != null and zchkgs != ''" >
+        ZCHKGS = #{zchkgs,jdbcType=VARCHAR},
+      </if>
+      <if test="czykz != null and czykz != ''" >
+        CZYKZ = #{czykz,jdbcType=VARCHAR},
+      </if>
+      <if test="zfxx5 != null and zfxx5 != ''" >
+        ZFXX5 = #{zfxx5,jdbcType=VARCHAR},
+      </if>
+      <if test="zfxx6 != null and zfxx6 != ''" >
+        ZFXX6 = #{zfxx6,jdbcType=VARCHAR},
+      </if>
+      <if test="zfxx7 != null and zfxx7 != ''" >
+        ZFXX7 = #{zfxx7,jdbcType=VARCHAR},
+      </if>
+      <if test="zfxx8 != null and zfxx8 != ''" >
+        ZFXX8 = #{zfxx8,jdbcType=VARCHAR},
+      </if>
+      <if test="zfxx9 != null and zfxx9 != ''" >
+        ZFXX9 = #{zfxx9,jdbcType=VARCHAR},
+      </if>
+      <if test="zfxx10 != null and zfxx10 != ''" >
+        ZFXX10 = #{zfxx10,jdbcType=VARCHAR},
+      </if>
+      <if test="zfxx11 != null and zfxx11 != ''" >
+        ZFXX11 = #{zfxx11,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where SHBH = #{shbh,jdbcType=VARCHAR}
+    	<if test="id != null and id != ''" >
+        	 and ID = #{id,jdbcType=VARCHAR}
+      	</if>
+  </update>
+  
+  <select id="queryListByShbhAndZflx" parameterType="java.lang.String"  resultType="cn.vetech.vedsb.jp.entity.b2bsz.JpB2bZfzh">
+  	select * from JP_B2B_ZFZH 
+  	where shbh=#{param1}
+  	and zflx=#{param2}
+  	order by zfzh
+  </select>
+  
+</mapper>

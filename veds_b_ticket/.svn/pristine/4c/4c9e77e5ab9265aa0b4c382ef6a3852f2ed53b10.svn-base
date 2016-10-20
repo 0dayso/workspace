@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpbcd.JpBcdDao">
+	<!-- 对账专用,根据外部单号查找业务数据 -->
+  <select id="genDzDataByWbdh" parameterType="Map" resultType="Map">
+		select WCSJ,CJYH DDYH,CJSJ DDSJ,bc.id ddbh,bc.WBDH,'4' ddlx,'补差单' ddlxmc,bc.BCJE zfje,bc.PNR_NO pnrno,
+				bc.ywdh tknos,' ' cjrs
+             from jp_bcd bc where bc.SKZT='1'
+             	and shbh=#{shbh,jdbcType=VARCHAR} and wbdh =#{wbdh,jdbcType=VARCHAR} 
+             	and BC_BLSJ between to_date(#{dzrqs,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss') 
+             				and to_date(#{dzrqz,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+	</select>
+</mapper>

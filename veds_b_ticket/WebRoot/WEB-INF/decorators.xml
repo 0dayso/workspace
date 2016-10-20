@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/WEB-INF/layouts/">
+	<excludes>
+		<pattern>/static/*</pattern>
+		<pattern>/cxf/*</pattern>
+		<pattern>/api/*</pattern>
+		<pattern>/javasimon/*</pattern>
+		<pattern>/vedsa/main/index</pattern>
+		<pattern>/vedsb/eterm/*</pattern>
+		<pattern>/*ajax=true*</pattern>
+		<!-- 
+		<pattern>/vedsb/jzcp/platpolicy/searchPolicy?ajax=true</pattern>
+		<pattern>/vedsb/jzcp/platpolicy/loadOpStatus</pattern>
+		<pattern>/vedsb/jzcp/platpolicy/loadOneOp</pattern>
+		<pattern>/vedsb/jzcp/b2ccp/b2cPolicy</pattern>
+		<pattern>/vedsb/jzcp/b2bcp/b2bPolicy</pattern> -->
+		
+	</excludes>
+	
+	<decorator name="default_manage" page="veds/default.jsp">
+		<pattern>/vedsa/*</pattern>
+		<pattern>/vedsb/*</pattern>
+		<pattern>/example</pattern>
+	</decorator>
+	<decorator name="default_example" page="web/default.jsp">
+		<pattern>/example/*</pattern>
+	</decorator>
+	<decorator name="default_gq" page="web/default.jsp">
+		<pattern>/gq/*</pattern>
+	</decorator>
+</decorators>

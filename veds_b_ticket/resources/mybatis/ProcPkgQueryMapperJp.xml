@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.procedures.PkgQueryDao">
+
+    <!--退票报表  -->
+	<resultMap id="returnMap" type="Map"></resultMap>
+	<select id="tfpReport" parameterType="Map" statementType="CALLABLE">
+		{ call pkg_query.proc_tfp_report(#{p_xml,mode=IN,jdbcType=VARCHAR},
+		                          #{list,mode=OUT,jdbcType=CURSOR,resultMap=returnMap},
+		                          #{list_sum,mode=OUT,jdbcType=CURSOR,resultMap=returnMap},
+		                          #{p_allCount,mode=OUT,jdbcType=VARCHAR},
+		                          #{p_sqlStr,mode=OUT,jdbcType=VARCHAR})
+		}
+	</select>
+	
+	<!--改签报表  -->
+	<select id="gqReport" parameterType="Map" statementType="CALLABLE">
+		{ call pkg_query.proc_gq_report(#{p_xml,mode=IN,jdbcType=VARCHAR},
+		                         #{list,mode=OUT,jdbcType=CURSOR,resultMap=returnMap},
+		                         #{list_sum,mode=OUT,jdbcType=CURSOR,resultMap=returnMap},
+		                         #{allCount,mode=OUT,jdbcType=VARCHAR},
+		                         #{sqlStr,mode=OUT,jdbcType=VARCHAR},
+		                         #{error,mode=OUT,jdbcType=VARCHAR})
+		}
+	</select>
+	
+	
+	 <!--出票报表  -->
+	 <select id="cpReport" parameterType="java.util.HashMap" statementType="CALLABLE" >
+	 		{ call pkg_query.proc_cp_report(#{p_xml,mode=IN,jdbcType=VARCHAR},
+										  #{list,mode=OUT,jdbcType=CURSOR,resultMap=returnMap},
+										  #{list_sum,mode=OUT,jdbcType=CURSOR,resultMap=returnMap},
+										  #{allCount,mode=OUT,jdbcType=VARCHAR})
+		    }
+	 </select>
+</mapper>

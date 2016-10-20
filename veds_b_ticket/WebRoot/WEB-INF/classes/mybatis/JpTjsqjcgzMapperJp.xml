@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpzwgl.JpTjsqJcgzDao">
+	<select id="getTjsqJcgzList" parameterType="cn.vetech.vedsb.jp.entity.jpzwgl.JpTjsqJcgz" resultType="cn.vetech.vedsb.jp.entity.jpzwgl.JpTjsqJcgz">
+		select jcgz.*,
+		(select zdz from jp_tjsq_jcsz where shbh=#{shbh,jdbcType=VARCHAR} and zdywm=jcgz.zdywm and rownum=1) zdz,
+		(select id from jp_tjsq_jcsz where shbh=#{shbh,jdbcType=VARCHAR} and zdywm=jcgz.zdywm and rownum=1) szid 
+		from jp_tjsq_jcgz jcgz  
+		order by sxh
+	</select>
+</mapper> 

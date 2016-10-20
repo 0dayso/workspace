@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpzwgl.JpTjsqDrDao">
+	<sql id="where">
+		<where>
+			<if test="shbh != null and shbh != '' "> and a.shbh=#{shbh,jdbcType=VARCHAR} </if>
+			<if test="pnrNo != null and pnrNo != '' "> and a.PNR_NO=#{pnrNo,jdbcType=VARCHAR} </if>
+			<if test="pnrCjr != null and pnrCjr != '' "> and a.PNR_CJR=#{pnrCjr,jdbcType=VARCHAR} </if>
+			<if test="sqZt != null and sqZt != '' "> and a.SQ_ZT=#{sqZt,jdbcType=VARCHAR} </if>
+			<if test="pnrHkgs != null and pnrHkgs != '' "> and a.PNR_HKGS=#{pnrHkgs,jdbcType=VARCHAR} </if>
+			<if test="pnrHc != null and pnrHc != '' "> and a.PNR_HC=#{pnrHc,jdbcType=VARCHAR} </if>
+			<if test="pnrHb != null and pnrHb != '' "> and a.PNR_HB=#{pnrHb,jdbcType=VARCHAR} </if>
+			<if test="lxr != null and lxr != '' "> and a.LXR=#{lxr,jdbcType=VARCHAR} </if>
+			<if test="lxdh != null and lxdh != '' "> and a.LXDH=#{lxdh,jdbcType=VARCHAR} </if>
+			<if test="drsj != null and drsj != '' "> and a.DRSJ=to_date(#{drsj,jdbcType=TIMESTAMP},'yyyy/mm/dd ')</if>
+			<if test="sqDatetime != null and sqDatetime != '' "> and a.SQ_DATETIME=#{sqDatetime,jdbcType=TIMESTAMP} </if>
+			<if test="pnrCfrqsj != null and pnrCfrqsj != '' "> and a.PNR_CFRQSJ=#{pnrCfrqsj,jdbcType=VARCHAR} </if>
+		</where>
+	</sql>
+	<select id="getjpTjsqDrList" parameterType="cn.vetech.vedsb.jp.entity.jpzwgl.JpTjsqDr" resultType="cn.vetech.vedsb.jp.entity.jpzwgl.JpTjsqDr">
+		select * from jp_tjsq_dr
+		<include refid="where" /> 
+	</select>
+	<!-- 查询需要导入正式队列的导入申请单 -->
+	<select id="getDdrDlList" parameterType="cn.vetech.vedsb.jp.entity.jpzwgl.JpTjsqDr" resultType="cn.vetech.vedsb.jp.entity.jpzwgl.JpTjsqDr">
+		SELECT * 
+			(select * from jp_tjsq_dr where sq_zt = '1' and t.sftjzw='0' and shbh=#{shbh,jdbcType=VARCHAR} order by sq_datetime asc) 
+		WHERE ROWNUM &lt;= #{count, jdbcType=INTEGER}
+	</select>
+</mapper>

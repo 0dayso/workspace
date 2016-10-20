@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd"
+	default-lazy-init="true">
+
+	<description>Quartz的本地Cron式执行任务配置</description>
+
+	<!-- Quartz本地Schduler -->
+	<bean id="localQuartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<!-- Triggers集成 -->
+		<property name="triggers">
+			<list>
+				<!-- <ref bean="cronTrigger" />  -->
+				<!-- <ref bean="ExpireOpenTicketScanJobTrigger"/>-->
+				 	 <!-- 淘宝退票订单延迟提交采购退票 -->
+				 	 <ref bean="TaobaoOrderDelayCgTjJobTrigger"/>
+				 	 <ref bean="TaobaoTfpSyncJobTrigger"/>
+					 <ref bean="JpCwWdhzJobTrigger"/> 
+					 <ref bean="GetQinfoFsdxJobTrigger"/>
+			</list>
+		</property>
+		<!-- Quartz配置, 本地运行无需单独的quartz.properties文件，在此简单配置即可 -->
+		<property name="quartzProperties">
+			<props>
+				<prop key="org.quartz.threadPool.threadCount">5</prop>
+			</props>
+		</property>
+		<!-- 启动时延期2秒开始任务 -->
+		<property name="startupDelay" value="2" />
+	</bean>
+
+	<!-- Cron式Trigger定义 -->
+	
+	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="cronJobDetail" />
+		<!-- 周一至五,朝九晚五工作时间内每半小时执行一次 -->
+		<property name="cronExpression" value="0 0/30 9-17 ? * MON-FRI" />
+	</bean>
+
+	<!-- JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
+	<bean id="cronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="userCountScanner" />
+		<property name="targetMethod" value="executeByQuartzLocalJob" />
+		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
+		<property name="concurrent" value="true" />
+	</bean>
+	
+	
+	
+	<!-- 淘宝退票订单同步采购退票状态 -->
+    <bean id="TaobaoTfpSyncJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="taobaoTfpSyncJobService" />
+        <property name="targetMethod" value="doJob" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="TaobaoTfpSyncJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="TaobaoTfpSyncJobDetail" />
+		<property name="cronExpression">
+            <value>0 0/10 * * * ?</value>
+        </property>
+    </bean>
+	
+	 <!-- 淘宝退票订单延迟提交采购退票 -->
+    <bean id="TaobaoOrderDelayCgTjJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="taobaoOrderDelayCgTjJobService" />
+        <property name="targetMethod" value="doJob" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="TaobaoOrderDelayCgTjJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="TaobaoOrderDelayCgTjJobDetail" />
+		<property name="cronExpression">
+            <value>0 0/10 * * * ?</value>
+        </property>
+    </bean>
+	
+	<!-- OPEN票DETR扫描 -->
+	<bean id="ExpireOpenTicketScanJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="expireOpenTicketScanJob" />
+        <property name="targetMethod" value="doJob" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="ExpireOpenTicketScanJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="ExpireOpenTicketScanJobDetail" />
+		<property name="cronExpression">
+            <!-- 每天上午5点到8点，每5分钟执行一次 -->
+            <value>0 0/5 5-8 ? * *</value>
+        </property>
+    </bean>
+    
+    
+    
+    <!-- Q信息扫描  每十分钟扫描一次-->
+	<bean id="GetQinfoFsdxJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="getQinfoFsdxJobService" />
+        <property name="targetMethod" value="doJob" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="GetQinfoFsdxJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="GetQinfoFsdxJobDetail" />
+		<property name="cronExpression">
+            <!--每10分钟执行一次 -->
+            <value>0 0/10 * * * ?</value>
+        </property>
+    </bean>
+    
+    
+    <!-- 汇总网店数据 -->
+    <bean id="JpCwWdhzJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    	<property name="targetObject" ref="jpCwWdhzJobSerivce" />
+        <property name="targetMethod" value="doJob" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="JpCwWdhzJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+    	<property name="jobDetail" ref="JpCwWdhzJobDetail" />
+		<property name="cronExpression">
+            <!-- 每天凌晨一点执行一次 -->
+            <value>0 0 1 * * ?</value>
+        </property>
+    </bean>
+</beans>

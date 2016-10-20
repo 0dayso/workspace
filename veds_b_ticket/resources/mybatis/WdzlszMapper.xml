@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.vetech.vedsb.common.dao.base.WdzlszDao">
+	<!-- 获得开启的机票网店 -->
+	<select id="getWdZlszListByYwlx" parameterType="HashMap" resultType="cn.vetech.vedsb.common.entity.base.Wdzlsz">
+		select a.*,(select mc from ve_class where id=a.wdpt) wdptmc from wd_zlsz a  
+		<where> 
+			<if test="shbh != null and shbh != '' "> and a.shbh =#{shbh} </if>
+			<if test="zt != null and zt != '' "> and a.zt = #{zt} </if>
+			<if test="wdpt != null and wdpt != '' "> and a.wdpt = #{wdpt} </if>
+			<if test="ywlxs != null">
+					and a.ywlx in 
+			       	<foreach item="item" index="index" collection="ywlxs" 
+			           	open="(" separator="," close=")">
+			            #{item}
+			        </foreach>
+			</if>
+		</where>
+
+        order by a.wdpt
+	</select>
+	<!-- 自动出票路由设置中选择网店 -->
+	<select id="queryWdList" parameterType="cn.vetech.vedsb.common.entity.base.Wdzlsz" resultType="cn.vetech.vedsb.common.entity.base.Wdzlsz">
+		select * from (select t.*,rownum from (select a.id,a.wdmc,a.ywlx,a.wdpt,a.shbh,a.lxrsj,a.lxr from wd_zlsz a where a.shbh=#{shbh}
+		<if test="wdmc!=null and wdmc!=''">
+			and a.wdmc like '%'||#{wdmc}||'%'
+		</if>
+		order by #{orderBy, jdbcType=VARCHAR}) t) where rownum&gt;(#{start}-1)*#{count} and rownum&lt;=(#{start})*#{count}
+	</select>
+	
+	<select id="getTotalCount" parameterType="cn.vetech.vedsb.common.entity.base.Wdzlsz" resultType="Integer">
+		select count(1) from wd_zlsz where shbh=#{shbh}
+		<if test="wdmc!=null and wdmc!=''">
+			and wdmc like '%'||#{wdmc}||'%'
+		</if>
+	</select>
+	
+	<select id="queryWdmcByIds" parameterType="java.util.HashMap" resultType="String">
+		select wdmc from wd_zlsz where id in 
+		<foreach item="item" index="index" collection="wds" 
+           	open="(" separator="," close=")">
+            #{item}
+        </foreach>
+	</select>
+</mapper> 

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.cgptsz.JpPtzcFzszDao" >
+  <update id="updateFzszById" parameterType="cn.vetech.vedsb.jp.entity.cgptsz.JpPtzcFzsz">
+  	update jp_ptzc_fzsz
+  	<set>
+  		<if test="fzFzf != null" >
+        	FZ_FZF = #{fzFzf:VARCHAR},
+     	</if>
+     	<if test="fzSxfl != null" >
+        	FZ_SXFL = #{fzSxfl:VARCHAR},
+     	</if>
+     	<if test="xtZfkm != null" >
+        	XT_ZFKM = #{xtZfkm:VARCHAR},
+     	</if>
+     	<if test="ywlx != null" >
+        	YWLX = #{ywlx:VARCHAR},
+     	</if>
+     	<if test="xgr != null" >
+        	XGR = #{xgr:VARCHAR},
+     	</if>
+     	<if test="xgrq != null" >
+        	XGRQ = #{xgrq:VARCHAR},
+     	</if>
+     	<if test="ptzcbs != null" >
+        	PTZCBS = #{ptzcbs:VARCHAR},
+     	</if>
+  	</set>
+  	where id = #{id:VARCHAR} and shbh = #{shbh:VARCHAR}
+  </update>
+</mapper>

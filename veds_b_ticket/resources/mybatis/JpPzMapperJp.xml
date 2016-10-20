@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jppz.JpPzDao" >
+  <select id="getJpPzByShbh" resultType="org.vetech.core.business.pid.api.pidgl.JpPz">
+  	select * from jp_pz where shbh = #{param1:VARCHAR} and sfmr='1' and rownum = 1
+  </select>
+  <update id="updateJppzById" parameterType="org.vetech.core.business.pid.api.pidgl.JpPz" >
+    update JP_PZ
+    <set >
+      <if test="shbh != null" >
+        SHBH = #{shbh,jdbcType=VARCHAR},
+      </if>
+      <if test="officeid != null" >
+        OFFICEID = #{officeid,jdbcType=VARCHAR},
+      </if>
+      <if test="pzyhm != null" >
+        PZYHM = #{pzyhm,jdbcType=VARCHAR},
+      </if>
+      <if test="pzmm != null" >
+        PZMM = #{pzmm,jdbcType=VARCHAR},
+      </if>
+      <if test="serverAddr != null" >
+        SERVER_ADDR = #{serverAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="serverPort != null" >
+        SERVER_PORT = #{serverPort,jdbcType=VARCHAR},
+      </if>
+      <if test="agent != null" >
+        AGENT = #{agent,jdbcType=VARCHAR},
+      </if>
+      <if test="agentPass != null" >
+        AGENT_PASS = #{agentPass,jdbcType=VARCHAR},
+      </if>
+      <if test="printno != null" >
+        PRINTNO = #{printno,jdbcType=VARCHAR},
+      </if>
+      <if test="sfcppz != null" >
+        SFCPPZ = #{sfcppz,jdbcType=VARCHAR},
+      </if>
+      <if test="pzyt != null" >
+        PZYT = #{pzyt,jdbcType=VARCHAR},
+      </if>
+      <if test="bopmm != null" >
+        BOPMM = #{bopmm,jdbcType=VARCHAR},
+      </if>
+      <if test="bzbz != null" >
+        BZBZ = #{bzbz,jdbcType=VARCHAR},
+      </if>
+      <if test="pzzt != null" >
+        PZZT = #{pzzt,jdbcType=VARCHAR},
+      </if>
+      <if test="sftb != null" >
+        SFTB = #{sftb,jdbcType=VARCHAR},
+      </if>
+      <if test="tbyh != null" >
+        TBYH = #{tbyh,jdbcType=VARCHAR},
+      </if>
+      <if test="tbsj != null" >
+        TBSJ = #{tbsj,jdbcType=DATE},
+      </if>
+      <if test="pidzbh != null" >
+        PIDZBH = #{pidzbh,jdbcType=VARCHAR},
+      </if>
+      <if test="pidzmc != null" >
+        PIDZMC = #{pidzmc,jdbcType=VARCHAR},
+      </if>
+      <if test="pzIp != null" >
+        PZ_IP = #{pzIp,jdbcType=VARCHAR},
+      </if>
+      <if test="pzPort != null" >
+        PZ_PORT = #{pzPort,jdbcType=VARCHAR},
+      </if>
+      <if test="cjyh != null" >
+        CJYH = #{cjyh,jdbcType=VARCHAR},
+      </if>
+      <if test="cjsj != null" >
+        CJSJ = #{cjsj,jdbcType=DATE},
+      </if>
+      <if test="xgsj != null" >
+        XGSJ = #{xgsj,jdbcType=DATE},
+      </if>
+      <if test="xgyh != null" >
+        XGYH = #{xgyh,jdbcType=VARCHAR},
+      </if>
+      <if test="sfmr != null" >
+        SFMR = #{sfmr,jdbcType=VARCHAR},
+      </if>
+      <if test="sfbopcp != null" >
+        SFBOPCP = #{sfbopcp,jdbcType=VARCHAR},
+      </if>
+      <if test="bopcgkm != null" >
+        BOPCGKM = #{bopcgkm,jdbcType=VARCHAR},
+      </if>
+      <if test="iata != null" >
+        IATA = #{iata,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR} and shbh = #{shbh,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.cpsz.JpCpymSzDao" >
+  <resultMap id="BaseResultMap" type="cn.vetech.vedsb.jp.entity.cpsz.JpCpymSz" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="SHBH" property="shbh" jdbcType="VARCHAR" />
+    <result column="CGLY" property="cgly" jdbcType="VARCHAR" />
+    <result column="SFKQ" property="sfkq" jdbcType="VARCHAR" />
+    <result column="OP_DQ" property="opDq" jdbcType="VARCHAR" />
+    <result column="OP_ZFYC" property="opZfyc" jdbcType="VARCHAR" />
+    <result column="OP_ZFYC_YHBH" property="opZfycYhbh" jdbcType="VARCHAR" />
+    <result column="OP_GL_CFCS" property="opGlCfcs" jdbcType="VARCHAR" />
+    <result column="OP_GL_HKGS" property="opGlHkgs" jdbcType="VARCHAR" />
+    <result column="OP_GL_OFFICE" property="opGlOffice" jdbcType="VARCHAR" />
+    <result column="CG_CJR_SJHM" property="cgCjrSjhm" jdbcType="VARCHAR" />
+    <result column="CG_XEPNR" property="cgXepnr" jdbcType="VARCHAR" />
+    <result column="CG_XE_YHBH" property="cgXeYhbh" jdbcType="VARCHAR" />
+    <result column="CG_GL_CP" property="cgGlCp" jdbcType="VARCHAR" />
+    <result column="TB_GL_DP" property="tbGlDp" jdbcType="VARCHAR" />
+    <result column="TB_SF_DDNXR" property="tbSfDdnxr" jdbcType="VARCHAR" />
+    <result column="TB_NXR" property="tbNxr" jdbcType="VARCHAR" />
+    <result column="TB_SP" property="tbSp" jdbcType="VARCHAR" />
+    <result column="TB_CPFS" property="tbCpfs" jdbcType="VARCHAR" />
+    <result column="PNR_OFFICE" property="pnrOffice" jdbcType="VARCHAR" />
+    <result column="TKNO_OFFICE" property="tknoOffice" jdbcType="VARCHAR" />
+    <result column="OFFICE_SQSZ" property="officeSqsz" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, SHBH, CGLY, SFKQ, OP_DQ, OP_ZFYC, OP_ZFYC_YHBH, OP_GL_CFCS, OP_GL_HKGS, 
+    OP_GL_OFFICE, CG_CJR_SJHM, CG_XEPNR, CG_XE_YHBH, CG_GL_CP, TB_GL_DP, TB_SF_DDNXR, 
+    TB_NXR, TB_SP, TB_CPFS, PNR_OFFICE, TKNO_OFFICE, OFFICE_SQSZ
+  </sql>
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from JP_CPYM_SZ
+    where ID = #{id,jdbcType=VARCHAR} AND SHBH=#{shbh,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByShbh" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from JP_CPYM_SZ
+    where SHBH=#{param1,jdbcType=VARCHAR} AND CGLY=#{param2,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from JP_CPYM_SZ
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+ 
+  <update id="updateById" parameterType="cn.vetech.vedsb.jp.entity.cpsz.JpCpymSz" >
+    update JP_CPYM_SZ
+    <set >
+      <if test="shbh != null" >
+        SHBH = #{shbh,jdbcType=VARCHAR},
+      </if>
+      <if test="cgly != null" >
+        CGLY = #{cgly,jdbcType=VARCHAR},
+      </if>
+      <if test="sfkq != null" >
+        SFKQ = #{sfkq,jdbcType=VARCHAR},
+      </if>
+      <if test="opDq != null" >
+        OP_DQ = #{opDq,jdbcType=VARCHAR},
+      </if>
+      <if test="opZfyc != null" >
+        OP_ZFYC = #{opZfyc,jdbcType=VARCHAR},
+      </if>
+      <if test="opZfycYhbh != null" >
+        OP_ZFYC_YHBH = #{opZfycYhbh,jdbcType=VARCHAR},
+      </if>
+      <if test="opGlCfcs != null" >
+        OP_GL_CFCS = #{opGlCfcs,jdbcType=VARCHAR},
+      </if>
+      <if test="opGlHkgs != null" >
+        OP_GL_HKGS = #{opGlHkgs,jdbcType=VARCHAR},
+      </if>
+      <if test="opGlOffice != null" >
+        OP_GL_OFFICE = #{opGlOffice,jdbcType=VARCHAR},
+      </if>
+      <if test="cgCjrSjhm != null" >
+        CG_CJR_SJHM = #{cgCjrSjhm,jdbcType=VARCHAR},
+      </if>
+      <if test="cgXepnr != null" >
+        CG_XEPNR = #{cgXepnr,jdbcType=VARCHAR},
+      </if>
+      <if test="cgXeYhbh != null" >
+        CG_XE_YHBH = #{cgXeYhbh,jdbcType=VARCHAR},
+      </if>
+      <if test="cgGlCp != null" >
+        CG_GL_CP = #{cgGlCp,jdbcType=VARCHAR},
+      </if>
+      <if test="tbGlDp != null" >
+        TB_GL_DP = #{tbGlDp,jdbcType=VARCHAR},
+      </if>
+      <if test="tbSfDdnxr != null" >
+        TB_SF_DDNXR = #{tbSfDdnxr,jdbcType=VARCHAR},
+      </if>
+      <if test="tbNxr != null" >
+        TB_NXR = #{tbNxr,jdbcType=VARCHAR},
+      </if>
+      <if test="tbSp != null" >
+        TB_SP = #{tbSp,jdbcType=VARCHAR},
+      </if>
+      <if test="tbCpfs != null" >
+        TB_CPFS = #{tbCpfs,jdbcType=VARCHAR},
+      </if>
+      <if test="pnrOffice != null" >
+        PNR_OFFICE = #{pnrOffice,jdbcType=VARCHAR},
+      </if>
+      <if test="tknoOffice != null" >
+        TKNO_OFFICE = #{tknoOffice,jdbcType=VARCHAR},
+      </if>
+      <if test="officeSqsz != null" >
+        OFFICE_SQSZ = #{officeSqsz,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

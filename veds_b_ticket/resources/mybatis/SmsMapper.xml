@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.vetech.vedsb.common.dao.base.SmsDao">
+	<!-- 行程单中查找短信模板 -->
+	<select id="querySmsmbByXcd" parameterType="cn.vetech.vedsb.common.entity.base.SmsMb" resultType="cn.vetech.vedsb.common.entity.base.SmsMb">
+		select * from sms_mb where 1=1
+		<if test="sfkq!=null and sfkq!=''">
+			and sfkq=#{sfkq}
+		</if>
+		<if test="mblx!=null and mblx!=''">
+			and mblx=#{mblx}
+		</if>
+	</select>
+	<!-- 行程单中查找短信模板 -->
+	<select id="querySmsmbshByXcd" resultType="cn.vetech.vedsb.common.entity.base.SmsMbSh">
+		select * from sms_mb_sh a left join sms_mbfl b on a.mbbh=b.mbbh where b.shbh=#{param1} and b.yycj=#{param2}
+	</select>
+	
+</mapper> 

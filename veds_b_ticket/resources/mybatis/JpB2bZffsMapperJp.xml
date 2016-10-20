@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.b2bsz.JpB2bZffsDao" >
+  <resultMap id="BaseResultMap" type="cn.vetech.vedsb.jp.entity.b2bsz.JpB2bZffs" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="SHBH" property="shbh" jdbcType="VARCHAR" />
+    <result column="ZFFS_B2B" property="zffsB2b" jdbcType="VARCHAR" />
+    <result column="ZFFS_XT" property="zffsXt" jdbcType="VARCHAR" />
+    <result column="ZFKM_XT" property="zfkmXt" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, SHBH, ZFFS_B2B, ZFFS_XT, ZFKM_XT
+  </sql>
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from JP_B2B_ZFFS
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from JP_B2B_ZFFS
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+ 
+ 
+  <update id="updateById" parameterType="cn.vetech.vedsb.jp.entity.b2bsz.JpB2bZffs" >
+    update JP_B2B_ZFFS
+    <set >
+      <if test="shbh != null" >
+        SHBH = #{shbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zffsB2b != null" >
+        ZFFS_B2B = #{zffsB2b,jdbcType=VARCHAR},
+      </if>
+      <if test="zffsXt != null" >
+        ZFFS_XT = #{zffsXt,jdbcType=VARCHAR},
+      </if>
+      <if test="zfkmXt != null" >
+        ZFKM_XT = #{zfkmXt,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR} and shbh = #{shbh,jdbcType=VARCHAR}
+  </update>
+</mapper>

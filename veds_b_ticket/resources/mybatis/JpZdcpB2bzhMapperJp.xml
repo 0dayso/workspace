@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.b2bsz.JpZdcpB2bzhDao" >
+  <resultMap id="BaseResultMap" type="cn.vetech.vedsb.jp.entity.b2bsz.JpZdcpB2bzh" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="SHBH" property="shbh" jdbcType="VARCHAR" />
+    <result column="YHBH" property="yhbh" jdbcType="VARCHAR" />
+    <result column="CZDATETIME" property="czdatetime" jdbcType="VARCHAR" />
+    <result column="SM" property="sm" jdbcType="VARCHAR" />
+    <result column="HKGS" property="hkgs" jdbcType="VARCHAR" />
+    <result column="ZH" property="zh" jdbcType="VARCHAR" />
+    <result column="MM" property="mm" jdbcType="VARCHAR" />
+    <result column="OFFICE" property="office" jdbcType="VARCHAR" />
+    <result column="ZFID" property="zfid" jdbcType="VARCHAR" />
+    <result column="BY1" property="by1" jdbcType="VARCHAR" />
+    <result column="BY2" property="by2" jdbcType="VARCHAR" />
+    <result column="BY3" property="by3" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, SHBH, YHBH, CZDATETIME, SM, HKGS, ZH, MM, OFFICE, ZFID, BY1, BY2, BY3
+  </sql>
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from JP_ZDCP_B2BZH
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryJpzdcpb2bzhList" resultType="java.util.HashMap">
+  	select * from (
+		select t.*,rownum from (
+			SELECT <include refid="Base_Column_List" />	FROM JP_ZDCP_B2BZH WHERE 1=1 
+				<include refid="queryJpzdcpb2bzhCondition"/>
+				order by #{sortType, jdbcType=VARCHAR} )t )
+ 		where rownum &gt;(#{pageNum}-1)*#{pageSize} and rownum &lt;=(#{pageNum})*#{pageSize}
+  </select>
+  
+  <select id="queryJpzdcpb2bzhCount" parameterType="cn.vetech.vedsb.jp.entity.b2bsz.JpZdcpB2bzh" resultType="Integer">
+  	SELECT count(1)	FROM JP_ZDCP_B2BZH WHERE 1=1 <include refid="queryJpzdcpb2bzhCondition"/>
+  </select>
+  
+  <sql id="queryJpzdcpb2bzhCondition" >
+  	and SHBH=#{jpZdcpB2bzh.shbh, jdbcType=VARCHAR} 
+  	and BY1=#{jpZdcpB2bzh.by1, jdbcType=VARCHAR}
+  	<if test="jpZdcpB2bzh.hkgs != null and jpZdcpB2bzh.hkgs != ''" >
+    	and HKGS = #{jpZdcpB2bzh.hkgs, jdbcType=VARCHAR}
+    </if>
+  </sql>
+  
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from JP_ZDCP_B2BZH
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <update id="updateById" parameterType="cn.vetech.vedsb.jp.entity.b2bsz.JpZdcpB2bzh" >
+    update JP_ZDCP_B2BZH
+    <set >
+      <if test="shbh != null" >
+        SHBH = #{shbh,jdbcType=VARCHAR},
+      </if>
+      <if test="yhbh != null" >
+        YHBH = #{yhbh,jdbcType=VARCHAR},
+      </if>
+      <if test="czdatetime != null" >
+        CZDATETIME = #{czdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="sm != null" >
+        SM = #{sm,jdbcType=VARCHAR},
+      </if>
+      <if test="hkgs != null" >
+        HKGS = #{hkgs,jdbcType=VARCHAR},
+      </if>
+      <if test="zh != null" >
+        ZH = #{zh,jdbcType=VARCHAR},
+      </if>
+      <if test="mm != null" >
+        MM = #{mm,jdbcType=VARCHAR},
+      </if>
+      <if test="office != null" >
+        OFFICE = #{office,jdbcType=VARCHAR},
+      </if>
+      <if test="zfid != null" >
+        ZFID = #{zfid,jdbcType=VARCHAR},
+      </if>
+      <if test="by1 != null" >
+        BY1 = #{by1,jdbcType=VARCHAR},
+      </if>
+      <if test="by2 != null" >
+        BY2 = #{by2,jdbcType=VARCHAR},
+      </if>
+      <if test="by3 != null" >
+        BY3 = #{by3,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+ 
+</mapper>

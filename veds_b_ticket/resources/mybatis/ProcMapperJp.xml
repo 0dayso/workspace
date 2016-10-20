@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.procedures.ProcedureDao">
+	<resultMap type="Map" id="resultmap"></resultMap>
+ <!-- 采购对账报表调取后台过程 -->
+	<select id="procgreport" parameterType="Map" statementType="CALLABLE">
+		{ call proc_cgdz_report(#{p_xml,mode=IN,jdbcType=VARCHAR},
+			                      #{p_cur,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=resultmap})
+		}
+	</select>
+	
+	
+  <!-- 采购对账报表调取后台过程查看明细 -->
+  <select id="promxcgreport" parameterType="Map" statementType="CALLABLE">
+	  	{ call proc_cgdz_mx_report(#{p_xml,mode=IN,jdbcType=VARCHAR},
+	  		                         #{p_cur,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=resultmap},
+	  		                         #{p_count_cur,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=resultmap},
+	  		                         #{allrowcount,mode=OUT,jdbcType=INTEGER},
+	  		                         #{p_sqlout,mode=OUT,jdbcType=CLOB})
+	  	}
+  </select>
+  
+  <!-- 采购对账调用后台对比数据-->
+  <select id="proc_cgdz_zddb" parameterType="Map" statementType="CALLABLE">
+	  	{ call proc_cgdz_zddb(#{p_shbh,mode=IN,jdbcType=VARCHAR},
+	  		                  #{p_dzrq,mode=IN,jdbcType=VARCHAR},
+	  		                  #{p_zbid,mode=IN,jdbcType=VARCHAR},
+	  		                  #{p_dzr,mode=IN,jdbcType=VARCHAR},
+	  		                  #{p_error,mode=OUT,jdbcType=VARCHAR})
+	  	}
+  </select>
+ 
+  <!-- 自动出票匹配自动出票规则 -->
+  <select id="qzdcp" parameterType="Map" statementType="CALLABLE">
+  	{ #{result,mode=OUT,jdbcType=VARCHAR} = call f_qzdcp(#{p_ddbh,mode=IN,jdbcType=VARCHAR},
+  		                                                 #{p_shbh,mode=IN,jdbcType=VARCHAR},
+  					                                     #{p_userid,mode=IN,jdbcType=VARCHAR},
+  					                                     #{p_error,mode=OUT,jdbcType=VARCHAR})
+  	}
+  </select>
+  
+  
+	 <!-- 交票 -->
+	 <select id="doJpAction" parameterType="Map" statementType="CALLABLE" >
+		{ call proc_add_jpdd_jp(#{p_xml,mode=IN,jdbcType=VARCHAR},
+		                        #{p_list,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=resultmap},
+		                        #{p_error,mode=OUT,jdbcType=VARCHAR})}
+	 </select>
+  
+  	<select id="getZkl" parameterType="Map" statementType="CALLABLE" >
+		{
+			#{result,mode=OUT,jdbcType=NUMERIC}=call f_zcpp_get_cwzkl (
+																	 #{hkgs,mode=IN,jdbcType=VARCHAR},
+                                                                     #{cw,mode=IN,jdbcType=VARCHAR},
+                                                                     #{hc,mode=IN,jdbcType=VARCHAR},
+                                                                     #{cfsj,mode=IN,jdbcType=VARCHAR},
+                                                                     #{hbh,mode=IN,jdbcType=VARCHAR})}
+	</select>
+	
+	<!-- 退票单申请入库 -->
+	<select id="createJpTpd" parameterType="Map" statementType="CALLABLE" >
+	  		{
+				#{result,mode=OUT,jdbcType=INTEGER}=call f_add_tfp_jp(
+												#{p_xml,mode=IN,jdbcType=VARCHAR},
+												#{tpdh,mode=OUT,jdbcType=VARCHAR},
+												#{errmsg,mode=OUT,jdbcType=VARCHAR})
+			}
+	</select>
+	
+	<select id="insertJpGqd" parameterType="cn.vetech.vedsb.jp.entity.jpddsz.BookTicketChange" statementType="CALLABLE" >
+  		{
+			#{result,mode=OUT,jdbcType=INTEGER}=call f_add_gqd_jp(
+			             #{p_xml,mode=IN,jdbcType=VARCHAR},
+			             #{gqdh,mode=OUT,jdbcType=VARCHAR},
+			             #{errmsg,mode=OUT,jdbcType=VARCHAR})
+		}
+    </select>	
+	
+	
+	<!-- 根据商户编号获取CPS需要扫描的OPEN票 -->
+	<select id="getOpenTicket" parameterType="Map" statementType="CALLABLE">
+		{ call proc_get_opentick(#{SHBH,mode=IN,jdbcType=VARCHAR},
+			                       #{CPRQ,mode=IN,jdbcType=VARCHAR},
+			                       #{list,mode=OUT,jdbcType=CURSOR,resultMap=returnMap})
+		}
+	</select>
+	
+	
+	<select id="creatZwdl"  parameterType="Map"  statementType="CALLABLE" >
+		{ call proc_insert_zwdl_ddjk(#{p_ddbh,mode=IN,jdbcType=VARCHAR},
+									   #{p_shbh,mode=IN,jdbcType=VARCHAR})
+		}
+	</select>
+	
+	<select id="getOriginalCabin" parameterType="Map"  statementType="CALLABLE" >
+		{ #{result,mode=OUT,jdbcType=VARCHAR}=call f_get_forzdjtocw(#{p_ezdh,mode=IN,jdbcType=VARCHAR},
+				                                                      #{p_cwdj,mode=IN,jdbcType=VARCHAR},
+				                                                      #{p_date,mode=IN,jdbcType=VARCHAR},
+				                                                      #{p_hbh,mode=IN,jdbcType=VARCHAR},
+				                                                      #{p_zdj,mode=IN,jdbcType=VARCHAR})
+		}
+	</select>
+	
+	<select id="checkCanzw" parameterType="Map"  statementType="CALLABLE" >
+		{ #{result,mode=OUT,jdbcType=INTEGER}=call f_check_sfzw(#{p_sqdh,mode=IN,jdbcType=VARCHAR},
+																  #{p_out_cw,mode=OUT,jdbcType=VARCHAR},
+																  #{p_out_zwfs,mode=OUT,jdbcType=VARCHAR},
+																  #{p_out_jg,mode=OUT,jdbcType=NUMERIC},
+																  #{p_error,mode=OUT,jdbcType=VARCHAR})
+		}
+	</select>
+	
+	<select id="checkCanzwDr" parameterType="Map"  statementType="CALLABLE" >
+		{ #{result,mode=OUT,jdbcType=INTEGER}=call f_check_sfzw_wr(#{p_id,mode=IN,jdbcType=VARCHAR},
+			                                                         #{p_out_cw,mode=OUT,jdbcType=VARCHAR},
+			                                                         #{p_out_zwfs,mode=OUT,jdbcType=VARCHAR},
+			                                                         #{p_out_jg,mode=OUT,jdbcType=NUMERIC},
+			                                                         #{p_error,mode=OUT,jdbcType=VARCHAR})
+		}
+	</select>
+	
+	<select id="genZwddTpf" parameterType="Map"  statementType="CALLABLE" >
+		{ call proc_get_zwdd_tpf(#{p_ddbh,mode=IN,jdbcType=VARCHAR},
+								#{p_shbh,mode=IN,jdbcType=VARCHAR},
+							    #{p_tpfl,mode=OUT,jdbcType=NUMERIC},
+							    #{p_tpf,mode=OUT,jdbcType=NUMERIC})
+		}
+	</select>
+  
+  
+	<select id="procysdz" parameterType="Map" statementType="CALLABLE">
+		{ call proc_ds_yhdz(#{p_xml,mode=IN,jdbcType=VARCHAR},
+			                  #{p_cur,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=resultmap})
+		}
+	</select>
+	
+    <!-- 这里用wdid 作为新的 方案ID 传入 -->
+	<select id="copyXsfa" parameterType="cn.vetech.vedsb.common.entity.base.WdXsfa" statementType="CALLABLE" >
+		{ #{result,mode=OUT,jdbcType=VARCHAR}=call f_wd_xsfa_fz(
+														#{id,mode=IN,jdbcType=VARCHAR},
+														#{wdid,mode=IN,jdbcType=VARCHAR},
+														#{cjyh,mode=IN,jdbcType=VARCHAR},
+														#{copyerror,mode=OUT,jdbcType=VARCHAR})
+		}
+	</select>
+	
+	<!-- 利润分析明细报表 -->
+	<select id="getLrfxMxList" parameterType="Map" statementType="CALLABLE">
+		{
+			call proc_wd_xsmlfxmx(#{p_xml,mode=IN,jdbcType=VARCHAR},
+								  #{p_cur,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=resultmap},	
+								  #{p_cur_sum,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=resultmap},
+								  #{p_sqlstr,mode=OUT,jdbcType=VARCHAR},
+								  #{p_error,mode=OUT,jdbcType=VARCHAR})
+		}
+	</select>
+	
+	<!-- 利润分析报表 -->
+	<select id="getLrfxList" parameterType="Map" statementType="CALLABLE">
+		{
+			call proc_wd_xsmlfx(#{p_xml,mode=IN,jdbcType=VARCHAR},
+							    #{p_cur_zcp,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=resultmap},
+							    #{p_cur_hbzd,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=resultmap},
+							    #{p_cur_lr,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=resultmap},
+							    #{p_cur_hj,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=resultmap},
+							    #{p_error,mode=OUT,jdbcType=VARCHAR})
+		}
+	</select>
+	
+	
+	
+	<select id="f_cgtp" parameterType="Map" statementType="CALLABLE">
+		{
+			#{result,mode=OUT,jdbcType=INTEGER}=call f_cgtp(#{p_xml,mode=IN,jdbcType=VARCHAR},
+															#{p_error,mode=OUT,jdbcType=VARCHAR})
+		}
+	</select>
+	
+	<!-- 销售毛利报表 -->
+	<select id="getMlfxList" parameterType="Map" statementType="CALLABLE">
+		{
+			call proc_xsmlfx_report(#{p_xml,mode=IN,jdbcType=VARCHAR},
+							    #{p_cur,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=resultmap},
+							    #{p_cur_allcount,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=resultmap})							 
+		}
+	</select>
+		<!-- 销售毛利报表明细 -->
+	<select id="getMlfxmxList" parameterType="Map" statementType="CALLABLE">
+		{
+			call proc_xsmlfx_report(#{p_xml,mode=IN,jdbcType=VARCHAR},
+							    #{p_cur,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=resultmap},
+							    #{p_cur_allcount,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=resultmap})							 
+		}
+	</select>
+	<select id="proc_get_qinfo_fsdx" parameterType="Map" statementType="CALLABLE">
+		{
+			call proc_get_qinfo_fsdx()						   						 
+		}	
+	</select>
+	 <!--出票统计报表  -->
+	 <select id="p_get_cptjbb" parameterType="Map" statementType="CALLABLE" >
+	 		{ call p_get_cptjbb(#{p_xml,mode=IN,jdbcType=VARCHAR},
+							  #{list,mode=OUT,jdbcType=CURSOR,resultMap=resultmap},
+							  #{list_sum,mode=OUT,jdbcType=CURSOR,resultMap=resultmap},
+							  #{p_allCount,mode=OUT,jdbcType=INTEGER},
+							  #{p_error,mode=OUT,jdbcType=VARCHAR})
+		    }
+	 </select>
+</mapper>
+
+
+

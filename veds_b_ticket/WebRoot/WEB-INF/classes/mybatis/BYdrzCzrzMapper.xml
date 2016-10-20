@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.vetech.vedsb.common.dao.BYdrzCzrzDao">
+	<select id="searchCzrzs" parameterType="cn.vetech.vedsb.common.entity.BYdrzCzrz" resultType="cn.vetech.vedsb.common.entity.BYdrzCzrz">
+	 SELECT B_TABLE.* FROM (SELECT A_TABLE.*,ROWNUM AS LINENUM FROM(
+		select zb.* from ${bm} zb,${mx} mx 
+		<where>
+		  	<if test="1==1"> and (zb.ckfw='B' or zb.ckfw='0') </if>
+		  	<if test="shbh != null and shbh != '' "> and zb.shbh=#{shbh} </if>
+		    <if test="czly != null and czly != '' "> and zb.czly=#{czly} </if>
+		    <if test="czip != null and czip != '' "> and zb.czip=#{czip} </if>
+		    <if test="pt != null and pt != '' "> and zb.pt=#{pt} </if>
+		    <if test="bzbz != null and bzbz != '' "> and zb.bzbz=#{bzbz} </if>
+		    <if test="czr != null and czr != '' "> and zb.czr like '%'||#{czr}||'%'</if>
+		    <if test="czsjs != null and czsjs != '' " > and zb.czsj &gt;=#{czsjs}</if>
+      		<if test="czsjz != null and czsjz != ''" > and zb.czsj &lt;=#{czsjz}</if>
+		 and zb.id = mx.zbid(+) and (zb.ywid = #{ywid} or (zb.ywid = '---' and mx.ywid = #{ywid})) 
+		</where>
+		ORDER BY czsj desc
+		) A_TABLE WHERE ROWNUM &lt;=#{count}
+	) B_TABLE WHERE LINENUM &gt;= #{start}
+	</select>
+	<select id="getTotalCounts" parameterType="cn.vetech.vedsb.common.entity.BYdrzCzrz" resultType="Integer">
+		select count(1) from ${bm} zb,${mx} mx 
+		<where>
+			<if test="1==1"> and (zb.ckfw='B' or zb.ckfw='0') </if>
+		    <if test="shbh != null and shbh != '' "> and zb.shbh=#{shbh} </if>
+		    <if test="czly != null and czly != '' "> and zb.czly=#{czly} </if>
+		    <if test="czip != null and czip != '' "> and zb.czip=#{czip} </if>
+		    <if test="pt != null and pt != '' "> and zb.pt=#{pt} </if>
+		    <if test="bzbz != null and bzbz != '' "> and zb.bzbz=#{bzbz} </if>
+		    <if test="czr != null and czr != '' "> and zb.czr like '%'||#{czr}||'%'</if>
+		    <if test="czsjs != null and czsjs != '' " > and zb.czsj &gt;=#{czsjs}</if>
+      		<if test="czsjz != null and czsjz != ''" > and zb.czsj &lt;=#{czsjz}</if>
+		 and zb.id = mx.zbid(+) and (zb.ywid = #{ywid} or (zb.ywid = '---' and mx.ywid = #{ywid})) 
+		</where>
+	</select>
+	
+	<select id="searchCzrz" parameterType="cn.vetech.vedsb.common.entity.BYdrzCzrz" resultType="cn.vetech.vedsb.common.entity.BYdrzCzrz">
+	 SELECT B_TABLE.* FROM (SELECT A_TABLE.*,ROWNUM AS LINENUM FROM(
+      SELECT * FROM ${bm} zb 
+       		 <where>
+       		 	<if test="1==1"> and (zb.ckfw='B' or zb.ckfw='0') </if>
+				<if test="ywid != null and ywid != '' "> and zb.ywid=#{ywid} </if>
+				<if test="shbh != null and shbh != '' "> and zb.shbh=#{shbh} </if>
+				<if test="czly != null and czly != '' "> and zb.czly=#{czly} </if>
+				<if test="czip != null and czip != '' "> and zb.czip=#{czip} </if>
+				<if test="pt != null and pt != '' "> and zb.pt=#{pt} </if>
+				<if test="bzbz != null and bzbz != '' "> and zb.bzbz=#{bzbz} </if>
+				<if test="czr != null and czr != '' "> and zb.czr like '%'||#{czr}||'%'</if>
+				<if test="czsjs != null and czsjs != '' " > and zb.czsj &gt;=#{czsjs}</if>
+        		<if test="czsjz != null and czsjz != ''" > and zb.czsj &lt;=#{czsjz}</if>
+			</where>
+				ORDER BY czsj desc
+			) A_TABLE WHERE ROWNUM &lt;=#{count}
+		) B_TABLE WHERE LINENUM &gt;= #{start}
+	</select>
+	<select id="getTotalCount" parameterType="cn.vetech.vedsb.common.entity.BYdrzCzrz" resultType="Integer">
+		select count(1) from ${bm} zb
+	    <where>
+	    	<if test="1==1"> and (zb.ckfw='B' or zb.ckfw='0') </if>
+			<if test="ywid != null and ywid != '' "> and zb.ywid=#{ywid} </if>
+			<if test="shbh != null and shbh != '' "> and zb.shbh=#{shbh} </if>
+			<if test="czly != null and czly != '' "> and zb.czly=#{czly} </if>
+			<if test="czip != null and czip != '' "> and zb.czip=#{czip} </if>
+			<if test="pt != null and pt != '' "> and zb.pt=#{pt} </if>
+			<if test="bzbz != null and bzbz != '' "> and zb.bzbz=#{bzbz} </if>
+			<if test="czr != null and czr != '' "> and zb.czr like '%'||#{czr}||'%'</if>
+			<if test="czsjs != null and czsjs != '' " > and zb.czsj &gt;=#{czsjs}</if>
+        	<if test="czsjz != null and czsjz != ''" > and zb.czsj &lt;=#{czsjz}</if>
+		</where>
+	</select>
+       <insert id="xzrz" parameterType="cn.vetech.vedsb.common.entity.BYdrzCzrz" >
+	    <selectKey resultType="string" keyProperty="id" order="BEFORE">
+	   		select YdrzCzrzPKSequence.nextVal from dual
+	 	</selectKey>
+		insert into ${bm} (id,ywid,czsj,czr,pt,czly,cznr,czip,czjqm,ckfw,bzbz,shbh) values (#{id},#{ywid},sysdate,#{czr},#{pt},#{czly},#{cznr},#{czip},#{czjqm},#{ckfw},#{bzbz},#{shbh})
+	</insert> 
+</mapper> 

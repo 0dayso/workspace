@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.procedures.PkgTicketTfDao">
+   <!-- 平台退废票通知结果提交到后台处理 -->
+  <select id="ptCgProcess" parameterType="map" statementType="CALLABLE">
+   {#{result,mode=OUT,jdbcType=INTEGER}=call pkg_ticket_tf.f_pt_cg_process(
+                                                    #{p_xml,mode=IN,jdbcType=VARCHAR},
+   													#{error,mode=OUT,jdbcType=VARCHAR})
+   }
+  </select>
+	
+</mapper>
+
+
+

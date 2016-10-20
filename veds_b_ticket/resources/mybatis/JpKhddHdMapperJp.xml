@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpddgl.JpKhddHdDao" >
+
+  <select id="query" resultType="HashMap"
+		parameterType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhddHd">
+		SELECT * FROM jp_jp
+	</select>
+
+
+	<select id="detail" resultType="HashMap"
+		parameterType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhddHd">
+		SELECT * FROM jp_jp where id=#{id} and shbh=#{shbh}
+	</select>
+
+
+	<select id="getJpKhddHdById" resultType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhddHd"
+		parameterType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhddHd">
+		SELECT * FROM jp_jp where id=#{id} and shbh=#{shbh}
+	</select>
+
+	<select id="getPageCount" resultType="integer"
+		parameterType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhddHd">
+		SELECT COUNT(1) FROM jp_jp where shbh=#{shbh}
+	</select>
+	<!-- 交票用SQL，根据订单编号数组查询  -->
+	<select id="selectJpByDdbh" resultType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhddHd" 
+		parameterType="HashMap">
+		SELECT DDBH,CFCITY,DDCITY,XS_CW,XS_HBH,WBSXH 
+        	FROM JP_KHDD_HD where shbh =#{shbh} and ddbh in
+        	<foreach item="item" index="index" collection="ddbhs" 
+            	open="(" separator="," close=")">
+                #{item}
+            </foreach>
+	</select>
+</mapper>

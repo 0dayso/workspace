@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpddgl.JpKhddCjrDao" >
+ 
+	<!-- 交票用SQL，根据订单编号数组查询  -->
+	<select id="selectJpByDdbh" resultType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhddCjr" 
+		parameterType="HashMap">
+		SELECT *
+        	FROM JP_KHDD_CJR where shbh =#{shbh} and ddbh in
+        	<foreach item="item" index="index" collection="ddbhs" 
+            	open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        ORDER BY SXH
+	</select>
+	
+	<!-- 判断订单中是否有儿童 -->
+	<select id="isCjrEt" resultType="integer" parameterType="HashMap">
+		select count(0) from jp_khdd_cjr
+		where shbh =#{shbh}
+		  and ddbh in (select ddbh from jp_khdd where shbh = #{shbh} and wbdh = #{wbdh})
+	      and cjrlx = '2'
+	      and rownum = 1
+   </select>
+   
+</mapper>

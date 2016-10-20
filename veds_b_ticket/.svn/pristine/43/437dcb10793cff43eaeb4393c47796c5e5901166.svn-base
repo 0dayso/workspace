@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpxepnr.JpXepnrDao" >
+  <resultMap id="BaseResultMap" type="cn.vetech.vedsb.jp.entity.jpxepnr.JpXepnr" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DDBH" property="ddbh" jdbcType="VARCHAR" />
+    <result column="PNR_NO" property="pnrNo" jdbcType="VARCHAR" />
+    <result column="OFFICEID" property="officeid" jdbcType="VARCHAR" />
+    <result column="CJR" property="cjr" jdbcType="VARCHAR" />
+    <result column="HD" property="hd" jdbcType="VARCHAR" />
+    <result column="SFYZZJ" property="sfyzzj" jdbcType="VARCHAR" />
+    <result column="SFYZHD" property="sfyzhd" jdbcType="VARCHAR" />
+    <result column="XELX" property="xelx" jdbcType="VARCHAR" />
+    <result column="XESY" property="xesy" jdbcType="VARCHAR" />
+    <result column="XEZT" property="xezt" jdbcType="VARCHAR" />
+    <result column="XESBYY" property="xesbyy" jdbcType="VARCHAR" />
+    <result column="XEYH" property="xeyh" jdbcType="VARCHAR" />
+    <result column="XESJ" property="xesj" jdbcType="DATE" />
+    <result column="CZLY" property="czly" jdbcType="VARCHAR" />
+    <result column="SHBH" property="shbh" jdbcType="VARCHAR" />
+    <result column="CJYH" property="cjyh" jdbcType="VARCHAR" />
+    <result column="CJSJ" property="cjsj" jdbcType="DATE" />
+    <result column="PNR_LR" property="pnrLr" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DDBH, PNR_NO, OFFICEID, CJR, HD, SFYZZJ, SFYZHD, XELX, XESY, XEZT, XESBYY, XEYH, 
+    XESJ, CZLY, SHBH, CJYH, CJSJ, PNR_LR
+  </sql>
+  <select id="selectAllJpXepnr" resultType="HashMap" parameterType="HashMap" >
+    SELECT * from JP_XEPNR a   <include refid="where"/>
+    <if test="orderBy !=null and orderBy !=''">
+   		 order by ${orderBy}
+    </if>
+  </select>
+  
+  <select id="selectAllJpXepnrCount" resultType="int" parameterType="HashMap" >
+    SELECT count(0) from JP_XEPNR a    <include refid="where"/>
+  </select>
+  
+   <sql id="where">
+  	<where>
+   	  <if test="shbh !=null and shbh !=''">
+    	and a.SHBH = #{shbh,jdbcType=VARCHAR}
+      </if> 
+      <if test="gngj != null and gngj != '' "> 
+      	and a.GNGJ = #{gngj, jdbcType=VARCHAR} 
+      </if>
+      <if test="xelx !=null and xelx != '' ">
+      	and a.XELX = #{xelx,jdbcType=VARCHAR}
+      </if>
+      <if test="xezt !=null and xezt != '' ">
+      	and a.XEZT = #{xezt,jdbcType=VARCHAR}
+      </if>
+      <if test="hc !=null and hc !=''">
+      	and a.HD like '%'||#{hc,jdbcType=VARCHAR}||'%'
+      </if>
+      <if test="cjr !=null and cjr !=''">
+      	and a.CJR like '%'||#{cjr,jdbcType=VARCHAR}||'%'
+      </if>
+      <if test="pnr_no !=null and pnr_no !=''">
+      	and a.PNR_NO=#{pnr_no,jdbcType=VARCHAR}
+      </if>
+      <if test="ksrq !=null and ksrq !=''">
+      	and a.CJSJ &gt;= to_date(#{ksrq,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+      </if>
+      <if test="jsrq !=null and jsrq !=''">
+      	and a.CJSJ &lt;= to_date(#{jsrq,jdbcType=VARCHAR}||'23:59:59','yyyy-mm-dd hh24:mi:ss')
+      </if>
+      <if test="czly !=null and czly !=''">
+      	and a.CZLY = #{czly,jdbcType=VARCHAR}
+      </if>
+  	</where>
+  </sql>
+   
+</mapper>

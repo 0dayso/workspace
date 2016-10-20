@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpzwgl.JpTjsqZwszDao">
+	<sql id="sqltj">  
+	  <where>
+	  	and shbh = #{shbh} 
+		<if test="hkgs != null and hkgs != '' "> and (hkgs like  '%'||#{hkgs,jdbcType=VARCHAR}||'%' or hkgs='---') </if>
+    	<if test="cw != null and cw != '' "> and (cw like '%'||#{cw,jdbcType=VARCHAR}||'%' or cw='---') </if>
+    	<if test="mbcw != null and mbcw != '' "> and (mbcw like '%'||#{mbcw,jdbcType=VARCHAR}||'%' or mbcw='---') </if>
+   	 	<if test="pnrzt != null and pnrzt != '' "> and (pnrzt like  '%'||#{pnrzt,jdbcType=VARCHAR}||'%' or pnrzt='---') </if>
+   	 	<if test="wdZclx != null and wdZclx != '' "> and (wd_zclx like '%'||#{wdZclx,jdbcType=VARCHAR}||'%' or wd_zclx='---') </if>
+    	<if test="cpzt != null and cpzt != '' "> and cpzt =#{cpzt,jdbcType=VARCHAR} </if>
+    	<if test="wdpt != null and wdpt != '' " > and (wdpt like  '%'||#{wdpt,jdbcType=VARCHAR}||'%' or wdpt='---') </if>	
+    	<if test="zt != null and zt != '' "> and zt =#{zt,jdbcType=VARCHAR} </if>	
+	  </where>  
+	</sql>
+	<select id="queryPage" parameterType="cn.vetech.vedsb.jp.entity.jpzwgl.JpTjsqZwsz" resultType="cn.vetech.vedsb.jp.entity.jpzwgl.JpTjsqZwsz">
+		SELECT B_TABLE.*
+		FROM (SELECT A_TABLE.*,ROWNUM AS LINENUM FROM(
+			SELECT * FROM JP_TJSQ_ZWSZ t 
+			     	<include refid="sqltj"/>
+				ORDER BY XGSJ DESC
+			) A_TABLE WHERE ROWNUM &lt;= #{count,jdbcType=NUMERIC} 
+		) B_TABLE WHERE LINENUM &gt;= #{start,jdbcType=NUMERIC}
+	</select>
+	<select id="getZwgzList" parameterType="cn.vetech.vedsb.jp.entity.jpzwgl.JpTjsqZwsz" resultType="cn.vetech.vedsb.jp.entity.jpzwgl.JpTjsqZwsz">
+			SELECT * FROM JP_TJSQ_ZWSZ t 
+			     	<include refid="sqltj"/>
+				ORDER BY XGSJ DESC
+	</select>
+	<!--获得总条数 -->
+	<select id="getTotalCount" resultType="integer" parameterType="cn.vetech.vedsb.jp.entity.jpzwgl.JpTjsqZwsz">
+		SELECT COUNT(1) FROM JP_TJSQ_ZWSZ
+			<include refid="sqltj"/>
+	</select>
+</mapper>

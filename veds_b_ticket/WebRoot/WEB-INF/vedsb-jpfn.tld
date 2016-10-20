@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd" version="2.0">
+	<description>通用的功能性函数如：日期计算、MD5方法等</description>
+	<display-name>JSTL functions</display-name>
+	<tlib-version>1.1</tlib-version>
+	<short-name>jpfn</short-name>
+	<uri>http://vetech.cn/jsp/jstl/functions</uri>
+	
+	<function>
+		<description>通过商户编号获取OFFICEID</description>
+		<name>officeIdList</name>
+		<function-class>cn.vetech.vedsb.jp.tag.Function</function-class>
+		<function-signature>java.lang.Object officeIdList(java.lang.String)</function-signature>
+		<example>${jpfn:officeIdList(param.name)}</example>
+	</function>
+	
+	<function>
+		<description>通过商户编号和国内国际获取对应的网店信息</description>
+		<name>wdList</name>
+		<function-class>cn.vetech.vedsb.jp.tag.Function</function-class>
+		<function-signature>java.lang.Object wdList(java.lang.String,java.lang.String)</function-signature>
+		<example>${jpfn:wdList(shbh,gngj)}</example>
+	</function>
+	
+</taglib>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.procedures.PkgPzBbDao">
+	 <!-- 销存报表 -->
+    <select id="queryXcbb" parameterType="Map" statementType="CALLABLE" >
+	{ call PKG_PZ_BB.proc_pzxc_bb(#{p_xml,mode=IN,jdbcType=VARCHAR},
+								  #{list,mode=OUT,jdbcType=CURSOR,resultMap=returnMap},
+								  #{p_sqlStr,mode=OUT,jdbcType=VARCHAR})
+	}
+    </select>
+</mapper>
+

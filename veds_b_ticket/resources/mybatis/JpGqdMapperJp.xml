@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpgqgl.JpGqdDao">
+	<sql id="sqlsearch">
+		<where>
+			<if test="tkno != null and tkno != '' ">
+			and EXISTS (
+				SELECT 1 FROM jp_gqd_cjr jm WHERE j.gqdh = jm.gqdh AND j.shbh = jm.shbh
+				 and (jm.tkno=#{tkno:VARCHAR} or jm.gq_tkno=#{tkno:VARCHAR}) 
+			)
+			</if>
+			and j.shbh=#{shbh:VARCHAR}
+			<if test="gqdh != null and gqdh != '' "> and j.gqdh=#{gqdh:VARCHAR} </if>
+			<if test="gqlx != null and gqlx != '' "> and j.gqlx=#{gqlx:VARCHAR} </if>
+			<if test="gqzt != null  and gqzt != '' "> and j.gqzt=#{gqzt:VARCHAR} </if>
+			<if test="faid != null  and faid != '' "> and j.faid=#{faid:VARCHAR} </if>
+			<if test="wdpt != null  and wdpt != '' "> and j.wdpt=#{wdpt:VARCHAR} </if>
+			<if test="wdid != null  and wdid != '' "> and j.wdid=#{wdid:VARCHAR} </if>
+			<if test="wdZcdm != null  and wdZcdm != '' "> and j.wd_zcdm like #{wdZcdm:VARCHAR}||'%' </if>
+			<if test="wbdh != null  and wbdh != '' "> and j.wbdh=#{wbdh:VARCHAR} </if>
+			<if test="wbddbh != null  and wbddbh != '' "> and j.wbddbh=#{wbddbh:VARCHAR} </if>
+			<if test="nxr != null  and nxr != '' "> and j.nxr=#{nxr:VARCHAR} </if>
+			<if test="nxsj != null  and nxsj != '' "> and (j.nxsj=#{nxsj:VARCHAR} or j.nxdh=#{nxsj:VARCHAR}) </if>
+			<if test="cjr != null  and cjr != '' "> and j.cjr=#{cjr:VARCHAR} </if>
+			<if test="gngj != null  and gngj != '' "> and j.gngj=#{gngj:VARCHAR} </if>
+			<if test="xsPnrNo != null  and xsPnrNo != '' "> 
+				and (j.xs_pnr_no=#{xsPnrNo:VARCHAR} or j.gq_xs_pnr_no=#{xsPnrNo:VARCHAR} 
+				or j.cg_pnr_no=#{xsPnrNo:VARCHAR} or j.gq_cg_pnr_no=#{xsPnrNo:VARCHAR}) 
+			</if>
+			<if test="xsHbh != null  and xsHbh != '' "> 
+				and (j.xs_hbh=#{xsHbh:VARCHAR} or j.gq_xs_hbh=#{xsHbh:VARCHAR}
+				or j.cg_hbh=#{xsHbh:VARCHAR} or j.gq_cg_hbh=#{xsHbh:VARCHAR}) 
+			</if>
+			<if test="ksrq != null  and ksrq != '' "> and j.ddsj &gt;= to_date(#{ksrq:VARCHAR}||'00:00:00','YYYY-MM-DD hh24:mi:ss') </if>
+			<if test="jsrq != null  and jsrq != '' "> and j.ddsj &lt;= to_date(#{jsrq:VARCHAR}||'23:59:59','YYYY-MM-DD hh24:mi:ss') </if>
+			<if test="nxdh !=null and nxdh !='' ">and (NXDH=#{nxdh, jdbcType=VARCHAR} or NXSJ=#{nxdh, jdbcType=VARCHAR})</if>
+		</where>
+	</sql>
+   
+	<select id="query" resultType="HashMap" parameterType="HashMap">
+		SELECT B_TABLE.*,(select count(1) from jp_qz where ywdh=B_TABLE.gqdh and ywlx='03') QZCOUNT FROM  
+		(
+			 SELECT A_TABLE.*,ROWNUM AS LINENUM FROM 
+			 (
+				SELECT j.* FROM jp_gqd j
+				<include refid="sqlsearch"/>
+				order by #{orderBy:VARCHAR} 
+			 ) 
+			 A_TABLE WHERE ROWNUM &lt;= #{count}  
+		) 
+		B_TABLE WHERE LINENUM &gt;= #{start}
+	</select>
+	
+    <select id="getPageCount" resultType="integer" parameterType="HashMap">
+		SELECT COUNT(1) FROM jp_gqd j 
+		<include refid="sqlsearch"/>
+    </select>
+    
+    <select id="getJpGqdByGqdh" resultType="cn.vetech.vedsb.jp.entity.jpgqgl.JpGqd" parameterType="cn.vetech.vedsb.jp.entity.jpgqgl.JpGqd">
+    	SELECT * FROM jp_gqd j WHERE j.shbh = #{shbh:VARCHAR} and j.gqdh = #{gqdh:VARCHAR} 
+    </select>
+    
+    <update id="updateJpGqdById" parameterType="cn.vetech.vedsb.jp.entity.jpgqgl.JpGqd" >
+    	 update JP_GQD
+    	 <set>
+	      	  <if test="gqlx != null and gqlx !='' " >
+		        GQLX = #{gqlx:VARCHAR},
+		      </if>
+		      <if test="gqzt != null " >
+		        GQZT = #{gqzt:VARCHAR},
+		      </if>
+		      <if test="gqShr != null and gqShr !='' " >
+		        GQ_SHR = #{gqShr:VARCHAR},
+		      </if>
+		      <if test="gqShsj != null and gqShsj !='' " >
+		        GQ_SHSJ = #{gqShsj:DATE},
+		      </if>
+		      <if test="gqBlr != null and gqBlr !='' " >
+		        GQ_BLR = #{gqBlr:VARCHAR},
+		      </if>
+		      <if test="gqBlsj != null and gqBlsj !='' " >
+		        GQ_BLSJ = #{gqBlsj:DATE},
+		      </if>
+		      <if test="ddbh != null and ddbh !='' " >
+		        DDBH = #{ddbh:VARCHAR},
+		      </if>
+		      <if test="gngj != null and gngj !='' " >
+		        GNGJ = #{gngj:VARCHAR},
+		      </if>
+		      <if test="faid != null and faid !='' " >
+		        FAID = #{faid:VARCHAR},
+		      </if>
+		      <if test="wdpt != null and wdpt !='' " >
+		        WDPT = #{wdpt:VARCHAR},
+		      </if>
+		      <if test="wdid != null and wdid !='' " >
+		        WDID = #{wdid:VARCHAR},
+		      </if>
+		      <if test="wdZclx != null and wdZclx !='' " >
+		        WD_ZCLX = #{wdZclx:VARCHAR},
+		      </if>
+		      <if test="wdDdlx != null and wdDdlx !='' " >
+		        WD_DDLX = #{wdDdlx:VARCHAR},
+		      </if>
+		      <if test="wdZcdm != null and wdZcdm !='' " >
+		        WD_ZCDM = #{wdZcdm:VARCHAR},
+		      </if>
+		      <if test="zcQd != null and zcQd !='' " >
+		        ZC_QD = #{zcQd:VARCHAR},
+		      </if>
+		      <if test="zcLy != null and zcLy !='' " >
+		        ZC_LY = #{zcLy:VARCHAR},
+		      </if>
+		      <if test="wbdh != null and wbdh !='' " >
+		        WBDH = #{wbdh:VARCHAR},
+		      </if>
+		      <if test="skkm != null and skkm !='' " >
+		        SKKM = #{skkm:VARCHAR},
+		      </if>
+		      <if test="skzt != null and skzt !='' " >
+		        SKZT = #{skzt:VARCHAR},
+		      </if>
+		      <if test="nxr != null and nxr !='' " >
+		        NXR = #{nxr:VARCHAR},
+		      </if>
+		      <if test="nxsj != null and nxsj !='' " >
+		        NXSJ = #{nxsj:VARCHAR},
+		      </if>
+		      <if test="nxdh != null and nxdh !='' " >
+		        NXDH = #{nxdh:VARCHAR},
+		      </if>
+		      <if test="ddsj != null and ddsj !='' " >
+		        DDSJ = #{ddsj:DATE},
+		      </if>
+		      <if test="ddyh != null and ddyh !='' " >
+		        DDYH = #{ddyh:VARCHAR},
+		      </if>
+		      <if test="ddbm != null and ddbm !='' " >
+		        DDBM = #{ddbm:VARCHAR},
+		      </if>
+		      <if test="hc != null and hc !='' " >
+		        HC = #{hc:VARCHAR},
+		      </if>
+		      <if test="cfrq != null and cfrq !='' " >
+		        CFRQ = #{cfrq:DATE},
+		      </if>
+		      <if test="cfsj != null and cfsj !='' " >
+		        CFSJ = #{cfsj:VARCHAR},
+		      </if>
+		      <if test="cjrs != null and cjrs !='' " >
+		        CJRS = #{cjrs:DECIMAL},
+		      </if>
+		      <if test="cjr != null and cjr !='' " >
+		        CJR = #{cjr:VARCHAR},
+		      </if>
+		      <if test="xsPnrNo != null and xsPnrNo !='' " >
+		        XS_PNR_NO = #{xsPnrNo:VARCHAR},
+		      </if>
+		      <if test="xsHkgsPnr != null and xsHkgsPnr !='' " >
+		        XS_HKGS_PNR = #{xsHkgsPnr:VARCHAR},
+		      </if>
+		      <if test="xsHbh != null and xsHbh !='' " >
+		        XS_HBH = #{xsHbh:VARCHAR},
+		      </if>
+		      <if test="xsCw != null and xsCw !='' " >
+		        XS_CW = #{xsCw:VARCHAR},
+		      </if>
+		      <if test="gqyy != null and gqyy !='' " >
+		        GQYY = #{gqyy:VARCHAR},
+		      </if>
+		      <if test="gqCfrq != null and gqCfrq !='' " >
+		        GQ_CFRQ = #{gqCfrq:DATE},
+		      </if>
+		      <if test="gqCfsj != null and gqCfsj !='' " >
+		        GQ_CFSJ = #{gqCfsj:VARCHAR},
+		      </if>
+		      <if test="gqXsPnrNo != null and gqXsPnrNo !='' " >
+		        GQ_XS_PNR_NO = #{gqXsPnrNo:VARCHAR},
+		      </if>
+		      <if test="gqXsHkgsPnr != null and gqXsHkgsPnr !='' " >
+		        GQ_XS_HKGS_PNR = #{gqXsHkgsPnr:VARCHAR},
+		      </if>
+		      <if test="gqXsHbh != null and gqXsHbh !='' " >
+		        GQ_XS_HBH = #{gqXsHbh:VARCHAR},
+		      </if>
+		      <if test="gqXsCw != null and gqXsCw !='' " >
+		        GQ_XS_CW = #{gqXsCw:VARCHAR},
+		      </if>
+		      <if test="cgPnrNo != null and cgPnrNo !='' " >
+		        CG_PNR_NO = #{cgPnrNo:VARCHAR},
+		      </if>
+		      <if test="cgHkgsPnr != null and cgHkgsPnr !='' " >
+		        CG_HKGS_PNR = #{cgHkgsPnr:VARCHAR},
+		      </if>
+		      <if test="cgHbh != null and cgHbh !='' " >
+		        CG_HBH = #{cgHbh:VARCHAR},
+		      </if>
+		      <if test="cgCw != null and cgCw !='' " >
+		        CG_CW = #{cgCw:VARCHAR},
+		      </if>
+		      <if test="gqCgPnrNo != null and gqCgPnrNo !='' " >
+		        GQ_CG_PNR_NO = #{gqCgPnrNo:VARCHAR},
+		      </if>
+		      <if test="gqCgHkgsPnr != null and gqCgHkgsPnr !='' " >
+		        GQ_CG_HKGS_PNR = #{gqCgHkgsPnr:VARCHAR},
+		      </if>
+		      <if test="gqCgHbh != null and gqCgHbh !='' " >
+		        GQ_CG_HBH = #{gqCgHbh:VARCHAR},
+		      </if>
+		      <if test="gqCgCw != null and gqCgCw !='' " >
+		        GQ_CG_CW = #{gqCgCw:VARCHAR},
+		      </if>
+		      <if test="gqXsfy != null and gqXsfy !='' " >
+		        GQ_XSFY = #{gqXsfy:DECIMAL},
+		      </if>
+		      <if test="gqCgfy != null and gqCgfy !='' " >
+		        GQ_CGFY = #{gqCgfy:DECIMAL},
+		      </if>
+		      <if test="sfzdd != null and sfzdd !='' " >
+		        SFZDD = #{sfzdd:VARCHAR},
+		      </if>
+		      <if test="zddbh != null and zddbh !='' " >
+		        ZDDBH = #{zddbh:VARCHAR},
+		      </if>
+		      <if test="zddlx != null and zddlx !='' " >
+		        ZDDLX = #{zddlx:VARCHAR},
+		      </if>
+		      <if test="dzshZt != null and dzshZt !='' " >
+		        DZSH_ZT = #{dzshZt:VARCHAR},
+		      </if>
+		      <if test="dzshYhbh != null and dzshYhbh !='' " >
+		        DZSH_YHBH = #{dzshYhbh:VARCHAR},
+		      </if>
+		      <if test="dzshBmbh != null and dzshBmbh !='' " >
+		        DZSH_BMBH = #{dzshBmbh:VARCHAR},
+		      </if>
+		      <if test="dzshDatetime != null and dzshDatetime !='' " >
+		        DZSH_DATETIME = #{dzshDatetime:DATE},
+		      </if>
+		      <if test="ywshZt != null and ywshZt !='' " >
+		        YWSH_ZT = #{ywshZt:VARCHAR},
+		      </if>
+		      <if test="ywshYhbh != null and ywshYhbh !='' " >
+		        YWSH_YHBH = #{ywshYhbh:VARCHAR},
+		      </if>
+		      <if test="ywshBmbh != null and ywshBmbh !='' " >
+		        YWSH_BMBH = #{ywshBmbh:VARCHAR},
+		      </if>
+		      <if test="ywshDatetime != null and ywshDatetime !='' " >
+		        YWSH_DATETIME = #{ywshDatetime:DATE},
+		      </if>
+		      <if test="xgly != null and xgly !='' " >
+		        XGLY = #{xgly:VARCHAR},
+		      </if>
+		      <if test="xgsj != null and xgsj !='' " >
+		        XGSJ = #{xgsj:DATE},
+		      </if>
+		      <if test="xgyh != null and xgyh !='' " >
+		        XGYH = #{xgyh:VARCHAR},
+		      </if>
+		      <if test="gqCgly != null and gqCgly !='' " >
+		        GQ_CGLY = #{gqCgly:VARCHAR},
+		      </if>
+		      <if test="gqCgdw != null and gqCgdw !='' " >
+		        GQ_CGDW = #{gqCgdw:VARCHAR},
+		      </if>
+		      <if test="gqCgzt != null and gqCgzt !='' " >
+		        GQ_CGZT = #{gqCgzt:VARCHAR},
+		      </if>
+		      <if test="gqCgDdbh != null and gqCgDdbh !='' " >
+		        GQ_CG_DDBH = #{gqCgDdbh:VARCHAR},
+		      </if>
+		      <if test="gqCgkm != null and gqCgkm !='' " >
+		        GQ_CGKM = #{gqCgkm:VARCHAR},
+		      </if>
+		      <if test="bzbz != null " >
+		        BZBZ = #{bzbz:VARCHAR},
+		      </if>
+    	</set>
+   	 	where gqdh = #{gqdh:VARCHAR} and shbh = #{shbh:VARCHAR}
+  </update>
+  
+  <!-- 历史数据调整 -->
+  <!-- 历史数据调整列表查询 -->
+  <select id="getHistoryGqList" parameterType="HashMap" resultType="HashMap">
+		select a.*,b.tkno from jp_gqd a join jp_gqd_cjr b on a.gqdh = b.gqdh 
+		where a.skzt = '1' and a.GQZT != '7' and a.GQZT != '8'
+		<if test="shbh != null and shbh != ''">and a.shbh = #{shbh,jdbcType=VARCHAR}</if> 
+  		<if test="pnrNo != null and pnrNo != ''">and a.xs_pnr_no = #{pnrNo,jdbcType=VARCHAR}</if> 
+  		<if test="tkno != null and tkno != ''">and b.tkno = #{tkno,jdbcType=VARCHAR}</if>
+  		<if test="gqdh != null and gqdh != ''">and a.gqdh = #{gqdh,jdbcType=VARCHAR}</if>
+	</select>
+	
+	<select id="getjpgqdobject" parameterType="HashMap" resultType="HashMap">
+		select b.tkno,a.* from jp_gqd a join jp_gqd_cjr b on a.gqdh = b.gqdh where 1=1
+		<if test="shbh!=null and shbh!=''">and a.shbh = #{shbh,jdbcType=VARCHAR}</if>
+		<if test="gqdh!=null and gqdh!=''">and a.gqdh = #{gqdh,jdbcType=VARCHAR}</if>
+		<if test="tkno!=null and tkno!=''">and b.tkno = #{tkno,jdbcType=VARCHAR}</if>
+	</select>
+	
+	 <!-- 历史数据调整 -->
+	<update id="saveGqdHistory" parameterType="HashMap">
+		update jp_gqd
+		<set>
+			<if test="jpgqcgfy != null and jpgqcgfy != ''">gq_cgfy = #{jpgqcgfy,jdbcType=DOUBLE}</if>
+			<if test="jpgqxsfy != null and jpgqxsfy != ''">,gq_xsfy = #{jpgqxsfy,jdbcType=DOUBLE}</if>
+			<if test="zfkm != null and zfkm != ''">,skkm = #{zfkm,jdbcType=VARCHAR}</if>
+		</set>
+		WHERE gqdh=#{GQDH,jdbcType=VARCHAR} and shbh=#{SHBH,jdbcType=VARCHAR}
+	</update>
+	
+  
+  
+
+  <!-- 对账专用,根据外部单号查找业务数据 -->
+  <select id="genDzDataByWbdh" parameterType="Map" resultType="Map">
+		select GQ_BLSJ wcsj,DDYH,DDSJ,gq.gqdh ddbh,wbdh,'3' ddlx,'改签单' ddlxmc,gq.GQ_XSFY zfje,gq.XS_PNR_NO pnrno,
+                     (select wm_concat(tkno) from jp_gqd_cjr where gqdh=gq.gqdh ) tknos,CJR cjrs
+             from jp_gqd gq where gq.SKZT='1' and nvl(gq.SFZDD,'0')='0'
+             	and shbh=#{shbh,jdbcType=VARCHAR} and wbdh =#{wbdh,jdbcType=VARCHAR} 
+             	and GQ_BLSJ between to_date(#{dzrqs,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss') 
+             				and to_date(#{dzrqz,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+	</select>
+	
+  <!-- 的改签单重复判断,通过外部单号查48小时内的数据 -->
+  <select id="checkGqdByWbdh" parameterType="HashMap" resultType="cn.vetech.vedsb.jp.entity.jpgqgl.JpGqd" >
+  	select * from (select t.*,rownum from jp_gqd t where wbdh = #{wbdh} and shbh =#{shbh} order by ddsj desc ) where rownum = 1
+  </select>
+  
+    <!-- 的改签单重复判断,通过外部单号查48小时内的数据 -->
+  <select id="getTknoByGqTkno" parameterType="HashMap" resultType="Map" >
+  	select tkno,gq_tkno from jp_gqd_cjr t,jp_gqd a where t.gqdh = a.gqdh and a.gqzt not in('7','8')
+		and t.gq_tkno in 
+    	<foreach item="item" index="index" collection="tknos" 
+        	open="(" separator="," close=")">
+         #{item}
+     	</foreach>
+  </select>
+</mapper>

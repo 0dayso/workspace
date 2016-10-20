@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.b2bsz.JpB2bDlzhDao" >
+  <resultMap id="BaseResultMap" type="cn.vetech.vedsb.jp.entity.b2bsz.JpB2bDlzh" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="HKGS" property="hkgs" jdbcType="VARCHAR" />
+    <result column="ZH" property="zh" jdbcType="VARCHAR" />
+    <result column="MM" property="mm" jdbcType="VARCHAR" />
+    <result column="YHBH" property="yhbh" jdbcType="VARCHAR" />
+    <result column="SHBH" property="shbh" jdbcType="VARCHAR" />
+    <result column="CJTIME" property="cjtime" jdbcType="VARCHAR" />
+    <result column="OFFICE" property="office" jdbcType="VARCHAR" />
+    <result column="BY1" property="by1" jdbcType="VARCHAR" />
+    <result column="BY2" property="by2" jdbcType="VARCHAR" />
+    <result column="BY3" property="by3" jdbcType="VARCHAR" />
+    <result column="BCA" property="bca" jdbcType="VARCHAR" />
+    <result column="DLFS" property="dlfs" jdbcType="VARCHAR" />
+    <result column="SFSY" property="sfsy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="sqlsearch">
+		<where>
+			and j.shbh=#{shbh:VARCHAR}
+			<if test="bca != null and bca != '' "> and j.bca=#{bca:VARCHAR} </if>
+			<if test="hkgs != null and hkgs != '' "> and j.hkgs=#{hkgs:VARCHAR} </if>
+		</where>
+	</sql>
+  
+  <sql id="Base_Column_List" >
+    ID, HKGS, ZH, MM, YHBH, SHBH, CJTIME, OFFICE, BY1, BY2, BY3, BCA, DLFS, SFSY
+  </sql>
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from JP_B2B_DLZH
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from JP_B2B_DLZH
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <select id="query" resultType="cn.vetech.vedsb.jp.entity.b2bsz.JpB2bDlzh" parameterType="cn.vetech.vedsb.jp.entity.b2bsz.JpB2bDlzh">
+		SELECT B_TABLE.* FROM  
+		(
+			 SELECT A_TABLE.*,ROWNUM AS LINENUM FROM 
+			 (
+				SELECT j.* FROM JP_B2B_DLZH j
+				<include refid="sqlsearch"/>
+				order by #{orderBy:VARCHAR} 
+			 ) 
+			 A_TABLE WHERE ROWNUM &lt;= #{count}  
+		) 
+		B_TABLE WHERE LINENUM &gt;= #{start}
+ </select>
+
+  <update id="updateByIdAndBca" parameterType="cn.vetech.vedsb.jp.entity.b2bsz.JpB2bDlzh" >
+    update JP_B2B_DLZH
+    <set >
+      <if test="hkgs != null" >
+        HKGS = #{hkgs,jdbcType=VARCHAR},
+      </if>
+      <if test="zh != null" >
+        ZH = #{zh,jdbcType=VARCHAR},
+      </if>
+      <if test="mm != null" >
+        MM = #{mm,jdbcType=VARCHAR},
+      </if>
+      <if test="yhbh != null" >
+        YHBH = #{yhbh,jdbcType=VARCHAR},
+      </if>
+      <if test="shbh != null" >
+        SHBH = #{shbh,jdbcType=VARCHAR},
+      </if>
+      <if test="cjtime != null" >
+        CJTIME = #{cjtime,jdbcType=VARCHAR},
+      </if>
+      <if test="office != null" >
+        OFFICE = #{office,jdbcType=VARCHAR},
+      </if>
+      <if test="by1 != null" >
+        BY1 = #{by1,jdbcType=VARCHAR},
+      </if>
+      <if test="by2 != null" >
+        BY2 = #{by2,jdbcType=VARCHAR},
+      </if>
+      <if test="by3 != null" >
+        BY3 = #{by3,jdbcType=VARCHAR},
+      </if>
+      <if test="bca != null" >
+        BCA = #{bca,jdbcType=VARCHAR},
+      </if>
+      <if test="dlfs != null" >
+        DLFS = #{dlfs,jdbcType=VARCHAR},
+      </if>
+      <if test="sfsy != null" >
+        SFSY = #{sfsy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR} and BCA = #{bca,jdbcType=VARCHAR} 
+    and SHBH = #{shbh,jdbcType=VARCHAR} and HKGS = #{hkgs,jdbcType=VARCHAR}
+  </update>
+  <select id="getDlzhListByBean" parameterType="cn.vetech.vedsb.jp.entity.b2bsz.JpB2bDlzh" resultType="cn.vetech.vedsb.jp.entity.b2bsz.JpB2bDlzh">
+  	 	select 
+    	<include refid="Base_Column_List" />
+    	from JP_B2B_DLZH
+    	<where>
+    			   1=1
+    		      <if test="hkgs != null" >
+			       and HKGS = #{hkgs,jdbcType=VARCHAR}
+			      </if>
+			      <if test="zh != null" >
+			       and ZH = #{zh,jdbcType=VARCHAR}
+			      </if>
+			      <if test="mm != null" >
+			       and MM = #{mm,jdbcType=VARCHAR}
+			      </if>
+			      <if test="yhbh != null" >
+			       and YHBH = #{yhbh,jdbcType=VARCHAR}
+			      </if>
+			      <if test="shbh != null" >
+			       and SHBH = #{shbh,jdbcType=VARCHAR}
+			      </if>
+			      <if test="cjtime != null" >
+			       and CJTIME = #{cjtime,jdbcType=VARCHAR}
+			      </if>
+			      <if test="office != null" >
+			       and OFFICE = #{office,jdbcType=VARCHAR}
+			      </if>
+			      <if test="by1 != null" >
+			       and BY1 = #{by1,jdbcType=VARCHAR}
+			      </if>
+			      <if test="by2 != null" >
+			       and BY2 = #{by2,jdbcType=VARCHAR}
+			      </if>
+			      <if test="by3 != null" >
+			       and BY3 = #{by3,jdbcType=VARCHAR}
+			      </if>
+			      <if test="bca != null" >
+			       and BCA = #{bca,jdbcType=VARCHAR}
+			      </if>
+			      <if test="dlfs != null" >
+			       and DLFS = #{dlfs,jdbcType=VARCHAR}
+			      </if>
+			      <if test="sfsy != null" >
+			       and SFSY = #{sfsy,jdbcType=VARCHAR}
+			      </if>
+    	</where>
+ 		<if test="orderBy != null" >
+       		order by #{orderBy:VARCHAR}
+      	</if>
+  </select>
+</mapper>

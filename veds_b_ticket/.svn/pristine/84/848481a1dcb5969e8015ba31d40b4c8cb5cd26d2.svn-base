@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpddgl.JpKhddYjDao">
+ 
+	<!--  根据订单编号查找邮寄单 -->
+  <select id="queryJpKhddYjByDdbh" parameterType="String" resultType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhddYj">
+  	select * from jp_khdd_yj where ddbh=#{ddbh}
+  </select>
+  <!-- 邮寄行程单后改变邮寄单的状态，和增加邮寄单号 -->
+   <update id="updateYjdhMore" parameterType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhddYj">
+   	update jp_khdd_yj set yjzt=#{yjzt},yjsj=#{yjsj}
+   	<if test="yjdh!=null and yjdh!=''">
+   		,yjdh=#{yjdh}
+   	</if>
+   	<if test="cg_yjf!=null and cg_yjf!=''">
+   		,cg_yjf=#{cg_yjf}
+   	</if>
+   	<if test="sjr!=null and sjr!=''">
+   		,sjr=#{sjr}
+   	</if>
+   	<if test="nxdh!=null and nxdh!=''">
+   		,nxdh=#{nxdh}
+   	</if>
+   	<if test="yzbm!=null and yzbm!=''">
+   		,yzbm=#{yzbm}
+   	</if>
+   	<if test="xjdz!=null and xjdz!=''">
+   		,xjdz=#{xjdz}
+   	</if>
+   	<if test="bzbz!=null and bzbz!=''">
+   		,bzbz=#{bzbz}
+   	</if>
+   	where id=#{id}
+   </update>
+   <!-- 通过订单编号查找邮寄单记录id -->
+   <select id="queryYjlistByddbh" parameterType="String" resultType="String">
+   	select id from jp_khdd_yj where ddbh = #{ddbh} or ddbh like concat('%',#{ddbh,jdbcType=VARCHAR}) or ddbh like concat(#{ddbh,jdbcType=VARCHAR},'%')
+   </select>
+   
+   <!-- 修改邮寄单的邮寄状态 -->
+   <update id="updateYjzt" parameterType="cn.vetech.vedsb.jp.entity.jpddgl.JpKhddYj">
+   	update jp_khdd_yj set yjzt=#{yjzt},yjsj=#{yjsj} 
+   	<if test="yjdh!=null and yjdh!=''">
+   		,yjdh=#{yjdh}
+   	</if>
+   	<if test="cg_yjf!=null and cg_yjf!=''">
+   		,cg_yjf=#{cg_yjf}
+   	</if>
+   	<if test="sjr!=null and sjr!=''">
+   		,sjr=#{sjr}
+   	</if>
+   	<if test="nxdh!=null and nxdh!=''">
+   		,nxdh=#{nxdh}
+   	</if>
+   	<if test="yzbm!=null and yzbm!=''">
+   		,yzbm=#{yzbm}
+   	</if>
+   	<if test="xjdz!=null and xjdz!=''">
+   		,xjdz=#{xjdz}
+   	</if>
+   	<if test="dysj!=null and dysj!=''">
+		,dysj=#{dysj}
+	</if>
+   	<if test="bzbz!=null and bzbz!=''">
+   		,bzbz=#{bzbz}
+   	</if>
+   	where ddbh = #{ddbh} or ddbh like concat('%',#{ddbh,jdbcType=VARCHAR}) or ddbh like concat(#{ddbh,jdbcType=VARCHAR},'%')
+   </update>
+   <!-- 根据订单编号删除邮寄单 -->
+   <delete id="deleteYjByDdbh" parameterType="String">
+   	delete from jp_khdd_yj where ddbh = #{ddbh} or ddbh like concat('%',#{ddbh,jdbcType=VARCHAR}) or ddbh like concat(#{ddbh,jdbcType=VARCHAR},'%') 
+   </delete>
+</mapper>

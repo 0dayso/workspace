@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="veds_b_ticket">
+        <wb-resource deploy-path="/" source-path="/WebRoot"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/extent"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/platpolicy"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/web"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/third"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/webstore"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/resources"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/core"/>
+        <property name="context-root" value="/veds_b_ticket"/>
+        <property name="java-output-path" value="/veds_b_ticket/WebRoot/WEB-INF/classes"/>
+    </wb-module>
+</project-modules>

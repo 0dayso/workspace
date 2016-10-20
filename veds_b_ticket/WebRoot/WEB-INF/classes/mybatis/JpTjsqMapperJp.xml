@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpzwgl.JpTjsqDao">
+	<sql id="where">
+		<where>
+			<if test="shbh != null and shbh != '' "> and t.shbh=#{shbh,jdbcType=VARCHAR} </if>
+			<if test="sqzt == '1' "> and (t.sq_zt=#{sqzt,jdbcType=VARCHAR} or t.sq_zt='0')</if>
+			<if test="sqzt == '3' "> and (t.sq_zt=#{sqzt,jdbcType=VARCHAR} or t.sq_zt='2')</if>
+			<if test="sqzt != null and sqzt != '' and sqzt != '3' and sqzt != '1' "> and t.sq_zt=#{sqzt,jdbcType=VARCHAR}</if>
+			<if test="sqzt == null or sqzt == '' "> and t.sq_zt != '0'</if>
+			<if test="dpdatetimeksrq != null and dpdatetimeksrq != '' ">
+			and t.DP_DATETIME &gt;= to_date(#{dpdatetimeksrq,jdbcType=TIMESTAMP},'yyyy/mm/dd')</if>
+			<if test="dpdatetimejsrq !=null and dpdatetimejsrq !='' ">
+			and t.DP_DATETIME &lt;= to_date(#{dpdatetimejsrq,jdbcType=TIMESTAMP},'yyyy/mm/dd')</if>
+			<if test="sqdatetimeksrq != null and sqdatetimeksrq != '' ">
+			and t.SQ_DATETIME &gt;= to_date(#{sqdatetimeksrq,jdbcType=TIMESTAMP},'yyyy/mm/dd')</if>
+			<if test="sqdatetimejsrq !=null and sqdatetimejsrq !='' ">
+			and t.SQ_DATETIME &lt;= to_date(#{sqdatetimejsrq,jdbcType=TIMESTAMP},'yyyy/mm/dd')</if>
+			<if test="qftimeksrq != null and qftimeksrq != '' ">
+			and t.QFTIME &gt;= to_date(#{qftimeksrq,jdbcType=TIMESTAMP},'yyyy/mm/dd') </if>
+			<if test="qftimejsrq != null and qftimejsrq != '' ">
+			and t.QFTIME &lt;= to_date(#{qftimerjsrq,jdbcType=TIMESTAMP},'yyyy/mm/dd')</if>
+			<if test="squserid != null and squserid != '' "> and t.SQ_USERID=#{squserid,jdbcType=VARCHAR} </if>
+			<if test="zwlx == '0' or zwlx == '3' "> and t.ZWLX=#{zwlx,jdbcType=VARCHAR} </if>
+			<if test="zwlx == '1' "> and (t.ZWLX='1' or t.ZWLX='2') </if>
+			<if test="cpdatetime == 'JR' "> 
+			and t.CP_DATETIME &gt; to_date(concat(#{nowtime,jdbcType=VARCHAR},'00:00:00'),'yyyy-MM-dd HH24:mi:ss')
+			and t.CP_DATETIME &lt;=to_date(concat(#{nowtime,jdbcType=VARCHAR},'23:59:59'),'yyyy-MM-dd HH24:mi:ss')
+			</if>
+			<if test="cpdatetime == 'LS' ">
+			and t.CP_DATETIME &lt; to_date(concat(#{nowtime,jdbcType=VARCHAR},'00:00:00'),'yyyy-MM-dd HH24:mi:ss')
+			</if> 
+			<if test="hbh != null and hbh != '' "> and t.HBH=#{hbh,jdbcType=VARCHAR} </if>
+			<if test="ypnrno != null and ypnrno != '' "> and t.YPNR_NO=#{ypnrno,jdbcType=VARCHAR} </if>
+			<if test="cjr != null and cjr != '' "> and c.CJR=#{cjr,jdbcType=VARCHAR} </if>
+			<if test="sqzt != null and sqzt != '' "> and t.SQ_ZT=#{sqzt,jdbcType=VARCHAR} </if>
+			<if test="clzt != null and clzt != '' "> and t.CL_ZT=#{clzt,jdbcType=VARCHAR} </if>
+		</where>
+	</sql>
+	
+	<sql id="where1">
+		<where>
+			<if test="shbh != null and shbh != '' "> and t.shbh=#{shbh,jdbcType=VARCHAR} </if>
+			<if test="sqdatetimebegin != null and sqdatetimebegin != '' ">
+			and t.SQ_DATETIME &gt;= to_date(#{sqdatetimebegin,jdbcType=TIMESTAMP},'yyyy/mm/dd ')
+			</if>
+			<if test="sqdatetimeend !=null and sqdatetimeend !='' ">
+			and t.SQ_DATETIME &lt;= to_date(#{sqdatetimeend,jdbcType=TIMESTAMP},'yyyy/mm/dd ')
+			</if>
+			<if test="dpdatetimebegin != null and dpdatetimebegin != '' ">
+			and t.DP_DATETIME &gt;= to_date(#{dpdatetimebegin,jdbcType=TIMESTAMP},'yyyy/mm/dd ')
+			</if>
+			<if test="dpdatetimeend !=null and dpdatetimeend !='' ">
+			and t.DP_DATETIME &lt;= to_date(#{dpdatetimeend,jdbcType=TIMESTAMP},'yyyy/mm/dd ')
+			</if>
+			<if test="qftimebegin != null and qftimebegin != '' ">
+			and t.QFTIME &gt;= to_date(#{qftimebegin,jdbcType=TIMESTAMP},'yyyy/mm/dd ')
+			</if>
+			<if test="qftimeend !=null and qftimeend !='' ">
+			and t.QFTIME &lt;= to_date(#{qftimeend,jdbcType=TIMESTAMP},'yyyy/mm/dd ')
+			</if>
+			<if test="sqzt != null and sqzt != ''"> and t.sq_zt=#{sqzt,jdbcType=VARCHAR}</if>
+			<if test="sqzt == null or sqzt == ''"> and t.sq_zt != '0'</if>
+			<if test="gngj != null and gngj != '' "> and t.GNGJ=#{gngj,jdbcType=VARCHAR}</if>
+			<if test="lxr != null and lxr != '' "> and t.LXR=#{lxr,jdbcType=VARCHAR}</if>
+			<if test="lxdh != null and lxdh != '' "> and t.LXR=#{LXDH,jdbcType=VARCHAR}</if>
+			<if test="hbh != null and hbh != '' "> and t.HBH=#{hbh,jdbcType=VARCHAR}</if>
+			<if test="hc != null and hc != '' "> and t.CFCITY=#{cfcity,jdbcType=VARCHAR} and t.DDCITY=#{ddcity,jdbcType=VARCHAR}</if>
+			<if test="cjr != null and cjr != '' "> and t.sqdh in (select sqdh from jp_tjsq_cjr tc where tc.cjr like concat(concat('%',#{cjr,jdbcType=VARCHAR}),'%'))</if>
+			<!--  <if test="ddlx == 'zwd' ">  and t.ypnr_no is NULL</if><if test="ddlx == 'yyd' ">  and t.ypnr_no is not NULL</if>-->
+			<if test="gngj != null and gngj != '' "> and t.GNGJ=#{gngj,jdbcType=VARCHAR}</if>
+			<if test="xcw != null and xcw != '' "> and c.CW=#{xcw,jdbcType=VARCHAR}</if>
+			<if test="ypnrno != null and ypnrno != '' "> and t.YPNR_NO=#{ypnrno,jdbcType=VARCHAR}</if>
+			<if test="cjrclzt != null and cjrclzt != '' "> and c.SFZWCG=#{cjrclzt,jdbcType=VARCHAR}</if>
+			<if test="zwlx == '0' or zwlx == '3' "> and t.ZWLX=#{zwlx,jdbcType=VARCHAR} </if>
+			<if test="zwlx == '1' "> and (t.ZWLX='1' or t.ZWLX='2') </if>
+			<if test="zwzt != null and zwzt != ''"> and t.zw_zt=#{zwzt,jdbcType=VARCHAR}</if>
+			<if test="cpdatetime == 'JR' "> 
+			and t.CP_DATETIME &gt; to_date(concat(#{nowtime,jdbcType=VARCHAR},'00:00:00'),'yyyy-MM-dd HH24:mi:ss')
+			and t.CP_DATETIME &lt;=to_date(concat(#{nowtime,jdbcType=VARCHAR},'23:59:59'),'yyyy-MM-dd HH24:mi:ss')
+			</if>
+			<if test="cpdatetime == 'LS' ">
+			and t.CP_DATETIME &lt; to_date(concat(#{nowtime,jdbcType=VARCHAR},'00:00:00'),'yyyy-MM-dd HH24:mi:ss')
+			</if> 
+		</where>
+	</sql>
+	<select id="getzwSuccList" parameterType="HashMap" resultType="HashMap">
+		SELECT B_TABLE.* FROM  (
+				 SELECT A_TABLE.*,ROWNUM AS LINENUM FROM (
+					select t.*,c.cl_userid cluseid,c.qx_yy qxyh,c.qx_sm qxsm,c.dp_cjrid dpcjrid,c.sfzwcg cjrzt,c.id cjrid,
+					c.cw xcw ,(c.cw||'/'||c.price) xcwpj,(t.ycw||'/'||c.yprice) ycwpj,c.pnr_no cjr_pnrno ,c.cjr,c.pnr_no zwpnr ,c.cw zwcw,c.price ,nvl((c.yprice-c.price),0) cj from jp_tjsq t join jp_tjsq_cjr c
+					on t.sqdh = c.sqdh
+					<include refid="where" />
+					and t.SFWBDR = '1' 
+					order by t.dp_datetime desc
+				 ) A_TABLE WHERE ROWNUM &lt;= #{count, jdbcType=INTEGER}
+			) B_TABLE WHERE LINENUM &gt;= #{start, jdbcType=INTEGER}
+	</select>
+	
+	<select id="getshZwddList" parameterType="HashMap" resultType="HashMap">
+		SELECT B_TABLE.* FROM  (
+			SELECT A_TABLE.*,ROWNUM AS LINENUM FROM (
+				select t.*,(select wm_concat(cjr) from jp_tjsq_cjr c where t.sqdh=c.sqdh) zcjr from jp_tjsq t
+				<include refid="where1" />
+				and t.SFWBDR = '0' 
+				order by t.sq_datetime desc 
+			)A_TABLE WHERE ROWNUM &lt;= #{count, jdbcType=INTEGER}
+	    ) B_TABLE WHERE LINENUM &gt;= #{start, jdbcType=INTEGER}
+	</select>
+	
+	<select id="getzwdlList" parameterType="HashMap" resultType="HashMap"><!-- 批量取消时根据查询条件返回追位订单list -->
+			select t.*,(select wm_concat(cjr) from jp_tjsq_cjr c where t.sqdh=c.sqdh) zcjr from jp_tjsq t
+				<include refid="where1" />
+				and t.SFWBDR = '0' 
+	</select>
+	
+	<select id="getzwcgwclList" parameterType="HashMap" resultType="HashMap">
+		SELECT B_TABLE.* FROM  (
+			SELECT A_TABLE.*,ROWNUM AS LINENUM FROM (
+				select t.*,c.yprice,c.price,c.pnr_no xpnr_no,c.cw xcw,c.cjr,nvl((c.yprice-c.price),0) cj
+				,dd.ddzt,dd.wd_ddlx ddlx,dd.xs_pnr_zt pnr_zt,dd.hclx,dd.xs_pj,dd.xs_cw
+				from jp_tjsq_cjr c,jp_tjsq t left join jp_khdd dd on dd.ddbh = t.ddbh
+				<include refid="where1" />
+				and t.sqdh=c.sqdh
+				and t.sqdh in (select sqdh from jp_tjsq_cjr c where c.sfzwcg != '2')
+				order by t.dp_datetime desc
+			)A_TABLE WHERE ROWNUM &lt;= #{count, jdbcType=INTEGER}
+	    ) B_TABLE WHERE LINENUM &gt;= #{start, jdbcType=INTEGER}
+	</select>
+	
+	<select id="getzwcgcyList" parameterType="HashMap" resultType="HashMap">
+		SELECT B_TABLE.* FROM  (
+			SELECT A_TABLE.*,ROWNUM AS LINENUM FROM (
+				select t.*,dd.ddzt,dd.xs_pnr_zt,c.yprice,c.price,c.pnr_no xpnr_no,c.cw xcw,c.cjr,nvl((c.yprice-c.price),0) cj
+				from jp_tjsq t ,jp_tjsq_cjr c left join jp_khdd dd on dd.ddbh = c.dp_ddbh
+				<include refid="where1" />
+				and t.sqdh=c.sqdh
+				and t.sqdh in (select sqdh from jp_tjsq_cjr c where c.sfzwcg = '2')
+				order by t.dp_datetime desc
+			)A_TABLE WHERE ROWNUM &lt;= #{count, jdbcType=INTEGER}
+	    ) B_TABLE WHERE LINENUM &gt;= #{start, jdbcType=INTEGER}
+	</select>
+	
+	<select id="getAllzwcgcyList" parameterType="HashMap" resultType="HashMap">
+			select t.*,dd.ddzt,dd.xs_pnr_zt,c.yprice,c.price,c.pnr_no xpnr_no,c.cw xcw,c.cjr,nvl((c.yprice-c.price),0) cj
+				from jp_tjsq t ,jp_tjsq_cjr c left join jp_khdd dd on dd.ddbh = c.dp_ddbh
+				<include refid="where1" />
+				and t.sqdh=c.sqdh
+				and t.sqdh in (select sqdh from jp_tjsq_cjr c where c.sfzwcg = '2')
+	</select>
+	
+	<select id="getzwcgqxList" parameterType="HashMap" resultType="HashMap">
+		SELECT B_TABLE.* FROM  (
+			SELECT A_TABLE.*,ROWNUM AS LINENUM FROM (
+				select t.*,(t.ycw||'/'||c.yprice) ycwpj,c.dp_ddbh dpddbh,c.cl_userid cluserid,c.qx_yy qxyh,c.cl_datetime cldatetime,
+				c.sfzwcg cjrzt,c.cw xcw,(c.cw||'/'||c.price) xcwpj,c.pnr_no xpnr_no,c.yprice ,nvl((c.yprice-c.price),0) cj
+				from jp_tjsq t,jp_tjsq_cjr c
+				<include refid="where1" />
+				and t.sqdh=c.sqdh
+				and t.sqdh in (select sqdh from jp_tjsq_cjr c where c.sfzwcg != '2')
+				and c.pnr_no is not null 
+				order by t.dp_datetime desc
+			)A_TABLE WHERE ROWNUM &lt;= #{count, jdbcType=INTEGER}
+	    ) B_TABLE WHERE LINENUM &gt;= #{start, jdbcType=INTEGER}	
+	</select>
+	
+	<select id="getzwcgylList" parameterType="HashMap" resultType="HashMap">
+		SELECT B_TABLE.* FROM  (
+			SELECT A_TABLE.*,ROWNUM AS LINENUM FROM (
+				select t.*,(t.ycw||'/'||c.yprice) ycwpj,c.dp_ddbh dpddbh,c.cl_userid cluserid,c.qx_yy qxyh,c.cl_datetime cldatetime,
+				c.sfzwcg cjrzt,c.cw xcw,(c.cw||'/'||c.price) xcwpj,c.pnr_no xpnr_no,c.yprice ,nvl((c.yprice-c.price),0) cj
+				from jp_tjsq t,jp_tjsq_cjr c
+				<include refid="where1" />
+				and t.sqdh = c.sqdh
+				and t.sqdh in (select sqdh from jp_tjsq_cjr c where c.sfzwcg != '2')
+				order by t.dp_datetime desc
+			)A_TABLE WHERE ROWNUM &lt;= #{count, jdbcType=INTEGER}
+	    ) B_TABLE WHERE LINENUM &gt;= #{start, jdbcType=INTEGER}	
+	</select>
+	
+	<select id="getzwcgylTotalCount" parameterType="HashMap" resultType="Integer">
+		select count(1) from jp_tjsq t,jp_tjsq_cjr c
+		<include refid="where1" />
+		and t.sqdh=c.sqdh
+		and t.sqdh in (select sqdh from jp_tjsq_cjr c where c.sfzwcg != '2')
+		and t.SFWBDR = '0' 
+	</select>
+	
+	<select id="getzwcgqxTotalCount" parameterType="HashMap" resultType="Integer">
+		select count(1) from jp_tjsq t,jp_tjsq_cjr c
+		<include refid="where1" />
+		and t.sqdh=c.sqdh
+		and t.sqdh in (select sqdh from jp_tjsq_cjr c where c.sfzwcg != '2')
+		and t.SFWBDR = '0' 
+		and c.pnr_no is not null 
+	</select>
+	
+	<select id="getzwcgcyTotalCount" parameterType="HashMap" resultType="Integer">
+		select count(1) from jp_tjsq t ,jp_tjsq_cjr c left join jp_khdd dd on dd.ddbh = c.dp_ddbh
+			<include refid="where1" />
+		 	and t.sqdh = c.sqdh
+		 	and t.sqdh in (select sqdh from jp_tjsq_cjr c where c.sfzwcg = '2')
+		 	and t.SFWBDR = '0' 
+	</select>
+	
+	<select id="getcgwclTotalCount" parameterType="HashMap" resultType="Integer">
+		select count(1)
+			from jp_tjsq_cjr c,jp_tjsq t left join jp_khdd dd on dd.ddbh = t.ddbh
+		<include refid="where1" />
+		and t.sqdh=c.sqdh
+		and t.sqdh in (select sqdh from jp_tjsq_cjr c where c.sfzwcg != '2')
+		and t.SFWBDR = '0' 
+	</select>
+		
+	
+	<select id="getshTotalCount" parameterType="HashMap" resultType="Integer">
+		select count(1) from jp_tjsq t
+		<include refid="where1" />
+		and t.SFWBDR = '0' 
+	</select>
+	
+	<select id="getTotalCount" parameterType="HashMap" resultType="Integer">
+		select count(1) from jp_tjsq t join jp_tjsq_cjr c on t.sqdh=c.sqdh
+		<include refid="where" />
+		and t.SFWBDR = '1'
+	</select>
+	<!-- 查询需要提交追位系统的队列 -->
+	<select id="getDtjDlList" parameterType="cn.vetech.vedsb.jp.entity.jpzwgl.JpTjsq" resultType="cn.vetech.vedsb.jp.entity.jpzwgl.JpTjsq">
+		SELECT * 
+			(select * from jp_tjsq where sq_zt = '1' and t.sftjzw='0' and shbh=#{shbh,jdbcType=VARCHAR} and SQ_DATETIME>#{sqDatetime,jdbcType=DATE} order by sq_datetime asc) 
+		WHERE ROWNUM &lt;= #{count, jdbcType=INTEGER}
+	</select>
+</mapper>

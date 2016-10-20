@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpjpgl.JpHdDao" >
+  <resultMap id="BaseResultMap" type="cn.vetech.vedsb.jp.entity.jpjpgl.JpHd" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="TKNO" property="tkno" jdbcType="VARCHAR" />
+    <result column="SHBH" property="shbh" jdbcType="VARCHAR" />
+    <result column="SXH" property="sxh" jdbcType="DECIMAL" />
+    <result column="CFCITY" property="cfcity" jdbcType="VARCHAR" />
+    <result column="DDCITY" property="ddcity" jdbcType="VARCHAR" />
+    <result column="CFSJ" property="cfsj" jdbcType="VARCHAR" />
+    <result column="DDSJ" property="ddsj" jdbcType="VARCHAR" />
+    <result column="CFHZL" property="cfhzl" jdbcType="VARCHAR" />
+    <result column="DDHZL" property="ddhzl" jdbcType="VARCHAR" />
+    <result column="FJJX" property="fjjx" jdbcType="VARCHAR" />
+    <result column="XS_HBH" property="xsHbh" jdbcType="VARCHAR" />
+    <result column="XS_CW" property="xsCw" jdbcType="VARCHAR" />
+    <result column="XS_TGQ" property="xsTgq" jdbcType="VARCHAR" />
+    <result column="CG_HBH" property="cgHbh" jdbcType="VARCHAR" />
+    <result column="CG_CW" property="cgCw" jdbcType="VARCHAR" />
+    <result column="CG_TGQ" property="cgTgq" jdbcType="VARCHAR" />
+  </resultMap>
+
+
+
+	<select id="query" resultType="HashMap"
+		parameterType="cn.vetech.vedsb.jp.entity.jpjpgl.JpHd">
+		SELECT * FROM jp_hd
+	</select>
+
+
+	<select id="detail" resultType="HashMap"
+		parameterType="cn.vetech.vedsb.jp.entity.jpjpgl.JpHd">
+		SELECT * FROM jp_hd where id=#{id} and shbh=#{shbh}
+	</select>
+
+
+	<select id="getJpHdById" resultType="cn.vetech.vedsb.jp.entity.jpjpgl.JpHd"
+		parameterType="cn.vetech.vedsb.jp.entity.jpjpgl.JpHd">
+		SELECT * FROM jp_hd where id=#{id} and shbh=#{shbh}
+	</select>
+	
+	
+	<select id="getJpHdByTpdh" resultType="cn.vetech.vedsb.jp.entity.jpjpgl.JpHd">
+		SELECT DISTINCT b.xs_hbh,b.cfsj,b.ddsj,b.cfcity,b.ddcity,b.xs_tgq,
+		                b.cfhzl,b.ddhzl,b.xs_cw
+		                FROM  jp_tpd_mx a JOIN jp_hd b ON a.id=b.tpmxid 
+		                WHERE a.shbh=b.shbh 
+		                and a.tpdh=#{param1} 
+		                and a.shbh=#{param2} 
+		                ORDER BY b.cfsj
+	</select>
+	
+	<select id="getJpHdByTpMxId" resultType="cn.vetech.vedsb.jp.entity.jpjpgl.JpHd">
+		   select * from jp_hd  a where a.tpmxid = #{param1} and a.shbh=#{param2} order by sxh
+	</select>
+
+	<select id="getJpHdByDdhdidAndTkno" resultType="cn.vetech.vedsb.jp.entity.jpjpgl.JpHd"
+		parameterType="cn.vetech.vedsb.jp.entity.jpjpgl.JpHd">
+		SELECT * FROM jp_hd where ddhdid=#{ddhdid:VARCHAR} and tkno=#{tkno:VARCHAR} and shbh=#{shbh:VARCHAR}
+	</select>
+
+	<select id="getPageCount" resultType="integer"
+		parameterType="cn.vetech.vedsb.jp.entity.jpjpgl.JpHd">
+		SELECT COUNT(1) FROM jp_hd
+	</select>
+	<!-- 根据商户编号和票号查找航段 -->
+	<select id="queryJpHdByTkno" parameterType="cn.vetech.vedsb.jp.entity.jpjpgl.JpHd" resultType="cn.vetech.vedsb.jp.entity.jpjpgl.JpHd">
+		select id,tkno,cfcity,ddcity,fjjx,cfsj,ddsj,xs_cw,xs_hbh from jp_hd where shbh=#{shbh} and tkno=#{tkno}
+	</select>
+</mapper>

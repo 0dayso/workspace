@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jptpgl.JpTpdMxDao">
+  
+  <select id="query" resultType="HashMap" parameterType="cn.vetech.vedsb.jp.entity.jptpgl.JpTpdMx">
+	    SELECT * FROM jp_tpd_mx where shbh=#{shbh}
+  </select>
+	
+  <select id="getPageCount" resultType="integer" parameterType="cn.vetech.vedsb.jp.entity.jptpgl.JpTpdMx">
+		SELECT COUNT(1) FROM jp_tpd_mx where shbh=#{shbh}
+  </select>
+	
+  <select id="getJpTpdMxList" resultType="HashMap" >
+	    
+	     SELECT * FROM JP_TPD_MX mx  LEFT JOIN JP_JP jp ON  mx.tkno=jp.tkno 
+	     
+	     WHERE  mx.shbh=jp.shbh AND mx.tpdh=#{param1} AND mx.shbh=#{param2}
+	    
+  </select>
+  
+  <select id="getJpTpdJpInfo" resultType="HashMap" >
+	    
+	     SELECT * FROM   JP_JP jp LEFT JOIN  JP_TPD_MX mx ON  mx.tkno=jp.tkno 
+	     
+	     WHERE  mx.shbh=jp.shbh AND mx.tpdh=#{param1} AND mx.shbh=#{param2}
+	    
+  </select>
+  
+  <select id="getJpTpdMxByTpdh" resultType="cn.vetech.vedsb.jp.entity.jptpgl.JpTpdMx" >
+	     SELECT * FROM   JP_TPD_MX mx  WHERE  mx.tpdh=#{param1} AND mx.shbh=#{param2}
+  </select>
+	
+  <select id="getJpTpdMxJl" resultType="Integer" >
+  		 SELECT COUNT(1) FROM  JP_TPD_MX mx WHERE id = #{param1:VARCHAR} and shbh = #{param2:VARCHAR} 
+  		 and exists (SELECT 1 FROM JP_TPD WHERE id = mx.tpdh and xs_tpzt != '9')
+  </select>
+  <sql id="where1">
+  		<where>
+  			 <if test="shbh!=null and shbh!='' ">and d.shbh = #{shbh,jdbcType=VARCHAR}</if>
+  			 <if test="cgtjsjbegin!=null and cgtjsjbegin!='' ">and d.cg_tjsj &gt;= to_date(#{cgtjsjbegin,jdbcType=TIMESTAMP},'yyyy-mm-dd hh24:mi:ss')</if>
+		  		 <if test="cgtjsjend!=null and cgtjsjend!='' ">and d.cg_tjsj &lt;= to_date(#{cgdzsjend,jdbcType=TIMESTAMP},'yyyy-mm-dd hh24:mi:ss')</if>
+		  		 <if test="cgly!=null and cgly!='' ">and d.cgly = #{cgly,jdbcType=VARCHAR}</if>
+		  		 <!--<if test="cgly == null or cgly == '' ">and d.cgly is not null and d.cgly in ('OP','BPET')</if>  -->
+		  		 <if test="tkno!=null and tkno!='' ">and x.tkno = #{tkno,jdbcType=VARCHAR}</if>
+		  		 <if test="pnrno!=null and pnrno!='' ">and d.cg_pnr_no = #{pnrno,jdbcType=VARCHAR}</if>
+		  		 <if test="sfhk!=null and sfhk!='' and sfhk == '1'">and d.cg_tpzt = '3'</if><!-- 已回款的就是已办理 -->
+		  		 <if test="sfhk!=null and sfhk!='' and sfhk == '2'">and d.cg_tpzt != '3'</if><!-- 未回款的就是采购状态不是已办理的 -->
+		  		 <!--  <if test="sjhkdatetime!=null and sjhkdatetime!='' ">and to_date(d.cg_blsj,'yyyy-mm-dd hh24:mi:ss') &gt;= to_date(#{sjhkdatetime,jdbcType=TIMESTAMP},'yyyy-mm-dd hh24:mi:ss')</if>-->
+		  		 <if test="cgwguserid!=null and cgwguserid!='' ">and d.cg_blr = #{cgwguserid,jdbcType=VARCHAR}</if>
+		  		 <if test="sfzytp!=null and sfzytp!='' ">and d.cg_sfzytp = #{sfzytp,jdbcType=VARCHAR}</if>
+		  		 <if test="cgdw!=null and cgdw!='' ">and d.cgdw = #{cgdw,jdbcType=VARCHAR}</if>
+  		</where>
+  </sql>
+  <!-- 采购对账退票待回款查询 -->
+  	<select id="getcgdzDhkList" parameterType="HashMap" resultType="HashMap">
+  	SELECT B_TABLE.* FROM  
+		(
+			 SELECT A_TABLE.*,ROWNUM AS LINENUM FROM 
+			 (
+		  		select d.cgdw,x.tkno,d.cg_tjsj,d.cg_pnr_no,d.cg_tkje,d.cg_stje,d.cg_tpzt,d.cg_blsj,d.cg_blr,d.cg_sfzytp, d.cg_yjhksj,d.cg_yjhksc from jp_tpd d,jp_tpd_mx x 
+		  		<include refid="where1" />
+		  		and d.tpdh = x.tpdh
+		  		order by d.cgdw desc
+  		  	) 
+			 A_TABLE WHERE ROWNUM &lt;= #{count}  
+		) 
+		B_TABLE WHERE LINENUM &gt;= #{start}
+  	</select>
+  	<select id="getTotalCount" parameterType="HashMap" resultType="Integer">
+		select count(1) from jp_tpd d,jp_tpd_mx x
+		  		<include refid="where1" />
+		  		and d.tpdh = x.tpdh
+	</select>
+  <!-- 采购对账退票待回款查询 -->
+</mapper>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpgqgl.JpGqdHdDao">
+  <update id="updateByIdSelective" parameterType="cn.vetech.vedsb.jp.entity.jpgqgl.JpGqdHd">
+    update JP_GQD_HD
+    <set>
+      <if test="gqdh != null and gqdh != ''">
+        GQDH = #{gqdh,jdbcType=VARCHAR},
+      </if>
+      <if test="shbh != null and shbh != ''">
+        SHBH = #{shbh,jdbcType=VARCHAR},
+      </if>
+      <if test="sxh != null and sxh != ''">
+        SXH = #{sxh,jdbcType=DECIMAL},
+      </if>
+      <if test="cfcity != null and cfcity != ''">
+        CFCITY = #{cfcity,jdbcType=VARCHAR},
+      </if>
+      <if test="ddcity != null and ddcity != ''">
+        DDCITY = #{ddcity,jdbcType=VARCHAR},
+      </if>
+      <if test="jphdid != null and jphdid != ''">
+        JPHDID = #{jphdid,jdbcType=VARCHAR},
+      </if>
+      <if test="oCfsj != null and oCfsj != ''">
+        O_CFSJ = #{oCfsj,jdbcType=VARCHAR},
+      </if>
+      <if test="oDdsj != null and oDdsj != ''">
+        O_DDSJ = #{oDdsj,jdbcType=VARCHAR},
+      </if>
+      <if test="oCfhzl != null and oCfhzl != ''">
+        O_CFHZL = #{oCfhzl,jdbcType=VARCHAR},
+      </if>
+      <if test="oDdhzl != null and oDdhzl != ''">
+        O_DDHZL = #{oDdhzl,jdbcType=VARCHAR},
+      </if>
+      <if test="oFjjx != null and oFjjx != ''">
+        O_FJJX = #{oFjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="oHdzt != null and oHdzt != ''">
+        O_HDZT = #{oHdzt,jdbcType=VARCHAR},
+      </if>
+      <if test="oXsHbh != null and oXsHbh != ''">
+        O_XS_HBH = #{oXsHbh,jdbcType=VARCHAR},
+      </if>
+      <if test="oXsCw != null and oXsCw != ''">
+        O_XS_CW = #{oXsCw,jdbcType=VARCHAR},
+      </if>
+      <if test="oXsTgq != null and oXsTgq != ''">
+        O_XS_TGQ = #{oXsTgq,jdbcType=VARCHAR},
+      </if>
+      <if test="oCgHbh != null and oCgHbh != ''">
+        O_CG_HBH = #{oCgHbh,jdbcType=VARCHAR},
+      </if>
+      <if test="oCgCw != null and oCgCw != ''">
+        O_CG_CW = #{oCgCw,jdbcType=VARCHAR},
+      </if>
+      <if test="oCgTgq != null and oCgTgq != ''">
+        O_CG_TGQ = #{oCgTgq,jdbcType=VARCHAR},
+      </if>
+      <if test="nCfsj != null and nCfsj != ''">
+        N_CFSJ = #{nCfsj,jdbcType=VARCHAR},
+      </if>
+      <if test="nDdsj != null and nDdsj != ''">
+        N_DDSJ = #{nDdsj,jdbcType=VARCHAR},
+      </if>
+      <if test="nCfhzl != null and nCfhzl != ''">
+        N_CFHZL = #{nCfhzl,jdbcType=VARCHAR},
+      </if>
+      <if test="nDdhzl != null and nDdhzl != ''">
+        N_DDHZL = #{nDdhzl,jdbcType=VARCHAR},
+      </if>
+      <if test="nFjjx != null and nFjjx != ''">
+        N_FJJX = #{nFjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="nHdzt != null and nHdzt != ''">
+        N_HDZT = #{nHdzt,jdbcType=VARCHAR},
+      </if>
+      <if test="nXsHbh != null and nXsHbh != ''">
+        N_XS_HBH = #{nXsHbh,jdbcType=VARCHAR},
+      </if>
+      <if test="nXsCw != null and nXsCw != ''">
+        N_XS_CW = #{nXsCw,jdbcType=VARCHAR},
+      </if>
+      <if test="nXsTgq != null and nXsTgq != ''">
+        N_XS_TGQ = #{nXsTgq,jdbcType=VARCHAR},
+      </if>
+      <if test="nCgHbh != null and nCgHbh != ''">
+        N_CG_HBH = #{nCgHbh,jdbcType=VARCHAR},
+      </if>
+      <if test="nCgCw != null and nCgCw != ''">
+        N_CG_CW = #{nCgCw,jdbcType=VARCHAR},
+      </if>
+      <if test="nCgTgq != null and nCgTgq != ''">
+        N_CG_TGQ = #{nCgTgq,jdbcType=VARCHAR},
+      </if>
+    </set> 
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="getGqHdByJpHdId" parameterType="cn.vetech.vedsb.jp.entity.jpgqgl.JpGqdHd" resultType="HashMap">
+  		SELECT jh.ID, jh.GQDH, jh.SHBH, jh.SXH, jh.CFCITY, jh.DDCITY, jh.JPHDID, jh.O_CFSJ, jh.O_DDSJ, jh.O_CFHZL, jh.O_DDHZL, jh.O_FJJX, 
+		jh.O_HDZT, jh.O_XS_HBH, jh.O_XS_CW, jh.O_XS_TGQ, jh.O_CG_HBH, jh.O_CG_CW, jh.O_CG_TGQ, jh.N_CFSJ, jh.N_DDSJ, jh.N_CFHZL, 
+	    jh.N_DDHZL, jh.N_FJJX, jh.N_HDZT, jh.N_XS_HBH, jh.N_XS_CW, jh.N_XS_TGQ, jh.N_CG_HBH, jh.N_CG_CW, jh.N_CG_TGQ, jg.GQZT
+	    FROM JP_GQD_HD jh, JP_GQD jg where jh.gqdh = jg.gqdh and jh.jphdid = #{jphdid:VARCHAR} and jh.shbh = #{shbh:VARCHAR}
+	    and jg.GQZT not in ('7','8') order by jg.ddsj
+  </select>
+</mapper>

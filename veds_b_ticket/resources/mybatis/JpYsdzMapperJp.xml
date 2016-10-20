@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpcwgl.JpYsdzDao">
+	<!-- 未到账报表条件 -->
+	<sql id="wdztj">  
+	  <where>
+	  	and shbh = #{shbh} 
+		<if test="jglx != null and jglx != '' "> and jglx=#{jglx,jdbcType=VARCHAR}</if>
+		<if test="wdid != null and wdid != '' "> and wdid=#{wdid,jdbcType=VARCHAR}</if>
+		<if test="syrqs != null and syrqs != '' "> and syrq &gt;=to_date(#{syrqs}||' 00:00:00','yyyy-mm-dd hh24:mi:ss')</if>
+		<if test="syrqz != null and syrqz != '' "> and syrq &lt;=to_date(#{syrqz}||' 23:59:59','yyyy-mm-dd hh24:mi:ss')</if>
+		<if test="gyddh != null and gyddh != '' and jglx=='6'.toString() "> and wd_ddh=#{gyddh,jdbcType=VARCHAR}</if>
+		<if test="gyddh != null and gyddh != '' and jglx!='6'.toString() "> and GYDDH=#{gyddh,jdbcType=VARCHAR}</if>
+		<if test="ddbh != null and ddbh != '' "> and ddbh like '%'||#{ddbh,jdbcType=VARCHAR}||'%'</if>
+		<if test="pnrno != null and pnrno != '' "> and pnrno like '%'||#{pnrno,jdbcType=VARCHAR}||'%'</if>
+		<if test="tkno != null and tkno != '' "> and tkno like '%'||#{tkno,jdbcType=VARCHAR}||'%'</if>
+		<if test="dz_sfdz != null and dz_sfdz != '' "> and dz_sfdz=#{dz_sfdz,jdbcType=VARCHAR}</if>
+		<if test="dzrqs != null and dzrqs != '' "> and DZ_DZRQ &gt;=to_date(#{dzrqs}||' 00:00:00','yyyy-mm-dd hh24:mi:ss')</if>
+		<if test="dzrqz != null and dzrqz != '' "> and DZ_DZRQ &lt;=to_date(#{dzrqz}||' 23:59:59','yyyy-mm-dd hh24:mi:ss')</if>
+		<if test="bd_sfybd != null and bd_sfybd != '' "> and bd_sfybd=#{bd_sfybd,jdbcType=VARCHAR}</if>
+		<if test="bdrqs != null and bdrqs != '' "> and BD_BDRQ &gt;=to_date(#{bdrqs}||' 00:00:00','yyyy-mm-dd hh24:mi:ss')</if>
+		<if test="bdrqz != null and bdrqz != '' "> and BD_BDRQ &lt;=to_date(#{bdrqz}||' 23:59:59','yyyy-mm-dd hh24:mi:ss')</if>
+		<if test="ddlx != null and ddlx != '' "> and ddlx=#{ddlx,jdbcType=VARCHAR}</if>
+		<if test="zbid != null and zbid != '' "> and zbid=#{zbid,jdbcType=VARCHAR}</if>
+		<if test="jesfzq != null and jesfzq != '' "> and jesfzq=#{jesfzq,jdbcType=VARCHAR}</if>
+	  </where>  
+	</sql>
+	<!-- 未到账查询 -->
+	<select id="searchWdz" parameterType="Map" resultType="Map">
+		SELECT B_TABLE.* FROM (SELECT A_TABLE.*,ROWNUM AS LINENUM FROM(
+				<!-- 去哪儿 -->
+				<if test="wdpt=='10100010'">
+					select t.ID,t.WDID,t.JGLX,t.DDLX,t.DDBH,t.SYRQ,t.GYDDH,t.PNRNO,t.TKNO,t.ZFJE,t.DZ_SFDZ,t.DZ_DZRQ,t.DZ_DZR,t.BY6,t.BD_BDRQ,t.BD_BDR,
+						'去哪儿' wdptmc from JP_YSDZ_QN t 
+						<include refid="wdztj"/>
+				</if>
+				<!-- 携程 -->
+				<if test="wdpt=='10100050'">
+					select t.ID,t.WDID,t.JGLX,t.DDLX,t.DDBH,t.SYRQ,t.GYDDH,t.PNRNO,t.TKNO,t.ZFJE,t.DZ_SFDZ,t.DZ_DZRQ,t.DZ_DZR,t.BY6,t.BD_BDRQ,t.BD_BDR,
+						'携程' wdptmc from JP_YSDZ_XC t 
+						<include refid="wdztj"/>
+				</if>
+				<!-- 同程 -->
+				<if test="wdpt=='10100024'">
+					select t.ID,t.WDID,t.JGLX,t.DDLX,t.DDBH,t.SYRQ,t.GYDDH,t.PNRNO,t.TKNO,t.ZFJE,t.DZ_SFDZ,t.DZ_DZRQ,t.DZ_DZR,t.BY6,t.BD_BDRQ,t.BD_BDR,
+						'同程' wdptmc from JP_YSDZ_TC t 
+						<include refid="wdztj"/>
+				</if>
+				<!-- 淘宝 -->
+				<if test="wdpt=='10100011'">
+					select t.ID,t.WDID,t.JGLX,t.DDLX,t.DDBH,t.SYRQ,t.GYDDH,t.PNRNO,t.TKNO,t.ZFJE,t.DZ_SFDZ,t.DZ_DZRQ,t.DZ_DZR,t.BY6,t.BD_BDRQ,t.BD_BDR,
+						'淘宝' wdptmc from JP_YSDZ_TB t 
+						<include refid="wdztj"/>
+				</if>
+				<!-- 所有网店平台 -->
+				<if test="wdpt=='' or wdpt== null">
+					select t.ID,t.WDID,t.JGLX,t.DDLX,t.DDBH,t.SYRQ,t.GYDDH,t.PNRNO,t.TKNO,t.ZFJE,t.DZ_SFDZ,t.DZ_DZRQ,t.DZ_DZR,t.BY6,t.BD_BDRQ,t.BD_BDR,
+						'去哪儿' wdptmc from JP_YSDZ_QN t 
+						<include refid="wdztj"/>
+					union all
+					select t.ID,t.WDID,t.JGLX,t.DDLX,t.DDBH,t.SYRQ,t.GYDDH,t.PNRNO,t.TKNO,t.ZFJE,t.DZ_SFDZ,t.DZ_DZRQ,t.DZ_DZR,t.BY6,t.BD_BDRQ,t.BD_BDR,
+						'携程' wdptmc from JP_YSDZ_XC t 
+						<include refid="wdztj"/>
+					union all
+					select t.ID,t.WDID,t.JGLX,t.DDLX,t.DDBH,t.SYRQ,t.GYDDH,t.PNRNO,t.TKNO,t.ZFJE,t.DZ_SFDZ,t.DZ_DZRQ,t.DZ_DZR,t.BY6,t.BD_BDRQ,t.BD_BDR,
+						'同程' wdptmc from JP_YSDZ_TC t 
+						<include refid="wdztj"/>
+					union all
+					select t.ID,t.WDID,t.JGLX,t.DDLX,t.DDBH,t.SYRQ,t.GYDDH,t.PNRNO,t.TKNO,t.ZFJE,t.DZ_SFDZ,t.DZ_DZRQ,t.DZ_DZR,t.BY6,t.BD_BDRQ,t.BD_BDR,
+						'淘宝' wdptmc from JP_YSDZ_TB t 
+						<include refid="wdztj"/>
+				</if>
+				ORDER BY WDPTMC ASC,WDID ASC,DDLX ASC,ZFJE ASC
+			) A_TABLE WHERE ROWNUM &lt;= #{count,jdbcType=NUMERIC} 
+		) B_TABLE WHERE LINENUM &gt;= #{start,jdbcType=NUMERIC}
+	</select>
+	<select id="getTotalCount" parameterType="Map" resultType="integer">
+		select count(1) from (
+				<!-- 去哪儿 -->
+				<if test="wdpt=='10100010'.toString()">
+					select 1 from JP_YSDZ_QN t 
+						<include refid="wdztj"/>
+				</if>
+				<!-- 携程 -->
+				<if test="wdpt=='10100050'.toString()">
+					select 1 from JP_YSDZ_XC t 
+						<include refid="wdztj"/>
+				</if>
+				<!-- 同程 -->
+				<if test="wdpt=='10100024'.toString()">
+					select 1 from JP_YSDZ_TC t 
+						<include refid="wdztj"/>
+				</if>
+				<!-- 淘宝 -->
+				<if test="wdpt=='10100011'.toString()">
+					select 1 from JP_YSDZ_TB t 
+						<include refid="wdztj"/>
+				</if>
+				<!-- 所有网店平台 -->
+				<if test="wdpt=='' or wdpt== null">
+					select 1 from JP_YSDZ_QN t 
+						<include refid="wdztj"/>
+					union all
+					select 1 from JP_YSDZ_XC t 
+						<include refid="wdztj"/>
+					union all
+					select 1 from JP_YSDZ_TC t 
+						<include refid="wdztj"/>
+					union all
+					select 1 from JP_YSDZ_TB t 
+						<include refid="wdztj"/>
+				</if>
+				)
+	</select>
+	<!-- 漏单账查询 -->
+	<select id="searchLd" parameterType="Map" resultType="Map">
+		SELECT B_TABLE.* FROM (SELECT A_TABLE.*,ROWNUM AS LINENUM FROM(
+				<!-- 去哪儿 -->
+				<if test="wdpt=='10100010'.toString()">
+					select t.SYRQ,t.BD_BDRQ,t.BD_BDR,t.DZ_DZRQ,t.DZ_DZR,t.WDID,t.ddlx,t.WD_FSJE,t.WD_DDH,t.ZFJE,
+							t.BY1 WD_ZWSJ,'' WD_ZWLSH,'' WD_SPMC,t.BD_SFYBD,t.WD_ZWLX WD_BZ,
+							'去哪儿' wdptmc from JP_YSDZ_QN t 
+						<include refid="wdztj"/>
+				</if>
+				<!-- 携程 -->
+				<if test="wdpt=='10100050'.toString()">
+					select t.SYRQ,t.BD_BDRQ,t.BD_BDR,t.DZ_DZRQ,t.DZ_DZR,t.WDID,t.ddlx,t.WD_FSJE,t.WD_DDH,t.ZFJE,
+							t.WD_SHSJ WD_ZWSJ,'' WD_ZWLSH,WD_CPLX WD_SPMC,t.BD_SFYBD,
+							'票号:'||t.WD_TKNO||'，乘机人:'||t.WD_CJR||'，款项类型:'||t.WD_KXLX WD_BZ,
+						'携程' wdptmc from JP_YSDZ_XC t 
+						<include refid="wdztj"/>
+				</if>
+				<!-- 同程 -->
+				<if test="wdpt=='10100024'.toString()">
+					select t.SYRQ,t.BD_BDRQ,t.BD_BDR,t.DZ_DZRQ,t.DZ_DZR,t.WDID,t.ddlx,t.WD_FSJE,t.WD_DDH,t.ZFJE,
+							t.WD_ZWSJ,t.WD_ZWLSH,t.WD_SPMC,t.BD_SFYBD,t.WD_YWLX WD_BZ,
+							'同程' wdptmc from JP_YSDZ_TC t 
+						<include refid="wdztj"/>
+				</if>
+				<!-- 淘宝 -->
+				<if test="wdpt=='10100011'.toString()">
+					select t.SYRQ,t.BD_BDRQ,t.BD_BDR,t.DZ_DZRQ,t.DZ_DZR,t.WDID,t.ddlx,t.WD_FSJE,t.WD_DDH,t.ZFJE,
+							t.WD_ZWSJ,t.WD_ZWLSH,t.WD_SPMC,t.BD_SFYBD,
+							'票款:'||t.BY4||'，代扣佣金:'||t.BY1||'，其他代扣:'||t.BY2||'，保险分润:'||t.BY3 WD_BZ,
+							'淘宝' wdptmc from JP_YSDZ_TB t 
+						<include refid="wdztj"/>
+				</if>
+				<!-- 所有网店平台 -->
+				<if test="wdpt=='' or wdpt== null">
+					select t.SYRQ,t.BD_BDRQ,t.BD_BDR,t.DZ_DZRQ,t.DZ_DZR,t.WDID,t.ddlx,t.WD_FSJE,t.WD_DDH,t.ZFJE,
+							t.BY1 WD_ZWSJ,'' WD_ZWLSH,'' WD_SPMC,t.BD_SFYBD,t.WD_ZWLX WD_BZ,
+							'去哪儿' wdptmc from JP_YSDZ_QN t 
+						<include refid="wdztj"/>
+					union all
+					select t.SYRQ,t.BD_BDRQ,t.BD_BDR,t.DZ_DZRQ,t.DZ_DZR,t.WDID,t.ddlx,t.WD_FSJE,t.WD_DDH,t.ZFJE,
+							t.WD_SHSJ WD_ZWSJ,'' WD_ZWLSH,WD_CPLX WD_SPMC,t.BD_SFYBD,
+							'票号:'||t.WD_TKNO||'，乘机人:'||t.WD_CJR||'，款项类型:'||t.WD_KXLX WD_BZ,
+						'携程' wdptmc from JP_YSDZ_XC t 
+						<include refid="wdztj"/>
+					union all
+					select t.SYRQ,t.BD_BDRQ,t.BD_BDR,t.DZ_DZRQ,t.DZ_DZR,t.WDID,t.ddlx,t.WD_FSJE,t.WD_DDH,t.ZFJE,
+							t.WD_ZWSJ,t.WD_ZWLSH,t.WD_SPMC,t.BD_SFYBD,t.WD_YWLX WD_BZ,
+							'同程' wdptmc from JP_YSDZ_TC t 
+						<include refid="wdztj"/>
+					union all
+					select t.SYRQ,t.BD_BDRQ,t.BD_BDR,t.DZ_DZRQ,t.DZ_DZR,t.WDID,t.ddlx,t.WD_FSJE,t.WD_DDH,t.ZFJE,
+							t.WD_ZWSJ,t.WD_ZWLSH,t.WD_SPMC,t.BD_SFYBD,
+							'票款:'||t.BY4||'，代扣佣金:'||t.BY1||'，其他代扣:'||t.BY2||'，保险分润:'||t.BY3 WD_BZ,
+							'淘宝' wdptmc from JP_YSDZ_TB t 
+						<include refid="wdztj"/>
+				</if>
+				ORDER BY WDPTMC ASC,WDID ASC,DDLX ASC,ZFJE ASC
+			) A_TABLE WHERE ROWNUM &lt;= #{count,jdbcType=NUMERIC} 
+		) B_TABLE WHERE LINENUM &gt;= #{start,jdbcType=NUMERIC}
+	</select>
+	
+	<update id="updateLdzt" parameterType="Map">
+		<!-- 正常单 -->
+		<if test="ddlx=='1'.toString()">
+			update ${tablename} t set t.bd_sfybd='2' where 
+           	exists(select 1 from jp_khdd dd where nvl(SFZDD,'0')='0' and dd.ddzt &lt;&gt; '4' and dd.ddzt &lt;&gt; '5' 
+			           	and DDSJ between to_date(#{ddsjs,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss') 
+			           	and to_date(#{ddsjz,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss') and dd.wbdh=t.wd_ddh and dd.shbh=#{shbh,jdbcType=VARCHAR})
+          	and jglx='6' and ddlx='1' and zbid=#{zbid,jdbcType=VARCHAR} and shbh=#{shbh,jdbcType=VARCHAR}
+		</if>
+		<!-- 退票单 -->
+		<if test="ddlx=='2'.toString()">
+			update ${tablename} t set t.bd_sfybd='2' where 
+			exists(select 1 from jp_tpd tr where nvl(tr.SFZDD,'0')='0' and tr.xs_tpzt &lt;&gt; '9' 
+						and DDSJ between to_date(#{ddsjs,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss') 
+                   		and to_date(#{ddsjz,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss') and tr.wbdh=t.wd_ddh and tr.shbh=#{shbh,jdbcType=VARCHAR})
+			and jglx='6' and ddlx='1' and zbid=#{zbid,jdbcType=VARCHAR} and shbh=#{shbh,jdbcType=VARCHAR}
+		</if>
+		<!-- 改签 -->
+		<if test="ddlx=='3'.toString()">
+			update ${tablename} t set t.bd_sfybd='2' where 
+			exists(select 1 from jp_gqd gq where nvl(gq.SFZDD,'0')='0' and gqzt &lt;&gt; '7' and gqzt &lt;&gt; '8'
+						and DDSJ between to_date(#{ddsjs,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss') 
+                   		and to_date(#{ddsjz,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss') and gq.wbdh=t.wd_ddh and gq.shbh=#{shbh,jdbcType=VARCHAR})
+			and jglx='6' and ddlx='1' and zbid=#{zbid,jdbcType=VARCHAR} and shbh=#{shbh,jdbcType=VARCHAR}
+		</if>
+		<!-- 补差 -->
+		<if test="ddlx=='4'.toString()">
+			update ${tablename} t set t.bd_sfybd='2' where 
+			exists(select 1 from jp_bcd bc where  bczt &lt;&gt; '3'
+								   and CJSJ between to_date(#{ddsjs,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss') 
+                   and to_date(#{ddsjs,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss') and bc.wbdh=t.wd_ddh and bc.shbh=#{shbh,jdbcType=VARCHAR}) 
+            and jglx='6' and ddlx='1' and zbid=#{zbid,jdbcType=VARCHAR} and shbh=#{shbh,jdbcType=VARCHAR}
+		</if>
+	</update>
+	<select id="genDbresult" parameterType="Map" resultType="Map">
+		SELECT B_TABLE.*,to_char(DZ_DZRQ,'yyyy-mm-dd') DZ_DZRQ,to_char(BD_BDRQ,'yyyy-mm-dd hh24:mi:ss') BD_BDRQ
+			FROM (SELECT A_TABLE.*,ROWNUM AS LINENUM FROM
+					(select * from ${tablename} <include refid="wdztj"/>
+					ORDER BY WDID ASC,DDLX ASC,ZFJE ASC) A_TABLE 
+				WHERE ROWNUM &lt;= #{count,jdbcType=NUMERIC} ) B_TABLE 
+		WHERE LINENUM &gt;= #{start,jdbcType=NUMERIC}
+	</select>
+	<select id="genDbresultTotal" parameterType="Map" resultType="int">
+		select count(1) from ${tablename} 
+		<include refid="wdztj"/>
+	</select>
+	<select id="genDbresultSum" parameterType="Map" resultType="Map">
+		select sum(ZFJE) ZZFJE,sum(WD_FSJE) ZWD_FSJE,sum(by6) ZBY6 from ${tablename} 
+		<include refid="wdztj"/>
+	</select>
+	<select id="genDbresultCount" parameterType="Map" resultType="Map">
+		select sum(CASE WHEN JGLX = '1' THEN AA ELSE 0 END) C1,
+			   sum(CASE WHEN JGLX = '2' THEN AA ELSE 0 END) C2,
+			   sum(CASE WHEN JGLX = '3' THEN AA ELSE 0 END) C3,
+			   sum(CASE WHEN JGLX = '4' THEN AA ELSE 0 END) C4,
+			   sum(CASE WHEN JGLX = '5' THEN AA ELSE 0 END) C5,
+			   sum(CASE WHEN JGLX = '6' THEN AA ELSE 0 END) C6,
+			   sum(CASE WHEN JGLX = '7' THEN AA ELSE 0 END) C7 
+		from (SELECT JGLX,COUNT(1) AA FROM ${tablename}  WHERE ZBID = #{zbid,jdbcType=VARCHAR} and shbh = #{shbh} GROUP BY JGLX)
+	</select>
+</mapper>

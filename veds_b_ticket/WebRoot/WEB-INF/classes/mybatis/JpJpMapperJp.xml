@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpjpgl.JpJpDao">
+  <sql id="where">
+    <where> 
+    	and shbh=#{shbh, jdbcType=VARCHAR}
+		<if test="xsPnrNo != null and xsPnrNo != '' "> and XS_PNR_NO=#{xsPnrNo:VARCHAR} </if>
+		<if test="tkno != null and tkno != '' "> and tkno=#{tkno:VARCHAR} </if>
+		<if test="ksrq != null and ksrq != '' "> and cfsj &gt;= #{ksrq:VARCHAR} </if>
+		<if test="jsrq != null and jsrq != '' "> and cfsj &lt;= #{jsrq:VARCHAR} </if>
+		<if test="cjr != null and cjr != '' "> and cjr = #{cjr:VARCHAR} </if>
+		<if test="jpzt != null and jpzt != '' "> and JPZT = #{jpzt:VARCHAR} </if>
+	</where>
+  </sql>
+
+  <resultMap id="returnListMap" type="java.util.HashMap"></resultMap>
+  <select id="query" resultType="HashMap" parameterType="cn.vetech.vedsb.jp.entity.jpjpgl.JpJp">
+	    SELECT * FROM jp_jp 
+  </select>
+  <select id="queryForGqsq" resultType="HashMap" parameterType="cn.vetech.vedsb.jp.entity.jpjpgl.JpJp">   
+	    SELECT j.ID, j.TKNO, j.XCDH, j.DDBH, j.GNGJ, j.SHBH, j.FAID, j.WDPT, j.WDID, j.WD_ZCLX, j.WD_DDLX, j.WD_ZCDM, j.ZC_QD, 
+	    j.ZC_LY, j.ZC_SFBJ, j.ZC_TFID, j.ZC_FD, j.ZC_LD, j.ZC_LQ, j.XS_PNR_NO, j.XS_HKGS_PNR, j.HCLX, j.HC, j.CFRQ, 
+	    j.CFSJ, j.CJRID, j.CJRLX, j.CJR, j.ZJLX, j.ZJHM, j.SJHM, j.XS_HBH, j.XS_CW, j.XS_ZDJ, j.XS_PJ, j.XS_JSF, 
+	    j.XS_TAX, j.XS_HYXFS, j.XS_YWXFS, j.XS_HYXLR, j.XS_YWXLR, j.XS_YJF, j.XS_JE, j.XS_TGQ, j.CG_PNR_NO, 
+	    j.CG_HKGS_PNR, j.CG_HBH, j.CG_CW, j.CG_ZDJ, j.CG_PJ, j.CG_JSF, j.CG_TAX, j.CG_TGQ, j.CGLY, j.CGDW, j.CGZT, 
+	    j.CG_DDBH, j.CGKM, j.JPZT, j.CP_DATETIME, j.CP_YHBH, j.CP_BMBH, jk.WBDH, jk.NOSJ, jk.DDZT, jk.CP_SDR, jk.CP_SDSJ, jk.WC_BLR, jk.WC_BLSJ, 
+	    jk.SKZT, jk.SKKM, jk.NXR, jk.NXSJ, jk.NXDH, jk.SFYJXCD, jk.SJR, jk.YZBM, jk.XJDZ, jk.DDSJ, jk.DDYH, jk.DDBM, jk.XS_PNR_ZT, jk.CJRS, jk.CJR,
+		jk.SFZDD, jk.ZDDBH, jk.ZDDLX, jk.JCBS, jk.DZSH_ZT, jk.DZSH_YHBH, jk.DZSH_BMBH, jk.DZSH_DATETIME,
+	    jk.YWSH_ZT, jk.YWSH_YHBH, jk.YWSH_BMBH, jk.YWSH_DATETIME, jk.XGLY, jk.XGSJ, jk.XGYH, jk.YJZT, jk.CG_YJF, jk.YJR, 
+	    jk.YJSJ, jk.YJDH, jk.BZBZ, jk.JJCD, jk.HKGS, jk.SFSGD
+	    FROM jp_jp j, jp_khdd jk where j.ddbh = jk.ddbh and j.shbh = jk.shbh
+	    and j.shbh=#{shbh:VARCHAR} 
+	    <if test="xsPnrNo != null and xsPnrNo != '' "> and j.xs_pnr_no=#{xsPnrNo:VARCHAR} </if>
+	    <if test="tkno != null and tkno != '' "> and j.tkno=#{tkno:VARCHAR} </if>
+	    <if test="ksrq != null and ksrq != '' "> and j.cfsj &gt;= #{ksrq:VARCHAR} </if>
+	    <if test="jsrq != null and jsrq != '' "> and j.cfsj &lt;= #{jsrq:VARCHAR} </if>
+	   	<if test="cjr != null and cjr != '' "> and j.cjr = #{cjr:VARCHAR} </if>
+	   	<if test="ddbh != null and ddbh != '' "> and j.cjr = #{cjr:VARCHAR} </if>
+  </select>
+
+ <select id="detail" resultType="HashMap" parameterType="cn.vetech.vedsb.jp.entity.jpjpgl.JpJp">
+	    SELECT * FROM jp_jp where id=#{id} and shbh=#{shbh}
+  </select>	
+  
+  
+   <select id="getJpJpById" resultType="cn.vetech.vedsb.jp.entity.jpjpgl.JpJp" parameterType="cn.vetech.vedsb.jp.entity.jpjpgl.JpJp">
+	    SELECT * FROM jp_jp where id=#{id} and shbh=#{shbh}
+  </select>	
+	
+  <select id="getJpByTkno" resultType="cn.vetech.vedsb.jp.entity.jpjpgl.JpJp" parameterType="cn.vetech.vedsb.jp.entity.jpjpgl.JpJp">
+	    SELECT * FROM jp_jp where tkno=#{tkno:VARCHAR} and shbh=#{shbh:VARCHAR}
+  </select>
+  
+  <select id="getJpByCjr" resultType="cn.vetech.vedsb.jp.entity.jpjpgl.JpJp" parameterType="cn.vetech.vedsb.jp.entity.jpjpgl.JpJp">
+	    SELECT * FROM jp_jp where cjr=#{cjr:VARCHAR} and ddbh=#{ddbh:VARCHAR} and shbh=#{shbh:VARCHAR}
+  </select>	
+  
+  <select id="getPageCount" resultType="integer" parameterType="cn.vetech.vedsb.jp.entity.jpjpgl.JpJp">
+		SELECT COUNT(1) FROM jp_jp 
+		<include refid="where"/>
+  </select>
+  
+  	<!-- 交票用SQL，根据订单编号数组查询  -->
+	<select id="selectJpByDdbh" resultType="cn.vetech.vedsb.jp.entity.jpjpgl.JpJp" 
+		parameterType="HashMap">
+		SELECT DDBH,SHBH,TKNO,XS_HBH,XS_CW,CJR,CJRLX,ZJHM
+        	FROM JP_JP where shbh =#{shbh} and ddbh in
+        	<foreach item="item" index="index" collection="ddbhs" 
+            	open="(" separator="," close=")">
+                #{item}
+            </foreach>
+	</select>
+	
+	<!-- 历史数据调整 -->
+	<!-- 查询列表 -->
+  	<select id="getHistoryList" parameterType="HashMap" resultType="HashMap">
+  		select b.*,a.skzt,a.skkm from jp_jp b join jp_khdd a on b.ddbh = a.ddbh 
+  		where a.ddzt ='3'
+  		<if test="shbh != null and shbh != ''">and b.shbh = #{shbh,jdbcType=VARCHAR}</if> 
+  		<if test="pnrNo != null and pnrNo != ''">and b.xs_pnr_no = #{pnrNo,jdbcType=VARCHAR}</if> 
+  		<if test="tkno != null and tkno != ''">and b.tkno = #{tkno,jdbcType=VARCHAR}</if>
+	</select>
+	
+	<!-- 修改列表 -->
+	<!--  <select id="getHistoryCpsjEdit" parameterType="HashMap" resultType="HashMap">
+		select xs_pnr_no,tkno,cp_datetime from jp_jp a where 1=1
+		<if test="shbh!=null and shbh!=''">and a.shbh = #{shbh,jdbcType=VARCHAR}</if>
+		<if test="ddbh!=null and ddbh!=''">and a.ddbh = #{ddbh,jdbcType=VARCHAR}</if>
+		<if test="tkno!=null and tkno!=''">and exists(select 1 from jp_jp b where b.ddbh=a.ddbh and b.tkno=#{tkno,jdbcType=VARCHAR})</if>
+		 order by tkno
+	</select>
+	-->
+	<select id="getjpobject" parameterType="HashMap" resultType="HashMap">
+		select ddbh,tkno,shbh from jp_jp a where 1=1
+		<if test="shbh!=null and shbh!=''">and a.shbh = #{shbh,jdbcType=VARCHAR}</if>
+		<if test="ddbh!=null and ddbh!=''">and a.ddbh = #{ddbh,jdbcType=VARCHAR}</if>
+		<if test="tkno!=null and tkno!=''">and a.tkno = #{tkno,jdbcType=VARCHAR}</if>
+	</select>
+	
+	<update id="saveHistory" parameterType="HashMap">
+		update jp_jp
+		<set>
+			<if test="cpsj != null and cpsj != ''">cp_datetime = to_date(#{cpsj,jdbcType=TIMESTAMP},'yyyy/mm/dd HH24:mi:ss')</if>
+			<if test="jpzdj != null and jpzdj != ''">,xs_zdj = #{jpzdj,jdbcType=INTEGER}</if>
+			<if test="xsje != null and xsje != ''">,xs_je = #{xsje,jdbcType=INTEGER}</if>
+			<if test="jpxsj != null and jpxsj != ''">,xs_pj = #{jpxsj,jdbcType=DOUBLE}</if>
+			<if test="jpjjf != null and jpjjf != ''">,xs_jsf = #{jpjjf,jdbcType=INTEGER}</if>
+			<if test="jptax != null and jptax != ''">,xs_tax = #{jptax,jdbcType=VARCHAR}</if>
+		</set>
+		WHERE ddbh=#{DDBH,jdbcType=VARCHAR} and shbh=#{SHBH,jdbcType=VARCHAR} and tkno=#{TKNO,jdbcType=VARCHAR}
+	</update>
+  	<!-- 历史数据调整 -->
+  	
+  	<!-- 采购对账报表查询bspet票本地电商系统的数据 -->
+  	<select id="searchBspet" parameterType="HashMap" resultType="HashMap">
+  		select j.hc,j.tkno,j.cp_officeid,j.workno,j.printno,j.cg_zdj zdj ,j.cg_jsf pj_jsf,j.cg_tax pj_tax,(NVL(j.cg_tax,0)+NVL(j.cg_jsf,0)) tax,j.cg_pnr_no,j.cg_hbh,j.cg_cw,j.gngj,j.cg_dlfl,
+		(NVL(j.cg_dlfl,0) * 100) hxfl ,'1' as type from (select j.* from jp_jp j where not exists(select 1 from jp_tpd_mx mx left join jp_tpd d on mx.tpdh = d.tpdh where mx.tkno = j.tkno
+		and d.xs_tpzt != '9' and d.cg_tpzt = '3' and d.cg_blsj  between to_date(concat(#{searchdatetime,jdbcType=TIMESTAMP},'00:00:00'),'yyyy-mm-dd HH24:mi:ss') and to_date(concat(#{searchdatetime,jdbcType=TIMESTAMP},'23:59:59'),'yyyy-mm-dd HH24:mi:ss'))
+		and j.cp_datetime between to_date(concat(#{searchdatetime,jdbcType=TIMESTAMP},'00:00:00'),'yyyy-mm-dd HH24:mi:ss') and to_date(concat(#{searchdatetime,jdbcType=TIMESTAMP},'23:59:59'),'yyyy-mm-dd HH24:mi:ss') and j.cgly = 'BSP' and j.cp_officeid=#{officeid,jdbcType=VARCHAR}
+		and j.printno = #{printid,jdbcType=VARCHAR} and j.shbh=#{shbh,jdbcType=VARCHAR} <if test="agent != null and agent != ''">and j.workno = #{agent,jdbcType=VARCHAR}</if>) j
+  		union all
+  		select j.hc,j.tkno,j.cp_officeid,j.workno,j.printno,mx.cg_tkje zdj,mx.cg_jsf pj_jsf,mx.cg_tax pj_tax,(NVL(mx.cg_tax,0)+NVL(mx.cg_jsf,0)) tax,j.cg_pnr_no,j.cg_hbh,j.cg_cw,j.gngj
+  		,j.cg_dlfl,(NVL(j.cg_dlfl,0) * 100) hxfl,'2' as type from jp_jp j,jp_tpd d,jp_tpd_mx mx where mx.tpdh = d.tpdh and j.tkno = mx.tkno and d.cg_bllx='1' and  d.xs_tpzt!='9' and j.cgly='BSP' 
+  		and j.cp_officeid=#{officeid,jdbcType=VARCHAR} and j.printno = #{printid,jdbcType=VARCHAR} and d.cg_blsj between to_date(concat(#{searchdatetime,jdbcType=TIMESTAMP},'00:00:00'),'yyyy-mm-dd HH24:mi:ss') and to_date(concat(#{searchdatetime,jdbcType=TIMESTAMP},'23:59:59'),'yyyy-mm-dd HH24:mi:ss')
+  		and j.shbh=#{shbh,jdbcType=VARCHAR} <if test="agent != null and agent != ''">and j.workno = #{agent,jdbcType=VARCHAR}</if>
+  		union all
+  		select j.hc,j.tkno,j.cp_officeid ,j.workno,j.printno,mx.cg_tkje zdj,mx.cg_jsf pj_jsf,mx.cg_tax pj_tax,(NVL(mx.cg_tax,0)+NVL(mx.cg_jsf,0)) tax,j.cg_pnr_no,j.cg_hbh,j.cg_cw,j.gngj 
+  		,j.cg_dlfl,(NVL(j.cg_dlfl,0) * 100) hxfl,'3' as type from jp_jp j,jp_tpd d,jp_tpd_mx mx where mx.tpdh=d.tpdh and j.tkno=mx.tkno and d.cg_bllx='2' and d.xs_tpzt!='9' and d.cg_tpzt = '3' 
+  		and j.cgly='BSP' and j.cp_officeid=#{officeid,jdbcType=VARCHAR} and j.printno = #{printid,jdbcType=VARCHAR} and d.cg_blsj between to_date(concat(#{searchdatetime,jdbcType=TIMESTAMP},'00:00:00'),'yyyy-mm-dd hh24:mi:ss') and to_date(concat(#{searchdatetime,jdbcType=TIMESTAMP},'23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+  		and j.shbh=#{shbh,jdbcType=VARCHAR} <if test="agent != null and agent != ''">and j.workno = #{agent,jdbcType=VARCHAR}</if>
+  	</select>
+  	<!-- 采购对账报表查询bspet票本地电商系统的数据 -->
+  <sql id="cpbbConditions">
+	  	<choose>
+	  		<when test="jp!=null and jp.ksrq!=null and jp.ksrq!='' and jp.jsrq!=null and jp.jsrq!=''">
+	  			and a.cp_datetime &gt;=to_date(#{jp.ksrq},'yyyy-mm-dd') and a.cp_datetime &lt;=to_date(#{jp.jsrq},'yyyy-mm-dd')
+	  		</when>
+	  		<when test="jp!=null and jp.ksrq!=null and jp.ksrq!=''">
+	  			and a.cp_datetime &gt;=to_date(#{jp.ksrq},'yyyy-mm-dd')
+	  		</when>
+	  		<when test="jp!=null and jp.jsrq!=null and jp.jsrq!=''">
+	  			and a.cp_datetime &lt;=to_date(#{jp.jsrq},'yyyy-mm-dd')
+	  		</when>
+	  	</choose>
+		<if test="jp!=null and jp.xsPnrNo!=null and jp.xsPnrNo!=''">
+			and a.xs_pnr_no=#{jp.xsPnrNo}
+		</if>
+		<if test="jp!=null and jp.tkno!=null and jp.tkno!=''">
+			and a.tkno=#{jp.tkno}
+		</if>
+		<if test="jp!=null and jp.cgly!=null and jp.cgly!=''">
+			and a.cgly=#{jp.cgly}
+		</if>
+		<if test="jp!=null and jp.jpzt!=null and jp.jpzt!=''">
+			and a.jpzt=#{jp.jpzt}
+		</if>
+		<if test="jp!=null and jp.hc!=null and jp.hc!=''">
+			and a.hc=#{jp.hc}
+		</if>
+		<if test="hkgs!=null and hkgs!=''">
+			and k.hkgs=#{hkgs}
+		</if>
+		<if test="jp!=null and jp.ddbh!=null and jp.ddbh!=''">
+			and a.ddbh=#{jp.ddbh}
+		</if>
+		<if test="wbdh!=null and wbdh!=''">
+			and k.wbdh=#{wbdh}
+		</if>
+		<if test="skzt!=null and skzt!=''">
+			and k.skzt=#{skzt}
+		</if>
+		<if test="jp.wdZcdm!=null and jp.wdZcdm!=''">
+			and a.wd_zcdm=#{jp.wdZcdm}
+		</if>
+		<if test="jp.gngj!=null and jp.gngj!=''">
+			and a.gngj=#{jp.gngj}
+		</if>
+		<if test="jp.wdpt!=null and jp.wdpt!=''">
+			and a.wdpt=#{jp.wdpt}
+		</if>
+	</sql>
+ <!--  分页查询 报表中心 出票报表的数据集合 -->
+  <select id="queryCpbbList" resultType="java.util.HashMap" parameterType="cn.vetech.vedsb.jp.entity.jpjpgl.JpJp">
+	    select * from (select j.*,rownum from (select a.*,k.ddzt
+	    from jp_jp a left join jp_khdd k on a.ddbh=k.ddbh where 1=1
+	    <include refid="cpbbConditions"/>
+		order by #{jp.orderBy, jdbcType=VARCHAR}) j) where rownum&gt;(#{jp.start}-1)*#{jp.count} and rownum&lt;=(#{jp.start})*#{jp.count}
+  </select>	
+  <!-- 分页查询 报表中心  出票报表的数据总个数 -->
+  <select id="queryCpbbListCount" resultType="Int" parameterType="cn.vetech.vedsb.jp.entity.jpjpgl.JpJp">
+  	select count(1) from jp_jp a left join jp_khdd k on a.ddbh=k.ddbh where 1=1
+  	<include refid="cpbbConditions"/>
+  </select>
+  
+  <!-- 根据订单编号查找机票 -->
+  <select id="queryJpListByDdbh" parameterType="cn.vetech.vedsb.jp.entity.jpjpgl.JpJp" resultType="cn.vetech.vedsb.jp.entity.jpjpgl.JpJp">
+  	select id,ddbh,shbh,ei,tkno,XS_PNR_NO,cgly,hkgs,cgkm,CP_YHBH,CP_DATETIME,PRINTNO,
+  	WORKNO,CP_OFFICEID,CGDW,SKZT,xs_hkgs_pnr,cg_ddbh from jp_jp where shbh=#{shbh} and ddbh=#{ddbh}
+  </select>
+  
+  <!-- 确认修改出票信息 -->
+  <update id="updateJpcp" parameterType="cn.vetech.vedsb.jp.entity.jpjpgl.JpJp">
+  	update jp_jp set 
+  	<if test="ei!=null and ei!=''">
+  		ei=#{ei},
+  	</if>
+  	<if test="skkm!=null and skkm!=''">
+  		skkm=#{skkm},
+  	</if>
+  	<if test="workno!=null and workno!=''">
+  		workno=#{workno},
+  	</if>
+  	<if test="cpOfficeid!=null and cpOfficeid!=''">
+  		cp_officeid=#{cpOfficeid},
+  	</if>
+  	<if test="printno!=null and printno!=''">
+  		printno=#{printno},
+  	</if>
+  	<if test="cgkm!=null and cgkm!=''">
+  		cgkm=#{cgkm},
+  	</if>
+  	<if test="cgdw!=null and cgdw!=''">
+  		cgdw=#{cgdw},
+  	</if>
+  	<if test="cgly!=null and cgly!=''">
+  		cgly=#{cgly},
+  	</if>
+  	<if test="wbdh!=null and wbdh!=''">
+  		wbdh=#{wbdh},
+  	</if>
+  	<if test="xsHkgsPnr!=null and xsHkgsPnr!=''">
+  		xs_hkgs_pnr=#{xsHkgsPnr},
+  	</if>
+  	<if test="cgDdbh!=null and cgDdbh!=''">
+  		cg_ddbh=#{cgDdbh},
+  	</if>
+  	<if test="cpYhbh!=null and cpYhbh!=''">
+  		cp_yhbh=#{cpYhbh} 
+  	</if>
+  	tkno=#{tkno}
+  	where id=#{id} and shbh=#{shbh}
+  </update>
+
+ <!-- 根据订单编号查找行程单 -->
+ <select id="getXcdListByDdbh" parameterType="HashMap" resultType="HashMap">
+   	select a.id,a.cjr,b.tkno,b.xcdh from jp_khdd_cjr a join jp_jp b on a.id = b.cjrid where b.shbh=#{shbh,jdbcType=VARCHAR} and b.ddbh=#{ddbh,jdbcType=VARCHAR} order by a.id,b.tkno
+ </select>
+  
+  <select id="getjpjpByddbh" parameterType="HashMap" resultType="HashMap">
+  	select j.cp_datetime from jp_jp j where j.ddbh = #{ddbh,jdbcType=VARCHAR} and j.shbh = #{shbh,jdbcType=VARCHAR}
+  </select>
+  
+    <!-- 根据订单编号查找机票  传的bean的话可以不写,jdbcType=VARCHAR-->
+  <select id="queryJpListByXspnr" parameterType="HashMap" resultType="HashMap">
+   select j.id,j.gngj,j.ddbh,j.jpzt,substr(j.tkno,1,3) szdh,substr(j.tkno, 5, 14) tkno,j.cjr,j.xcdh, a.pzzt as xcdzt,
+ 	a.print_num from Jp_Jp j left join JP_XCD a on a.xcd_no = j.xcdh and a.tkno =j.tkno where j.shbh=#{shbh,jdbcType=VARCHAR} and j.ddbh=#{ddbh,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 根据商户编号和票号查询对应的bean -->
+  <select id="queryJpjpByTkno" parameterType="string" resultType="cn.vetech.vedsb.jp.entity.jpjpgl.JpJp">
+  	select * from jp_jp where shbh=#{param1} and tkno=#{param2}
+  </select>
+</mapper>

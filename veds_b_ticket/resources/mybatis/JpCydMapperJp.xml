@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpbcd.JpCydDao">
+	<sql id="where">
+	    <where>  
+			<if test="wbdh != null and wbdh != '' "> and a.wbdh=#{wbdh,jdbcType=VARCHAR} </if>
+	        <if test="pnrNo != null and pnrNo != '' "> and a.XS_PNR_NO=#{pnrNo,jdbcType=VARCHAR} </if>
+	      	<if test="shbh != null and shbh != '' "> and a.shbh=#{shbh,jdbcType=VARCHAR} </if>
+		</where>
+  	</sql>
+  	<select id="getCydTfdd" resultType="HashMap" parameterType="cn.vetech.vedsb.jp.entity.jpbcdgl.JpCyd">
+  		select a.* ,(select wm_concat(TKNO) from jp_tpd_mx mx where mx.tpdh = a.tpdh ) tkno from jp_tpd a 
+  		<include refid="where"/>
+  		and a.XS_TPZT = '2'
+  	</select>
+  	
+  	<select id="getCydTfddTpdh" resultType="HashMap" parameterType="cn.vetech.vedsb.jp.entity.jpbcdgl.JpCyd">
+  		select a.*,(select wm_concat(TKNO) from jp_tpd_mx mx where mx.tpdh = a.tpdh ) tkno from jp_tpd a where a.tpdh=#{ddbh,jdbcType=VARCHAR} and a.shbh=#{shbh,jdbcType=VARCHAR}
+  	</select>
+  	
+  	<select id="getCydgqdd" resultType="HashMap" parameterType="cn.vetech.vedsb.jp.entity.jpbcdgl.JpCyd">
+  		select a.*,(select wm_concat(TKNO) from jp_gqd_cjr mx where mx.gqdh = a.gqdh ) tkno from jp_gqd a 
+  		<include refid="where"/>
+  		and a.GQZT = '4'
+  	</select>
+  	
+  	<select id="getCydgqddGqdd" resultType="HashMap" parameterType="cn.vetech.vedsb.jp.entity.jpbcdgl.JpCyd">
+  		select a.*,(select wm_concat(TKNO) from jp_gqd_cjr mx where mx.gqdh = a.gqdh ) tkno from jp_gqd a where a.gqdh=#{ddbh} and a.shbh=#{shbh}
+  	</select>
+  	
+  	<select id="getCydKhdd" resultType="HashMap" parameterType="cn.vetech.vedsb.jp.entity.jpbcdgl.JpCyd">
+  		select a.* from jp_khdd a 
+  		<include refid="where"/>
+  		and a.DDZT = '3'
+  	</select>
+  	
+  	<select id="getCydKhddDdbh" resultType="HashMap" parameterType="cn.vetech.vedsb.jp.entity.jpbcdgl.JpCyd">
+  		select * from jp_khdd a where a.ddbh=#{ddbh,jdbcType=VARCHAR} and a.shbh=#{shbh,jdbcType=VARCHAR}
+  	</select>
+  	
+  	<update id="updateCyd" parameterType="cn.vetech.vedsb.jp.entity.jpbcdgl.JpCyd">
+		update jp_cyd
+		<set>
+			<if test="cylx != null and cylx != ''">cylx = #{cylx,jdbcType=VARCHAR},</if>
+			<if test="wdTkje != null and wdTkje != ''">wd_tkje = #{wdTkje,jdbcType=VARCHAR},</if>
+			<if test="cyje != null and cyje != ''">cyje = #{cyje,jdbcType=VARCHAR},</if>
+			<if test="cysm != null and cysm != ''">cysm = #{cysm,jdbcType=VARCHAR},</if>
+			<if test="shsj != null and shsj != ''">shsj = #{shsj,jdbcType=TIMESTAMP},</if>
+			<if test="shyh != null and shyh != ''">shyh = #{shyh,jdbcType=VARCHAR},</if>
+			<if test="zt != null and zt != ''">zt = #{zt,jdbcType=VARCHAR},</if>
+			<if test="wdTpfl != null and wdTpfl != ''">wd_Tpfl = #{wdTpfl,jdbcType=DOUBLE}</if>
+		</set>
+		WHERE ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<!-- 历史数据调整 -->
+	<select id="getHistoryCyList" parameterType="HashMap" resultType="HashMap">
+  		select a.* from jp_cyd a where a.zt != '3' 
+  		<if test="shbh != null and shbh != ''">and a.shbh = #{shbh,jdbcType=VARCHAR}</if> 
+  		<if test="pnrNo != null and pnrNo != ''">and a.pnr_no = #{pnrNo,jdbcType=VARCHAR}</if> 
+  	</select>
+	<!-- 历史数据调整 -->
+</mapper>

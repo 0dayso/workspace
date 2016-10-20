@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.cpsz.JpZdtfpGzszDao">
+   <resultMap id="BaseResultMap" type="cn.vetech.vedsb.jp.entity.cpsz.JpZdtfpGzsz">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="GZMC" jdbcType="VARCHAR" property="gzmc" />
+    <result column="TPFP" jdbcType="VARCHAR" property="tpfp" />
+    <result column="ZT" jdbcType="VARCHAR" property="zt" />
+    <result column="TFPBLBM" jdbcType="VARCHAR" property="tfpblbm" />
+    <result column="ZDBLYHBH" jdbcType="VARCHAR" property="zdblyhbh" />
+    <result column="MM" jdbcType="VARCHAR" property="mm" />
+    <result column="TPLX" jdbcType="VARCHAR" property="tplx" />
+    <result column="CJRLX" jdbcType="VARCHAR" property="cjrlx" />
+    <result column="PZLX" jdbcType="VARCHAR" property="pzlx" />
+    <result column="HKGS" jdbcType="VARCHAR" property="hkgs" />
+    <result column="CW" jdbcType="VARCHAR" property="cw" />
+    <result column="CFCITY" jdbcType="VARCHAR" property="cfcity" />
+    <result column="DDCITY" jdbcType="VARCHAR" property="ddcity" />
+    <result column="CFRQS" jdbcType="VARCHAR" property="cfrqs" />
+    <result column="CFRQZ" jdbcType="VARCHAR" property="cfrqz" />
+    <result column="TQTSS" jdbcType="DECIMAL" property="tqtss" />
+    <result column="TQTSZ" jdbcType="DECIMAL" property="tqtsz" />
+    <result column="QFSJXZ" jdbcType="DECIMAL" property="qfsjxz" />
+    <result column="YSSJQ" jdbcType="VARCHAR" property="yssjq" />
+    <result column="YSSJZ" jdbcType="VARCHAR" property="yssjz" />
+    <result column="SHBH" jdbcType="VARCHAR" property="shbh" />
+    <result column="CZYHBH" jdbcType="VARCHAR" property="czyhbh" />
+    <result column="CZ_DATETIME" jdbcType="VARCHAR" property="czDatetime" />
+    <result column="SYPTBS" jdbcType="VARCHAR" property="syptbs" />
+    <result column="ISDEL" jdbcType="VARCHAR" property="isdel" />
+    <result column="ISJCKPZT" jdbcType="VARCHAR" property="isjckpzt" />
+    <result column="ISHB" jdbcType="VARCHAR" property="ishb" />
+    <result column="HB_TQSJ" jdbcType="DECIMAL" property="hbTqsj" />
+    <result column="HB_ZXTPF" jdbcType="DECIMAL" property="hbZxtpf" />
+    <result column="HB_ZXLRL" jdbcType="DECIMAL" property="hbZxlrl" />
+    <result column="HB_ZXLR" jdbcType="DECIMAL" property="hbZxlr" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, GZMC, TPFP, ZT, TFPBLBM, ZDBLYHBH, MM, TPLX, CJRLX, PZLX, HKGS, CW, CFCITY, DDCITY, 
+    CFRQS, CFRQZ, TQTSS, TQTSZ, QFSJXZ, YSSJQ, YSSJZ, SHBH, CZYHBH, CZ_DATETIME, SYPTBS, 
+    ISDEL, ISJCKPZT, ISHB, HB_TQSJ, HB_ZXTPF, HB_ZXLRL, HB_ZXLR
+  </sql>
+	<!-- 进入路由设置时,查询数据list -->
+	<select id="getQueryList" parameterType="cn.vetech.vedsb.jp.entity.cpsz.JpZdtfpGzsz" resultType="java.util.HashMap">
+		SELECT b.* FROM  (
+         SELECT A_TABLE.*,ROWNUM AS LINENUM FROM (
+          select a.id,a.gzmc,a.tpfp,a.zt,a.tfpblbm,a.hkgs,a.cw,a.cfcity,a.ddcity,a.cfrqs,a.cfrqz,a.tqtss,a.tqtsz,a.shbh,a.cz_datetime,
+          a.syptbs,a.qfsjxz,a.tplx,a.czyhbh,a.isdel from jp_zdtfp_gzsz a where a.shbh=#{shbh} and a.tpfp=#{tpfp}
+		<include refid="zdtfpConditions"/> order by #{orderBy, jdbcType=VARCHAR}
+				 ) A_TABLE WHERE ROWNUM &lt;=(#{start})*#{count}
+			) b WHERE LINENUM &gt;(#{start}-1)*#{count}
+	</select>
+	<!-- 进入路由设置时,查询数据的总记录为数 -->
+	<select id="getTotalCount" resultType="Integer" parameterType="cn.vetech.vedsb.jp.entity.cpsz.JpZdtfpGzsz">
+		select count(1) from jp_zdtfp_gzsz a where a.shbh=#{shbh} and a.tpfp=#{tpfp} <include refid="zdtfpConditions"/>
+	</select>
+
+	
+	<sql id="zdtfpConditions">
+		<if test="cfrqs!=null and cfrqs!=''">
+			and a.cfrqs&lt;=#{cfrqs}
+		</if>
+		<if test="cfrqz!=null and cfrqz!=''">
+			and a.cfrqz&gt;=#{cfrqz}
+		</if>
+		<if test="hkgs!=null and hkgs!=''">
+			and a.hkgs like '%'||#{hkgs}||'%'
+		</if>
+		<if test="cw!=null and cw!=''">
+			and a.cw like '%'||#{cw}||'%'
+		</if>
+		<if test="cfcity!=null and cfcity!=''">
+			and a.cfcity like '%'||#{cfcity}||'%'
+		</if>
+		<if test="ddcity!=null and ddcity!=''">
+			and a.ddcity like '%'||#{ddcity}||'%'
+		</if>
+		<if test="gzmc!=null and gzmc!=''">
+			and a.gzmc=#{gzmc}
+		</if>
+		<if test="zt!=null and zt!=''">
+			and a.zt=#{zt}
+		</if>
+		<if test="isdel!=null and isdel!=''">
+			and a.isdel=#{isdel}
+		</if>
+		<if test="syptbs!=null and syptbs!=''">
+			and a.syptbs like '%'||#{syptbs}||'%'
+		</if>
+	</sql>
+	
+	<!-- 获取自动退票规则   wangshengliang 请勿随便修改查询条件 -->
+	<select id="getZdTfpGzsz" parameterType="cn.vetech.vedsb.jp.entity.cpsz.JpZdtfpGzsz" resultMap="BaseResultMap">
+		SELECT  <include refid="Base_Column_List" /> from jp_zdtfp_gzsz  a
+		where a.shbh=#{shbh} 
+		and a.zt=#{zt} 
+		<if test="tplx!=null and tplx!=''">
+			and a.tplx=#{tplx}
+		</if>
+		<if test="ishb!=null and ishb!=''">
+			and a.ishb=#{ishb}
+		</if>
+		and (a.hkgs=#{hkgs} or a.hkgs='---')
+		and a.isdel=#{isdel} 
+		and a.pzlx like '%/'||#{pzlx}||'/%'
+		and a.syptbs like '%'||#{syptbs}||'%'
+		and (a.cfrqs &lt;= #{cfrqs} and a.cfrqz &gt;= #{cfrqz})
+		order by a.tpfp desc, a.hkgs desc, a.cz_datetime desc
+	</select>
+	
+	<!-- 审核或启用或暂停退废票 -->
+	<update id="updateTfpZt" parameterType="java.util.HashMap">
+		update jp_zdtfp_gzsz set zt=#{zt} where id in
+		<foreach item="id" collection="ids" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+	<!-- 删除退废票规则 -->
+	<update id="deleteChange" parameterType="java.util.HashMap">
+		update jp_zdtfp_gzsz set isdel=#{isdel} where id in
+		<foreach item="id" collection="ids" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+</mapper>

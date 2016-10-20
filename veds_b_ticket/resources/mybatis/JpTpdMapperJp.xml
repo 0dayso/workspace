@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.jptpgl.JpTpdDao">
+
+ <sql id="where">
+	<where>
+	    and tpd.shbh=#{shbh:VARCHAR}
+		<choose>
+			<!-- 待审核 -->
+			<when test="lx == '2'.toString()">
+                  and tpd.xs_tpzt='0' 
+			</when>
+			<!-- 待客户办理 -->
+			<when test="lx == '3'.toString()">
+                  and tpd.xs_tpzt='1' 
+			</when>
+			<!-- 待采购办理 -->
+			<when test="lx == '4'.toString()">
+                  and (tpd.cg_tpzt='0'  or tpd.cg_tpzt='1' or tpd.cg_tpzt='2' ) and  ( tpd.xs_tpzt != '0' and  tpd.xs_tpzt != '9' )
+			</when>
+			<!-- 客户完/采购完 -->
+			<when test="lx == '5'.toString()">
+                  and tpd.xs_tpzt='2'  and tpd.cg_tpzt='3' 
+			</when>
+			<!-- 取消座位 -->
+			<when test="lx == '6'.toString()">
+                  and tpd.xs_zdqxzt in ('0','2') and tpd.xs_tpzt != '7' 
+			</when>
+			<!-- 全部 -->
+			<otherwise></otherwise>
+		</choose>
+		
+		<choose> 
+           <!-- 起飞日期 -->
+           <when test="rqtj == '2'.toString()">        
+           	<if test="ksrq != null and ksrq != ''" > and tpd.cfrq &gt;=to_date(#{ksrq:VARCHAR}, 'yyyy-MM-dd HH24:mi:ss') </if>
+           	<if test="jsrq != null and jsrq != ''" > and tpd.cfrq &lt;=to_date(#{jsrq:VARCHAR}||'23:59:59', 'yyyy-MM-dd HH24:mi:ss') </if>
+           </when> 
+           <!-- 最晚采购办理时间 -->
+           <when test="rqtj == '3'.toString()">       	
+           	<if test="ksrq != null and ksrq != ''" > and tpd.cg_zwblsj &gt;=to_date(#{ksrq:VARCHAR}, 'yyyy-MM-dd HH24:mi:ss') </if>
+           	<if test="jsrq != null and jsrq != ''" > and tpd.cg_zwblsj &lt;=to_date(#{jsrq:VARCHAR}||'23:59:59', 'yyyy-MM-dd HH24:mi:ss') </if>
+           </when> 
+           <!-- 申请日期 -->
+           <otherwise>       	
+           	<if test="ksrq != null and ksrq != ''" > and tpd.ddsj &gt;=to_date(#{ksrq:VARCHAR}, 'yyyy-MM-dd HH24:mi:ss') </if>
+           	<if test="jsrq != null and jsrq != ''" > and tpd.ddsj &lt;=to_date(#{jsrq:VARCHAR}||'23:59:59', 'yyyy-MM-dd HH24:mi:ss') </if>
+           </otherwise> 
+	    </choose>  
+	    <if test="cgly != null and cgly != '' ">and tpd.cgly=#{cgly:VARCHAR}</if>
+	    <if test="xs_tpzt != null and xs_tpzt != '' "> and tpd.xs_tpzt=#{xs_tpzt:VARCHAR} </if>
+	    <if test="cg_tpzt != null and cg_tpzt != '' "> and tpd.cg_tpzt=#{cg_tpzt:VARCHAR} </if>
+	    
+	    <choose>
+			<!-- 非自愿 -->
+			<when test="sfzytp == '0'.toString()">
+                 and tpd.xs_sfzytp='0'  and tpd.cg_sfzytp='0'
+			</when>
+			<!-- 自愿 -->
+			<when test="sfzytp == '1'.toString()">
+                 and tpd.xs_sfzytp='1'  and tpd.cg_sfzytp='1'
+			</when>
+			<!-- 自愿转非自愿 -->
+			<when test="sfzytp == '2'.toString()">
+                 and tpd.xs_sfzytp='1'  and tpd.cg_sfzytp='0'
+			</when>
+			<!-- 全部 -->
+			<otherwise></otherwise>
+		</choose>
+	    
+	    <if test="wdpt != null and wdpt != '' "> and tpd.wdpt=#{wdpt:VARCHAR} </if>
+	    <if test="wdid != null and wdid != '' "> and tpd.wdid=#{wdid:VARCHAR} </if>
+	    <if test="wd_zcdm != null and wd_zcdm != '' "> and tpd.wd_zcdm like #{wd_zcdm:VARCHAR}||'%'</if>
+	    <if test="wbdh != null and wbdh != '' "> and tpd.wbdh=#{wbdh:VARCHAR} </if>
+	    <if test="wbddbh != null and wbddbh != '' "> and tpd.wbddbh=#{wbddbh:VARCHAR} </if>
+	    <if test="xs_pnr_no != null and xs_pnr_no != '' "> 
+	    	and tpd.xs_pnr_no=#{xs_pnr_no:VARCHAR} 
+	    </if>
+	    <if test="tkno != null and tkno != '' ">
+	       and exists(select 1 from jp_tpd_mx mx where mx.tpdh=tpd.tpdh and mx.shbh=tpd.shbh  and mx.tkno=#{tkno:VARCHAR} ) 
+	    </if>
+	    <if test="hc != null and hc != '' "> and tpd.hc=#{hc:VARCHAR} </if>
+	    <if test="xs_hbh != null and xs_hbh != '' "> 
+	    	and (tpd.xs_hbh = #{xs_hbh:VARCHAR} or tpd.xs_hbh = '*'||#{xs_hbh:VARCHAR}) 
+	    </if>
+	    <if test="cjr != null and cjr != '' "> 
+	    	and tpd.cjr=#{cjr:VARCHAR} 
+	    </if>
+	    <if test="gngj != null and gngj != '' "> 
+	    	and tpd.gngj=#{gngj:VARCHAR} 
+	    </if>
+	    <if test="hkgs != null and hkgs != '' "> 
+	    	and exists(select 1 from jp_tpd_mx mx where mx.tpdh=tpd.tpdh and mx.shbh=tpd.shbh and mx.hkgs=#{hkgs:VARCHAR}) 
+	    </if>
+	    <if test="nxdh != null and nxdh != '' ">
+	   		and (tpd.NXDH=#{nxdh, jdbcType=VARCHAR} or tpd.NXSJ=#{nxdh, jdbcType=VARCHAR})
+	   	</if>
+	   	
+	   	<if test="cg_tppz_tjzt != null and cg_tppz_tjzt != '' ">
+	       	and nvl(tpd.cg_tppz_tjzt,'0') = #{cg_tppz_tjzt, jdbcType=VARCHAR}
+	   	</if>
+	   	
+	   	<if test="tpzt != null and tpzt != ''">
+	   	  and exists(SELECT 1 FROM JP_ZDTP_JK JK WHERE jk.tpdh=tpd.TPDH AND jk.shbh=tpd.shbh
+	        <choose>
+		        <when test="tpzt=='0'.toString() or tpzt=='1'.toString() or tpzt=='2'.toString() or tpzt=='3'.toString() or tpzt=='4'.toString()">
+		          and JK.TPZT =#{tpzt}
+		        </when> 
+		        <otherwise> 
+		      		and  JK.TPZT in 
+			      	<foreach collection="tpzt" index="index" item="item" open="(" separator="," close=")">  
+			           #{item}
+			    	</foreach>
+		    	</otherwise>
+	    	</choose>
+	    	)
+      	</if>
+	</where>
+ </sql>
+	
+  <select id="query" resultType="HashMap" parameterType="java.util.Map">
+	   SELECT b.*,(select count(1) from jp_qz where ywdh=b.TPDH and ywlx='02') QZCOUNT ,
+	   (SELECT ID FROM  JP_ZDTP_JK JK WHERE jk.tpdh=b.TPDH AND jk.shbh=b.shbh AND rownum=1) ZDTPJK_ID,
+	   (SELECT TPZT FROM  JP_ZDTP_JK JK WHERE jk.tpdh=b.TPDH AND jk.shbh=b.shbh AND rownum=1) TPZT,
+	   (select wm_concat(mx.tkno) from jp_tpd_mx mx where mx.tpdh=b.tpdh and mx.shbh=b.shbh) tkno
+	   FROM  (
+         SELECT A_TABLE.*,ROWNUM AS LINENUM FROM (
+		    SELECT * FROM jp_tpd  tpd 
+		    <include refid="where"/>
+		    ORDER BY ${orderBy}
+	     ) A_TABLE WHERE ROWNUM &lt;=(#{pageNum})*#{pageSize}
+			) b WHERE LINENUM&gt;(#{pageNum}-1)*#{pageSize}
+  </select>
+	
+  <select id="detail" resultType="HashMap" parameterType="cn.vetech.vedsb.jp.entity.jptpgl.JpTpd">
+	    SELECT * FROM jp_tpd where tpdh=#{tpdh} and shbh=#{shbh}
+  </select>	
+  
+  <select id="getPageCount" resultType="integer" parameterType="java.util.Map">
+		SELECT COUNT(1) FROM jp_tpd tpd  <include refid="where"/>
+  </select>
+  
+  <select id="getJpTpdById" resultType="cn.vetech.vedsb.jp.entity.jptpgl.JpTpd" parameterType="cn.vetech.vedsb.jp.entity.jptpgl.JpTpd">
+	    SELECT * FROM jp_tpd where id=#{id} and shbh=#{shbh}
+  </select>	
+  
+  <select id="getJpTpdByTpdh" resultType="cn.vetech.vedsb.jp.entity.jptpgl.JpTpd" >
+	    SELECT * FROM jp_tpd where tpdh=#{param1} and shbh=#{param2}
+  </select>	
+  
+  <!-- 根据订单编号和商户编号查找退票单  行程单短信的通配符处理-->
+  <select id="queryTpdByDdbh" resultType="cn.vetech.vedsb.jp.entity.jptpgl.JpTpd">
+  	SELECT * FROM jp_tpd where ddbh=#{param1} and shbh=#{param2}
+  </select>
+  
+  <select id="getJpTpdMxSum" resultType="cn.vetech.vedsb.jp.entity.jptpgl.JpTpd" >
+	    select sum(xs_zdj) xs_zdj,sum(xs_pj) xs_pj,sum(xs_jsf) xs_jsf,sum(xs_tax) xs_tax,sum(xs_tpsxf) xs_tpsxf,sum(xs_tkje) xs_tkje,
+	           sum(cg_zdj) cg_zdj,sum(cg_pj) cg_pj,sum(cg_jsf) cg_jsf,sum(cg_tax) cg_tax,sum(cg_tpf) cg_tpf,sum(cg_tkje) cg_tkje 
+         from  jp_tpd_mx where tpdh=#{param1} and shbh=#{param2}
+  </select>
+  
+	
+  
+  
+  <sql id="apply_where">
+    <where> 
+    	and a.shbh=#{shbh:VARCHAR}
+		<if test="xs_pnr_no != null and xs_pnr_no != '' "> and a.xs_pnr_no=#{xs_pnr_no:VARCHAR} </if>
+		<if test="tkno != null and tkno != '' "> and a.tkno=#{tkno:VARCHAR} </if>
+		<if test="ddbh != null and ddbh != '' "> and a.ddbh=#{ddbh:VARCHAR} </if>
+		<if test="cjr  != null and cjr  != '' "> and a.cjr=#{cjr:VARCHAR} </if>
+		<if test="hc   != null and hc   != '' "> and a.hc=#{hc:VARCHAR} </if>
+		<if test="xs_hkgs_pnr != null and xs_hkgs_pnr != '' "> and a.xs_hkgs_pnr=#{xs_hkgs_pnr:VARCHAR} </if>
+        <choose> 
+            <!-- 预订日期 -->
+            <when test="rqtj == '2'">        
+            	<if test="ksrq != null and ksrq != ''" > and (ksrq &gt;=to_date(#{ksrq:VARCHAR}, 'yyyy-MM-dd HH24:mi:ss'))</if>
+            	<if test="jsrq != null and jsrq != ''" > and (ddsj &lt;=to_date(#{jsrq:VARCHAR}||'23:59:59', 'yyyy-MM-dd HH24:mi:ss'))</if>
+            </when> 
+            <!-- 出票日期 -->
+            <when test="rqtj == '3'">       	
+                <if test="ksrq != null and ksrq != ''" > and (cp_datetime &gt;=to_date(#{ksrq:VARCHAR}, 'yyyy-MM-dd HH24:mi:ss'))</if>
+            	<if test="jsrq != null and jsrq != ''" > and (cp_datetime &lt;=to_date(#{jsrq:VARCHAR}||'23:59:59', 'yyyy-MM-dd HH24:mi:ss'))</if>
+            </when> 
+            <!-- 起飞日期 -->
+            <otherwise>       	
+                <if test="ksrq != null and ksrq != ''" > and (cfrq &gt;=to_date(#{ksrq:VARCHAR}, 'yyyy-MM-dd HH24:mi:ss'))</if>
+            	<if test="jsrq != null and jsrq != ''" > and (cfrq &lt;=to_date(#{jsrq:VARCHAR}||'23:59:59', 'yyyy-MM-dd HH24:mi:ss'))</if>
+            </otherwise> 
+        </choose>  
+	</where>
+  </sql>
+  <select id="getJptpdForApply" resultType="HashMap" parameterType="Map">
+	     select * from jp_jp a
+		<include refid="apply_where"/>
+  </select>
+  
+  
+  <!-- 用于退废单复核操作必须参数 -->
+  <select id="selectTpFhByTfdh" resultType="HashMap" >
+  		select a.*, b.wbdh gyddbh from jp_tpd a,jp_khdd b where a.ddbh=b.ddbh and tpdh = #{param1} and a.shbh=#{param2} 
+  </select>	
+  
+  <!-- 对账专用,根据外部单号查找业务数据 -->
+  <select id="genDzDataByWbdh" parameterType="Map" resultType="Map">
+		select XS_BLSJ wcsj,DDYH,DDSJ,tr.TPDH ddbh,wbdh,'2' ddlx,'退票单' ddlxmc,XS_TKJE zfje,tr.XS_PNR_NO pnrno,
+				(select wm_concat(tkno) from jp_tpd_mx) tknos,tr.cjr cjrs
+             from jp_tpd tr where tr.XS_TPZT='2' and nvl(tr.SFZDD,'0')='0'
+             	and shbh=#{shbh,jdbcType=VARCHAR} and wbdh =#{wbdh,jdbcType=VARCHAR} 
+             	and XS_BLSJ between to_date(#{dzrqs,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss') 
+             				and to_date(#{dzrqz,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+	</select>
+  <!-- 历史数据调整 -->
+  	<select id="getHistoryTpList" parameterType="HashMap" resultType="HashMap">
+  		select a.*,b.tkno from jp_tpd a join jp_tpd_mx b on a.tpdh = b.tpdh
+  		where a.xs_tpzt != '9'
+  		<if test="shbh != null and shbh != ''">and a.shbh = #{shbh,jdbcType=VARCHAR}</if> 
+  		<if test="pnrNo != null and pnrNo != ''">and a.xs_pnr_no = #{pnrNo,jdbcType=VARCHAR}</if> 
+  		<if test="tkno != null and tkno != ''">and b.tkno = #{tkno,jdbcType=VARCHAR}</if>
+  	</select>
+  	
+  	<select id="getjptpdobject" parameterType="HashMap" resultType="HashMap">
+		select b.tkno,a.* from jp_tpd a join jp_tpd_mx b on a.tpdh = b.tpdh where 1=1
+		<if test="shbh!=null and shbh!=''">and a.shbh = #{shbh,jdbcType=VARCHAR}</if>
+		<if test="tkno!=null and tkno!=''">and b.tkno = #{tkno,jdbcType=VARCHAR}</if>
+	</select>
+	
+	<update id="saveTpdHistory" parameterType="HashMap">
+		update jp_tpd
+		<set>
+			<if test="xstpsxf != null and xstpsxf != ''">xs_tpsxf = #{xstpsxf,jdbcType=DOUBLE}</if>
+			<if test="zfkm != null and zfkm != ''">,skkm = #{zfkm,jdbcType=VARCHAR}</if>
+		</set>
+		WHERE tpdh=#{TPDH,jdbcType=VARCHAR} and shbh=#{SHBH,jdbcType=VARCHAR}
+	</update>
+  <!-- 历史数据调整 -->
+  
+  <!-- 退票单入库检查是否重复 -->
+  <select id="checkTpdByPh" parameterType="HashMap" resultType="HashMap" >
+  	select wm_concat(mx.tkno) tknos,wm_concat(wbtpzt) wbtpzts from jp_tpd t,jp_tpd_mx mx where t.tpdh = mx.tpdh  and  t.shbh =#{shbh} 
+  	and wbdh =#{wbdh}
+  	and mx.tkno in
+    <foreach item="item" index="index" collection="tknos" 
+        open="(" separator="," close=")">
+        #{item}
+    </foreach>
+  </select>
+  
+  
+  <!-- 获取淘宝代购订单信息 -->
+  <select id="getTaobaoDg" parameterType="HashMap" resultType="HashMap">
+	select tp.cg_ddbh,(select to_char(wm_concat(tkno)) from jp_tpd_mx mx where mx.tpdh = tp.tpdh) tkno
+	from jp_tpd tp
+	where and tp.shbh = #{param1} and tp.tpdh = #{param2} 
+  </select>	
+  
+  <!-- 根据订单号,采购退票状态以及票号查询退废票单 -->
+  <select id="getjptpdByddbh" parameterType="HashMap" resultType="HashMap">
+  		select * from 
+  		(select * from jp_tpd a where a.ddbh = #{ddbh,jdbcType=VARCHAR} and a.cg_tpzt = '2' and a.shbh = #{shbh,jdbcType=VARCHAR}
+  		<if test="ticketno!=null and ticketno!=''">and exists(select 1 from jp_tpd_mx b where b.tkno = #{ticketno,jdbcType=VARCHAR} and a.tpdh=b.tpdh)</if>
+  		order by cg_tjsj desc) where rownum=1
+  </select>
+  
+  <!-- 通过商户编号获取淘宝代购订单信息 -->
+  <select id="getTaobaoDgByShbh" parameterType="HashMap"  resultType="cn.vetech.vedsb.jp.entity.jptpgl.JpTpd">
+	select * from jp_tpd tp
+	    where tp.xs_tpzt != '9'
+	    and tp.cg_tpzt = #{cg_tpzt,jdbcType=VARCHAR}
+		and tp.shbh = #{shbh,jdbcType=VARCHAR}
+		and tp.wdpt = #{wdpt,jdbcType=VARCHAR}
+		and tp.cgly = #{cgly,jdbcType=VARCHAR}
+	
+	 <choose> 
+            <!-- 待提交 -->
+            <when test="cg_tpzt == '0'.toString()">        
+            	and tp.cfrq &gt; to_date(#{ksrq}, 'yyyy-mm-dd hh24:mi:ss')
+				and tp.cfrq &lt; to_date(#{jsrq}, 'yyyy-mm-dd hh24:mi:ss')
+            </when> 
+            <!-- 已提交 -->
+            <when test="cg_tpzt == '2'.toString()">       	
+            	and tp.cg_tjsj &gt; to_date(#{ksrq}, 'yyyy-mm-dd hh24:mi:ss')
+				and tp.cg_tjsj &lt; to_date(#{jsrq}, 'yyyy-mm-dd hh24:mi:ss')
+            </when> 
+      </choose>  
+        
+  </select>
+  
+  	<update id="updateTpdByWbdh" parameterType="cn.vetech.vedsb.jp.entity.jptpgl.JpTpd">
+		update jp_tpd
+		<set>
+			<if test="xsTpzt != null and xsTpzt != ''">xs_tpzt = #{xsTpzt,jdbcType=VARCHAR},</if>
+			<if test="xgly != null and xgly != ''">xgly = #{xgly,jdbcType=VARCHAR},</if>
+			<if test="xgyh != null and xgyh != ''">xgyh = #{xgyh,jdbcType=VARCHAR},</if>
+		</set>
+		WHERE wbdh=#{wbdh,jdbcType=VARCHAR} and shbh=#{shbh,jdbcType=VARCHAR}
+	</update>
+    <!-- 根据外部退票单号查未取消退票单入库-->
+  <select id="getTpdByWbdh" parameterType="HashMap" resultType="cn.vetech.vedsb.jp.entity.jptpgl.JpTpd">
+ 	select * from jp_tpd a where a.wbdh = #{wbdh,jdbcType=VARCHAR} and shbh = #{shbh,jdbcType=VARCHAR} and xs_tpzt not in ('9')
+  </select>
+</mapper>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.qxxgl.BQinfoDao">
+	<sql id="where">
+	    <where>
+			BQ.shbh = #{shbh, jdbcType=VARCHAR}
+			<if test="datetype == '1'.toString()">
+				<if test="ksrq != null and ksrq != ''" > and (BQ.create_datetime &gt;=to_date(#{ksrq, jdbcType=VARCHAR}, 'yyyy-mm-dd'))</if>
+        		<if test="jsrq != null and jsrq != ''" > and (BQ.create_datetime &lt;=to_date(#{jsrq, jdbcType=VARCHAR}||'23:59:59', 'yyyy-mm-dd hh24:mi:ss'))</if>
+			</if>
+			<if test="datetype != null and datetype != '' and  datetype == '2'.toString()">
+				<if test="ksrq != null and ksrq != ''" > and (BQ.pnr_cfdatetime1 &gt;=to_date(#{ksrq, jdbcType=VARCHAR}, 'yyyy-mm-dd'))</if>
+        		<if test="jsrq != null and jsrq != ''" > and (BQ.pnr_cfdatetime1 &lt;=to_date(#{jsrq, jdbcType=VARCHAR}||'23:59:59', 'yyyy-mm-dd hh24:mi:ss'))</if>
+			</if>
+			<if test="datetype == '3'.toString()">
+				<if test="ksrq != null and ksrq != ''" > and (BQ.cl_datetime &gt;=to_date(#{ksrq, jdbcType=VARCHAR}, 'yyyy-mm-dd'))</if>
+        		<if test="jsrq != null and jsrq != ''" > and (BQ.cl_datetime &lt;=to_date(#{jsrq, jdbcType=VARCHAR}||'23:59:59', 'yyyy-mm-dd hh24:mi:ss'))</if>
+			</if>
+			<if test="pnrno != null and pnrno !='' ">
+				and BQ.pnrno = #{pnrno, jdbcType=VARCHAR}
+			</if>
+			<!-- cl_zt为1表示查全部的信息 -->
+			<if test="cl_zt != null and cl_zt != '' and cl_zt != '1'.toString()" >
+				and BQ.cl_zt = #{cl_zt, jdbcType=VARCHAR}
+			</if>
+			<!-- 全部页签 下拉框中的查询条件 -->
+			<if test="qzt !=null and qzt != '' ">
+				and BQ.cl_zt = #{qzt, jdbcType=VARCHAR}
+			</if>
+			<if test="pnr_hcglgj != null and pnr_hcglgj != '' ">
+				and BQ.pnr_hcglgj = #{pnr_hcglgj, jdbcType=VARCHAR}
+			</if>
+			<if test="qtypes != null and qtypes != '' ">
+				and BQ.qtype in
+				<foreach item="item" index="index" collection="qtypes" open="(" separator="," close=")">
+        			#{item}
+    			</foreach>
+			</if>
+			<if test="officeid != null and officeid != '' and offtype == '1'.toString() ">
+				and BQ.officeid = #{officeid, jdbcType=VARCHAR}
+			</if>
+			<if test="officeid !=null and officeid != '' and offtype == '2'.toString() ">
+				and BQ.by2 = #{officeid, jdbcType=VARCHAR}
+			</if>
+			<if test="wbdh != null and wbdh != ''">
+				and EXISTS(SELECT 1 FROM jp_khdd WHERE wbdh = #{wbdh, jdbcType=VARCHAR} AND ddbh = BQ.ddbh AND shbh = BQ.shbh )
+			</if>
+			<if test="wbddbh != null and wbddbh != ''">
+				and EXISTS(SELECT 1 FROM jp_tpd WHERE wbddbh = #{wbddbh, jdbcType=VARCHAR} AND ddbh = BQ.ddbh AND shbh = BQ.shbh )
+			</if>
+			<if test="sfpp !=null and sfpp !=''">
+				<if test=" sfpp == '1'.toString() ">
+					and BQ.ddbh is not null
+				</if>
+				<if test=" sfpp == '2'.toString() ">
+					and BQ.ddbh is null
+				</if>
+			</if>
+			<if test="pnr_hbh != null and pnr_hbh != '' ">
+				and BQ.pnr_hbh like '%'||#{pnr_hbh, jdbcType=VARCHAR}||'%'
+			</if>
+			<if test="pnr_hc != null and pnr_hc != '' ">
+				and BQ.pnr_hc like '%'||#{pnr_hc, jdbcType=VARCHAR}||'%'
+			</if>
+			<if test="dp_yhbh != null and dp_yhbh != '' ">
+				and BQ.dp_yhbh = #{dp_yhbh, jdbcType=VARCHAR}
+			</if>
+			<if test="pnr_cjr != null and pnr_cjr !='' ">
+				and BQ.pnr_cjr like  '%'||#{pnr_cjr, jdbcType=VARCHAR}||'%'
+			</if>
+			<if test="lxrdh != null and lxrdh != '' ">
+				and (BQ.lxrdh like #{lxrdh, jdbcType=VARCHAR} or BQ.lxrdh like #{msmobilno, jdbcType=VARCHAR}) 
+			</if>
+			
+		</where>
+  	</sql>
+  	
+  	<select id="query" parameterType="map" resultType="map">
+  		SELECT  *,(SELECT wm_concat(cg_tpzt) FROM jp_tpd WHERE ddbh = TABLE_ALIAS.ddbh AND shbh = TABLE_ALIAS.shbh) CG_TPZT,
+  		(SELECT wbdh FROM jp_khdd WHERE ddbh = TABLE_ALIAS.ddbh AND shbh = TABLE_ALIAS.shbh ) WBDH,
+ 		(SELECT wm_concat(wbdh) FROM jp_tpd WHERE ddbh = TABLE_ALIAS.ddbh AND shbh = TABLE_ALIAS.shbh ) WBTDBH,
+  		(SELECT wm_concat(tpdh) FROM jp_tpd WHERE ddbh = TABLE_ALIAS.ddbh AND shbh = TABLE_ALIAS.shbh ) TPDH
+    		FROM (SELECT tt.*, ROWNUM AS rowno      
+    			FROM (SELECT  * FROM B_QINFO BQ
+    					<include refid="where"/> 
+    						order by pnr_cfdatetime1 desc) tt
+	         				WHERE ROWNUM &lt;= #{pageNum, jdbcType=INTEGER}*#{pageSize, jdbcType=INTEGER}) TABLE_ALIAS
+	 					WHERE TABLE_ALIAS.rowno &gt; (#{pageNum, jdbcType=INTEGER} - 1)*#{pageSize, jdbcType=INTEGER}
+  	</select>
+  	<select id="queryCount" parameterType="map" resultType="Integer">
+  		SELECT COUNT(1) FROM B_QINFO BQ
+    	<include refid="where"/>
+  	</select>
+  	
+  	
+  	<update id="updateBatchBQinfo" parameterType="map">
+		<foreach item="item" index="index" collection="ids" separator=";" >
+			update B_QINFO 
+	  		set cl_qk = #{clqk},
+	  		cl_zt = #{clzt},
+	  		cl_datetime = #{cldatetime},
+	  		cl_userid = #{cluserid}
+	  		where shbh = #{shbh} and id = #{item}
+  		</foreach>
+  	</update>
+  	
+  	
+  	<select id="isBqinfo"  resultType="Integer" parameterType="cn.vetech.vedsb.jp.entity.qxxgl.BQinfo" >
+       select count(0) from B_QINFO a 
+       where a.shbh=#{shbh} 
+       and   a.ddbh=#{ddbh}
+       and   a.pnrno=#{pnrno}
+       and   a.pnr_cjr=#{pnrCjr}
+       and   rownum=1 
+    </select>
+  	
+</mapper>

@@ -1,0 +1,134 @@
+@CHARSET "UTF-8";
+
+.zdcptitle {
+	padding-left: 5px;
+	height: 20px;
+	line-height: 20px;
+	background: #4782dd;
+	font-weight: bold;
+	color: #ffffff;
+	border:1px solid #2373db
+}
+
+table.pay {
+	border-collapse: collapse;
+	margin-top: 1px;
+}
+
+table.pay tr,table.pay td {
+	border: 1px solid #ccc;
+	font-size: 13px;
+}
+
+table.pay td div {
+	display: block;
+	background: #efefef;
+}
+
+table.loginboxzdcp {
+	background: #f8f8f8;
+	border: 1px solid #cccccc;
+	margin-top: 1px;
+	font-size: 13px;
+	padding: 5px;
+}
+
+table.loginboxzdcp h3 {
+	font-size: 13px;
+	font-weight: bold;
+	margin: 0;
+	padding: 0
+}
+
+.yellow {
+	color: #fced04
+}
+
+.zcbox {
+	margin-top: 1px;
+	padding: 3px;
+	height: 25px;
+	line-height: 25px;
+	background: #f1f1f1;
+	border: 1px solid #ccc;
+	font-weight: bold;
+	color: #0433a0;
+}
+
+.zdcpbtn {
+	background: #fe5b26 url(btnbg.gif) 0 bottom repeat-x;
+	border: 1px solid #ffffff;
+	cursor: pointer;
+	color: #fff
+}
+
+/* IE6,IE7 */
+.b2bt {
+	margin: 10px 0;
+	height: 23px;
+	line-height: 23px;
+	COLOR: #323232;
+	FONT-SIZE: 20px;
+	FONT-WEIGHT: bold;
+	filter: progid : DXImageTransform . Microsoft .
+		gradient(startColorstr = '#ffffff', endColorstr = '#efefef')
+}
+
+.pubdlg_b2b {
+	BORDER-RIGHT: 1px solid #2d52a9;
+	BORDER-TOP: 1px solid #2d52a9;
+	Z-INDEX: 8888;
+	BORDER-LEFT: 1px solid #2d52a9;
+	BORDER-BOTTOM: 1px solid #2d52a9;
+	BACKGROUND-COLOR: #fff;
+	padding: 1px;
+	position: relative;
+	top: -5px;
+	left: -5px;
+	margin: 0;
+	width: auto;
+	overflow: hidden;
+}
+
+.pubdlg_b2b .title {
+	padding: 0;
+	HEIGHT: 18px;
+	TEXT-ALIGN: left;
+}
+
+.pubdlg_b2b .titLeft {
+	PADDING-LEFT: 10px;
+	FONT-WEIGHT: bold;
+	FLOAT: left;
+	COLOR: #000;
+	CURSOR: move;
+	LINE-HEIGHT: 18px;
+	width: 90%;
+}
+
+.pubdlg_b2b .titRight {
+	PADDING-RIGHT: 0px;
+	PADDING-LEFT: 0px;
+	FLOAT: right;
+	PADDING-BOTTOM: 0px;
+	PADDING-TOP: 0px
+}
+
+.fullpagediv {
+	Z-INDEX: 1999;
+	BACKGROUND: #cdcdcd;
+	FILTER: Alpha(opacity = 40);
+	LEFT: 0px;
+	WIDTH: 100%;
+	POSITION: absolute;
+	TOP: 0px;
+	HEIGHT: 2500px;
+	moz-opacity: .5;
+	opacity: 0.5
+}
+
+.out_b2b {
+	background:#ccc; 
+	margin:25px auto;
+	Z-INDEX: 101;
+}

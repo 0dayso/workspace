@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.vetech.vedsb.jp.dao.procedures.PkgAutoEtdzDao">
+	<!-- 自动转机票 -->
+  <select id="autoEtdz" parameterType="map" statementType="CALLABLE">
+  	{ #{result,mode=OUT,jdbcType=INTEGER} = call pkg_auto_etdz.f_auto_etdz(
+  													#{p_xml,mode=IN,jdbcType=VARCHAR},
+  													#{p_ddbh,mode=IN,jdbcType=VARCHAR},
+  													#{p_shbh,mode=IN,jdbcType=VARCHAR},
+  													#{p_ei,mode=IN,jdbcType=VARCHAR},
+  													#{p_userid,mode=IN,jdbcType=VARCHAR},
+  													#{p_bmbh,mode=IN,jdbcType=VARCHAR},
+  													#{p_error,mode=OUT,jdbcType=VARCHAR})
+  	}
+  </select>
+  
+   <!-- 调用后台检查能否ETDZ -->
+  <select id="checkEtdz" parameterType="map" statementType="CALLABLE">
+  	{ #{result,mode=OUT,jdbcType=INTEGER} = call pkg_auto_etdz.f_auto_ifetdz_pat_age_pri(
+  													#{p_ddbh,mode=IN,jdbcType=VARCHAR},
+  													#{p_shbh,mode=IN,jdbcType=VARCHAR},
+  													#{p_userid,mode=IN,jdbcType=VARCHAR},
+  													#{p_version,mode=IN,jdbcType=VARCHAR},
+  													#{p_cpqdlx,mode=IN,jdbcType=VARCHAR},
+  													#{p_pat,mode=OUT,jdbcType=VARCHAR},
+  													#{p_ei,mode=OUT,jdbcType=VARCHAR},
+  													#{p_office,mode=OUT,jdbcType=VARCHAR},
+  													#{p_pnr,mode=OUT,jdbcType=VARCHAR},
+  													#{p_xsj,mode=OUT,jdbcType=VARCHAR},
+  													#{p_rs,mode=OUT,jdbcType=VARCHAR},
+  													#{p_error,mode=OUT,jdbcType=VARCHAR},
+  													#{p_mm,mode=OUT,jdbcType=VARCHAR})
+  	}
+  </select>
+</mapper>
+

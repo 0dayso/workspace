@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.vetech.vedsb.jp.dao.jpzdcp.JpZdcpGjGzDao">
+	<sql id="sqltj">  
+	  <where>
+	  	shbh = #{shbh} 
+	  	and zt != '2' 
+	  	<if test="gzmc != null and gzmc != '' "> and (gzmc like '%'||#{gzmc,jdbcType=VARCHAR}||'%' ) </if>
+	  	<if test="zcdm != null and zcdm != '' "> and (zcdm like '%'||#{zcdm,jdbcType=VARCHAR}||'%' ) </if>
+	  	<if test="hkgs != null and hkgs != '' "> and (hkgs like '%'||#{hkgs,jdbcType=VARCHAR}||'%' or hkgs='---') </if> 
+		<if test="cfcs != null and cfcity != '' "> and (cfcs like '%'||#{cfcs,jdbcType=VARCHAR}||'%' or cfcs='---') </if>
+		<if test="ddcs != null and ddcs != '' "> and (ddcs like '%'||#{ddcs,jdbcType=VARCHAR}||'%' or ddcs='---') </if>
+    	<if test="cw != null and cw != '' "> and (cw like '%'||#{cw,jdbcType=VARCHAR}||'%' or cw='---') </if>
+    	<if test="cjrqs != null and cjrqs != '' "> and cjrqs &gt;=#{cjrqs,jdbcType=VARCHAR} </if>
+    	<if test="cjrqz != null and cjrqz != '' "> and cjrqz &lt;=#{cjrqz,jdbcType=VARCHAR} </if>
+    	<if test="zt != null and zt != '' "> and zt =#{zt,jdbcType=VARCHAR} </if>
+    	<if test="id != null and id != '' "> and id =#{id,jdbcType=VARCHAR} </if>		
+	  </where>  
+	</sql>
+	<!-- 根据条件查询集合 -->
+	<select id="queryPage" parameterType="cn.vetech.vedsb.jp.entity.jpzdcp.JpZdcpGjGz" resultType="cn.vetech.vedsb.jp.entity.jpzdcp.JpZdcpGjGz">
+		SELECT B_TABLE.*
+			FROM (SELECT A_TABLE.*,ROWNUM AS LINENUM FROM(
+				SELECT * FROM JP_ZDCP_GJ_GZ 
+				     	<include refid="sqltj"/>
+					ORDER BY YXJ DESC
+				) A_TABLE WHERE ROWNUM &lt;= #{count,jdbcType=NUMERIC} 
+			) B_TABLE WHERE LINENUM &gt;= #{start,jdbcType=NUMERIC}
+	</select>	
+	
+	<!--根据条件获得总条数 -->
+	<select id="getTotalCount" resultType="integer" parameterType="cn.vetech.vedsb.jp.entity.jpzdcp.JpZdcpGjGz">
+		SELECT COUNT(1) FROM JP_ZDCP_GJ_GZ 
+			<include refid="sqltj"/>
+	</select>
+	<!-- 批量启用/禁用-->
+	<update id="batchUpdateZt" parameterType="Map">
+		UPDATE jp_zdcp_gj_gz 
+		SET zt=#{zt}, 
+		    xgczy=#{xgczy},  
+		    xg_datetime=#{xg_datetime}  
+		WHERE shbh=#{shbh} 
+		<if test="ids != null and ids != ''">
+			AND id in
+	       	<foreach item="item" index="index" collection="ids" 
+	           	open="(" separator="," close=")">
+	               #{item}
+	        </foreach>
+		</if>
+	</update>
+</mapper>
